@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello World, RecipeBookActivity!</string>
     <string name="app_name">Recipe Book</string>
+    <string name="empty_recipe_list">No recipes found</string>
 </resources>
