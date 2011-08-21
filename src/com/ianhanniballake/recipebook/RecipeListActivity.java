@@ -1,12 +1,12 @@
 package com.ianhanniballake.recipebook;
 
-import android.app.Activity;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 
 /**
  * Activity controlling the recipe list
  */
-public class RecipeBookActivity extends Activity
+public class RecipeListActivity extends FragmentActivity
 {
 	/**
 	 * Sets the main layout
