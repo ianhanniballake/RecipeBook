@@ -2,7 +2,6 @@ package com.ianhanniballake.recipebook.provider;
 
 import java.util.HashMap;
 
-import android.content.ClipDescription;
 import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -90,12 +89,6 @@ public class RecipeProvider extends ContentProvider
 	 */
 	private static final int RECIPE_ID = 2;
 	/**
-	 * This describes the MIME types that are supported for opening a note URI
-	 * as a stream.
-	 */
-	private static ClipDescription RECIPE_STREAM_TYPES = new ClipDescription(
-			null, new String[] { ClipDescription.MIMETYPE_TEXT_PLAIN });
-	/**
 	 * The incoming URI matches the Recipes URI pattern
 	 */
 	private static final int RECIPES = 1;
@@ -174,35 +167,6 @@ public class RecipeProvider extends ContentProvider
 		}
 		getContext().getContentResolver().notifyChange(uri, null);
 		return count;
-	}
-
-	/**
-	 * Returns the types of available data streams. URIs to specific recipes are
-	 * supported. The application can convert such a recipe to a plain text
-	 * stream.
-	 * 
-	 * @see android.content.ContentProvider#getStreamTypes(android.net.Uri,
-	 *      java.lang.String)
-	 */
-	@Override
-	public String[] getStreamTypes(final Uri uri, final String mimeTypeFilter)
-	{
-		/**
-		 * Chooses the data stream type based on the incoming URI pattern.
-		 */
-		switch (uriMatcher.match(uri))
-		{
-			case RECIPES:
-				// If the pattern is for recipes, return null. Data streams are
-				// not supported for this type of URI.
-				return null;
-			case RECIPE_ID:
-				// If the pattern is for recipe IDs and the MIME filter is
-				// text/plain, then return text/plain
-				return RECIPE_STREAM_TYPES.filterMimeTypes(mimeTypeFilter);
-			default:
-				throw new IllegalArgumentException("Unknown URI " + uri);
-		}
 	}
 
 	/**
