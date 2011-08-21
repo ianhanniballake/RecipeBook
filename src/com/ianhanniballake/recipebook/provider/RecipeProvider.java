@@ -49,8 +49,11 @@ public class RecipeProvider extends ContentProvider
 		@Override
 		public void onCreate(final SQLiteDatabase db)
 		{
+			Log.d(TAG, "Creating the " + RecipeContract.Recipes.TABLE_NAME
+					+ " table");
 			db.execSQL("CREATE TABLE " + RecipeContract.Recipes.TABLE_NAME
-					+ " (" + BaseColumns._ID + " INTEGER PRIMARY KEY,"
+					+ " (" + BaseColumns._ID
+					+ " INTEGER PRIMARY KEY AUTOINCREMENT,"
 					+ RecipeContract.Recipes.COLUMN_NAME_TITLE + " TEXT,"
 					+ RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION + " TEXT"
 					+ ");");
@@ -70,7 +73,6 @@ public class RecipeProvider extends ContentProvider
 					+ newVersion + ", which will destroy all old data");
 			db.execSQL("DROP TABLE IF EXISTS "
 					+ RecipeContract.Recipes.TABLE_NAME);
-			// Recreates the database with a new version
 			onCreate(db);
 		}
 	}

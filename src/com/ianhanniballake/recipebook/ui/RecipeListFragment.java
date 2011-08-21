@@ -2,11 +2,10 @@ package com.ianhanniballake.recipebook.ui;
 
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.support.v4.widget.SimpleCursorAdapter;
 
 import com.ianhanniballake.recipebook.R;
+import com.ianhanniballake.recipebook.provider.RecipeContract;
 
 /**
  * Fragment which displays the list of recipes and triggers recipe selection
@@ -15,14 +14,24 @@ import com.ianhanniballake.recipebook.R;
 public class RecipeListFragment extends ListFragment
 {
 	/**
-	 * @see android.support.v4.app.ListFragment#onCreateView(android.view.LayoutInflater,
-	 *      android.view.ViewGroup, android.os.Bundle)
+	 * Adapter to display the list's data
+	 */
+	private SimpleCursorAdapter adapter;
+
+	/**
+	 * Creates the list adapter
+	 * 
+	 * @see android.support.v4.app.Fragment#onActivityCreated(android.os.Bundle)
 	 */
 	@Override
-	public View onCreateView(final LayoutInflater inflator,
-			final ViewGroup container, final Bundle savedInstanceState)
+	public void onActivityCreated(final Bundle savedInstanceState)
 	{
-		return inflator
-				.inflate(R.layout.fragment_recipe_list, container, false);
+		super.onActivityCreated(savedInstanceState);
+		setEmptyText(getText(R.string.empty_recipe_list));
+		adapter = new SimpleCursorAdapter(getActivity(),
+				android.R.layout.simple_list_item_1, null,
+				new String[] { RecipeContract.Recipes.COLUMN_NAME_TITLE },
+				new int[] { android.R.id.text1 }, 0);
+		setListAdapter(adapter);
 	}
 }
