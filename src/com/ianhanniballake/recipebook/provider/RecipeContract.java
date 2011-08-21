@@ -45,12 +45,12 @@ public final class RecipeContract
 		private static final String PATH_RECIPES = "/recipes";
 		/**
 		 * The content URI base for a single recipe. Callers must append a
-		 * numeric note id to this Uri to retrieve a note
+		 * numeric recipe id to this Uri to retrieve a recipe
 		 */
 		public static final Uri CONTENT_ID_URI_BASE = Uri.parse(SCHEME
 				+ AUTHORITY + PATH_RECIPE_ID);
 		/**
-		 * The content URI match pattern for a single note, specified by its ID.
+		 * The content URI match pattern for a single recipe, specified by its ID.
 		 * Use this to match incoming URIs or to construct an Intent.
 		 */
 		public static final Uri CONTENT_ID_URI_PATTERN = Uri.parse(SCHEME
