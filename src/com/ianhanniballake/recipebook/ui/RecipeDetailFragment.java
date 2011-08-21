@@ -1,5 +1,6 @@
 package com.ianhanniballake.recipebook.ui;
 
+import android.content.ContentUris;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -27,9 +28,9 @@ public class RecipeDetailFragment extends Fragment implements
 	 * 
 	 * @return ID for the currently displayed recipe
 	 */
-	public int getRecipeId()
+	public long getRecipeId()
 	{
-		return getArguments().getInt(BaseColumns._ID);
+		return getArguments().getLong(BaseColumns._ID);
 	}
 
 	/**
@@ -55,9 +56,8 @@ public class RecipeDetailFragment extends Fragment implements
 	@Override
 	public Loader<Cursor> onCreateLoader(final int id, final Bundle args)
 	{
-		final Uri recipeUri = Uri.withAppendedPath(
-				RecipeContract.Recipes.CONTENT_ID_URI_PATTERN,
-				Integer.toString(getRecipeId()));
+		final Uri recipeUri = ContentUris.withAppendedId(
+				RecipeContract.Recipes.CONTENT_ID_URI_PATTERN, getRecipeId());
 		return new CursorLoader(getActivity(), recipeUri, null, null, null,
 				null);
 	}

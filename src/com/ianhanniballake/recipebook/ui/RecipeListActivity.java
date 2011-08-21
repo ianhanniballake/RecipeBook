@@ -38,10 +38,10 @@ public class RecipeListActivity extends FragmentActivity implements
 	/**
 	 * Handles the selection of a recipe
 	 * 
-	 * @see com.ianhanniballake.recipebook.ui.OnRecipeSelectedListener#onRecipeSelected(int)
+	 * @see com.ianhanniballake.recipebook.ui.OnRecipeSelectedListener#onRecipeSelected(long)
 	 */
 	@Override
-	public void onRecipeSelected(final int recipeId)
+	public void onRecipeSelected(final long recipeId)
 	{
 		if (isDualPane)
 		{
@@ -52,7 +52,7 @@ public class RecipeListActivity extends FragmentActivity implements
 				// Make new fragment to show this selection.
 				details = new RecipeDetailFragment();
 				final Bundle args = new Bundle();
-				args.putInt(BaseColumns._ID, recipeId);
+				args.putLong(BaseColumns._ID, recipeId);
 				details.setArguments(args);
 				// Execute a transaction, replacing any existing fragment
 				// with this one inside the frame.

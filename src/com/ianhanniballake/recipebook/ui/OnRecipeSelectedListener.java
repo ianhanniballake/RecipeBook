@@ -11,5 +11,5 @@ public interface OnRecipeSelectedListener
 	 * @param recipeId
 	 *            Id of the selected recipe
 	 */
-	public void onRecipeSelected(int recipeId);
+	public void onRecipeSelected(long recipeId);
 }
