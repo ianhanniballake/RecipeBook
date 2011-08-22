@@ -1,8 +1,6 @@
 package com.ianhanniballake.recipebook.ui;
 
-import android.content.ContentUris;
 import android.content.ContentValues;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 
@@ -10,9 +8,9 @@ import com.ianhanniballake.recipebook.R;
 import com.ianhanniballake.recipebook.provider.RecipeContract;
 
 /**
- * Activity which displays only the Recipe details
+ * Activity responsible for creating new Recipes
  */
-public class RecipeDetailActivity extends FragmentActivity implements
+public class RecipeAddActivity extends FragmentActivity implements
 		OnRecipeEditListener
 {
 	/**
@@ -24,22 +22,22 @@ public class RecipeDetailActivity extends FragmentActivity implements
 	public void onCreate(final Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_recipe_detail);
+		setContentView(R.layout.activity_recipe_edit);
 	}
 
 	/**
-	 * Handles edit cancel events
+	 * Handles edit cancel events by finishing this activity
 	 * 
 	 * @see com.ianhanniballake.recipebook.ui.OnRecipeEditListener#onRecipeEditCancelled()
 	 */
 	@Override
 	public void onRecipeEditCancelled()
 	{
-		// TODO Add switch from edit mode
+		finish();
 	}
 
 	/**
-	 * Handles recipe save events
+	 * Handles edit save events
 	 * 
 	 * @see com.ianhanniballake.recipebook.ui.OnRecipeEditListener#onRecipeEditSave(long,
 	 *      android.content.ContentValues)
@@ -47,20 +45,19 @@ public class RecipeDetailActivity extends FragmentActivity implements
 	@Override
 	public void onRecipeEditSave(final long recipeId, final ContentValues values)
 	{
-		final Uri updateUri = ContentUris.withAppendedId(
-				RecipeContract.Recipes.CONTENT_ID_URI_PATTERN, recipeId);
-		getContentResolver().update(updateUri, values, null, null);
-		// TODO Add switch from edit mode
+		getContentResolver().insert(RecipeContract.Recipes.CONTENT_ID_URI_BASE,
+				values);
+		// TODO Add switch from add activity
 	}
 
 	/**
-	 * Handles start recipe edit events.
+	 * Not used
 	 * 
 	 * @see com.ianhanniballake.recipebook.ui.OnRecipeEditListener#onRecipeEditStarted(long)
 	 */
 	@Override
 	public void onRecipeEditStarted(final long recipeId)
 	{
-		// TODO Add switch to edit mode
+		// Not used
 	}
 }

@@ -1,9 +1,13 @@
 package com.ianhanniballake.recipebook.ui;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.support.v4.widget.SimpleCursorAdapter;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 
@@ -63,6 +67,28 @@ public class RecipeListFragment extends ListFragment
 	}
 
 	/**
+	 * @see android.support.v4.app.Fragment#onCreate(android.os.Bundle)
+	 */
+	@Override
+	public void onCreate(final Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setHasOptionsMenu(true);
+	}
+
+	/**
+	 * Adds Add option to the menu
+	 * 
+	 * @see android.support.v4.app.Fragment#onCreateOptionsMenu(android.view.Menu,
+	 *      android.view.MenuInflater)
+	 */
+	@Override
+	public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater)
+	{
+		inflater.inflate(R.menu.fragment_recipe_list, menu);
+	}
+
+	/**
 	 * Handles clicking on a list item
 	 * 
 	 * @see android.support.v4.app.ListFragment#onListItemClick(android.widget.ListView,
@@ -73,5 +99,25 @@ public class RecipeListFragment extends ListFragment
 			final int position, final long id)
 	{
 		recipeSelectedListener.onRecipeSelected(id);
+	}
+
+	/**
+	 * Handles selection of a menu item
+	 * 
+	 * @see android.support.v4.app.Fragment#onOptionsItemSelected(android.view.MenuItem)
+	 */
+	@Override
+	public boolean onOptionsItemSelected(final MenuItem item)
+	{
+		switch (item.getItemId())
+		{
+			case R.id.add:
+				final Intent intent = new Intent(getActivity(),
+						RecipeAddActivity.class);
+				startActivity(intent);
+				return true;
+			default:
+				return super.onOptionsItemSelected(item);
+		}
 	}
 }

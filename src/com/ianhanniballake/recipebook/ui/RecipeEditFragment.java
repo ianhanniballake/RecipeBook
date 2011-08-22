@@ -2,6 +2,7 @@ package com.ianhanniballake.recipebook.ui;
 
 import android.app.Activity;
 import android.content.ContentUris;
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -22,9 +23,9 @@ import com.ianhanniballake.recipebook.R;
 import com.ianhanniballake.recipebook.provider.RecipeContract;
 
 /**
- * Fragment which displays the details of a single recipe
+ * Fragment which displays the details of a single recipe for editing
  */
-public class RecipeDetailFragment extends Fragment implements
+public class RecipeEditFragment extends Fragment implements
 		LoaderManager.LoaderCallbacks<Cursor>
 {
 	/**
@@ -112,7 +113,7 @@ public class RecipeDetailFragment extends Fragment implements
 	@Override
 	public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater)
 	{
-		inflater.inflate(R.menu.fragment_recipe_detail, menu);
+		inflater.inflate(R.menu.fragment_recipe_edit, menu);
 	}
 
 	/**
@@ -125,8 +126,36 @@ public class RecipeDetailFragment extends Fragment implements
 	public View onCreateView(final LayoutInflater inflater,
 			final ViewGroup container, final Bundle savedInstanceState)
 	{
-		return inflater.inflate(R.layout.fragment_recipe_detail, container,
-				false);
+		return inflater
+				.inflate(R.layout.fragment_recipe_edit, container, false);
+	}
+
+	/**
+	 * Saves the recipe
+	 * 
+	 * @see android.support.v4.app.Fragment#onDestroyView()
+	 */
+	@Override
+	public void onDestroyView()
+	{
+		super.onDestroyView();
+		final ContentValues values = new ContentValues();
+		final TextView title = (TextView) getActivity()
+				.findViewById(R.id.title);
+		values.put(RecipeContract.Recipes.COLUMN_NAME_TITLE, title.getText()
+				.toString());
+		final TextView description = (TextView) getActivity().findViewById(
+				R.id.description);
+		values.put(RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION, description
+				.getText().toString());
+		if (getRecipeId() == 0)
+			getActivity().getContentResolver().insert(
+					RecipeContract.Recipes.CONTENT_ID_URI_BASE, values);
+		else
+			getActivity().getContentResolver().update(
+					ContentUris.withAppendedId(
+							RecipeContract.Recipes.CONTENT_ID_URI_PATTERN,
+							getRecipeId()), values, null, null);
 	}
 
 	/**
@@ -168,22 +197,23 @@ public class RecipeDetailFragment extends Fragment implements
 	{
 		switch (item.getItemId())
 		{
-			case R.id.edit:
-				recipeEditListener.onRecipeEditStarted(getRecipeId());
+			case R.id.save:
+				final ContentValues values = new ContentValues();
+				final TextView title = (TextView) getActivity().findViewById(
+						R.id.title);
+				values.put(RecipeContract.Recipes.COLUMN_NAME_TITLE, title
+						.getText().toString());
+				final TextView description = (TextView) getActivity()
+						.findViewById(R.id.description);
+				values.put(RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION,
+						description.getText().toString());
+				recipeEditListener.onRecipeEditSave(getRecipeId(), values);
+				return true;
+			case R.id.cancel:
+				recipeEditListener.onRecipeEditCancelled();
 				return true;
 			default:
 				return super.onOptionsItemSelected(item);
 		}
-	}
-
-	/**
-	 * Hides the edit option if this is not currently showing a valid recipe
-	 * 
-	 * @see android.support.v4.app.Fragment#onPrepareOptionsMenu(android.view.Menu)
-	 */
-	@Override
-	public void onPrepareOptionsMenu(final Menu menu)
-	{
-		menu.findItem(R.id.edit).setVisible(getRecipeId() != 0);
 	}
 }
