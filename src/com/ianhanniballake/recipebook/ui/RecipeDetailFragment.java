@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.view.MenuCompat;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -99,6 +100,8 @@ public class RecipeDetailFragment extends Fragment implements
 	public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater)
 	{
 		inflater.inflate(R.menu.fragment_recipe_detail, menu);
+		MenuCompat.setShowAsAction(menu.findItem(R.id.edit), 2);
+		MenuCompat.setShowAsAction(menu.findItem(R.id.delete), 2);
 	}
 
 	@Override

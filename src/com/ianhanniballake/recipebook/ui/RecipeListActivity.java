@@ -10,6 +10,7 @@ import android.provider.BaseColumns;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.MenuCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -100,6 +101,7 @@ public class RecipeListActivity extends FragmentActivity implements
 	public boolean onCreateOptionsMenu(final Menu menu)
 	{
 		getMenuInflater().inflate(R.menu.fragment_recipe_list, menu);
+		MenuCompat.setShowAsAction(menu.findItem(R.id.add), 2);
 		return super.onCreateOptionsMenu(menu);
 	}
 
