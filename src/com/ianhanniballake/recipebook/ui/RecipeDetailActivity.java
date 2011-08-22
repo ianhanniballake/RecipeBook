@@ -30,11 +30,6 @@ public class RecipeDetailActivity extends FragmentActivity implements
 	 */
 	private AsyncQueryHandler updateHandler;
 
-	/**
-	 * Sets the main layout
-	 * 
-	 * @see android.app.Activity#onCreate(android.os.Bundle)
-	 */
 	@Override
 	public void onCreate(final Bundle savedInstanceState)
 	{
@@ -62,23 +57,12 @@ public class RecipeDetailActivity extends FragmentActivity implements
 		finish();
 	}
 
-	/**
-	 * Handles edit cancel events
-	 * 
-	 * @see com.ianhanniballake.recipebook.ui.OnRecipeEditListener#onRecipeEditCancelled()
-	 */
 	@Override
 	public void onRecipeEditCancelled()
 	{
 		getSupportFragmentManager().popBackStack();
 	}
 
-	/**
-	 * Handles recipe save events
-	 * 
-	 * @see com.ianhanniballake.recipebook.ui.OnRecipeEditListener#onRecipeEditSave(long,
-	 *      android.content.ContentValues)
-	 */
 	@Override
 	public void onRecipeEditSave(final long recipeId, final ContentValues values)
 	{
@@ -88,11 +72,6 @@ public class RecipeDetailActivity extends FragmentActivity implements
 		updateHandler.startUpdate(0, null, updateUri, values, null, null);
 	}
 
-	/**
-	 * Handles start recipe edit events.
-	 * 
-	 * @see com.ianhanniballake.recipebook.ui.OnRecipeEditListener#onRecipeEditStarted(long)
-	 */
 	@Override
 	public void onRecipeEditStarted(final long recipeId)
 	{

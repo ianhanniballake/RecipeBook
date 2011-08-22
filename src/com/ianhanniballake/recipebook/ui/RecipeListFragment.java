@@ -30,11 +30,6 @@ public class RecipeListFragment extends ListFragment implements
 	 */
 	private OnRecipeSelectedListener recipeSelectedListener;
 
-	/**
-	 * Creates the list adapter
-	 * 
-	 * @see android.support.v4.app.Fragment#onActivityCreated(android.os.Bundle)
-	 */
 	@Override
 	public void onActivityCreated(final Bundle savedInstanceState)
 	{
@@ -76,12 +71,6 @@ public class RecipeListFragment extends ListFragment implements
 				null);
 	}
 
-	/**
-	 * Handles clicking on a list item
-	 * 
-	 * @see android.support.v4.app.ListFragment#onListItemClick(android.widget.ListView,
-	 *      android.view.View, int, long)
-	 */
 	@Override
 	public void onListItemClick(final ListView l, final View v,
 			final int position, final long id)

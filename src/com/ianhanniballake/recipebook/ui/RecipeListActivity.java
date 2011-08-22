@@ -126,23 +126,12 @@ public class RecipeListActivity extends FragmentActivity implements
 		queryHandler.startDelete(0, null, deleteUri, null, null);
 	}
 
-	/**
-	 * Handle edit cancel events
-	 * 
-	 * @see com.ianhanniballake.recipebook.ui.OnRecipeEditListener#onRecipeEditCancelled()
-	 */
 	@Override
 	public void onRecipeEditCancelled()
 	{
 		getSupportFragmentManager().popBackStack();
 	}
 
-	/**
-	 * Handle edit save events
-	 * 
-	 * @see com.ianhanniballake.recipebook.ui.OnRecipeEditListener#onRecipeEditSave(long,
-	 *      android.content.ContentValues)
-	 */
 	@Override
 	public void onRecipeEditSave(final long recipeId, final ContentValues values)
 	{
@@ -152,11 +141,6 @@ public class RecipeListActivity extends FragmentActivity implements
 		queryHandler.startUpdate(0, null, updateUri, values, null, null);
 	}
 
-	/**
-	 * Handles start recipe edit events.
-	 * 
-	 * @see com.ianhanniballake.recipebook.ui.OnRecipeEditListener#onRecipeEditStarted(long)
-	 */
 	@Override
 	public void onRecipeEditStarted(final long recipeId)
 	{
@@ -174,11 +158,6 @@ public class RecipeListActivity extends FragmentActivity implements
 		ft.commit();
 	}
 
-	/**
-	 * Handles the selection of a recipe
-	 * 
-	 * @see com.ianhanniballake.recipebook.ui.OnRecipeSelectedListener#onRecipeSelected(long)
-	 */
 	@Override
 	public void onRecipeSelected(final long recipeId)
 	{

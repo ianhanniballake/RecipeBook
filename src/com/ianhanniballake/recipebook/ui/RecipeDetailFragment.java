@@ -45,11 +45,6 @@ public class RecipeDetailFragment extends Fragment implements
 		return getArguments().getLong(BaseColumns._ID);
 	}
 
-	/**
-	 * Loads the data from the RecipeProvider
-	 * 
-	 * @see android.support.v4.app.Fragment#onActivityCreated(android.os.Bundle)
-	 */
 	@Override
 	public void onActivityCreated(final Bundle savedInstanceState)
 	{
@@ -78,9 +73,6 @@ public class RecipeDetailFragment extends Fragment implements
 		}
 	}
 
-	/**
-	 * @see android.support.v4.app.Fragment#onCreate(android.os.Bundle)
-	 */
 	@Override
 	public void onCreate(final Bundle savedInstanceState)
 	{
@@ -88,12 +80,6 @@ public class RecipeDetailFragment extends Fragment implements
 		setHasOptionsMenu(true);
 	}
 
-	/**
-	 * Creates the loader to read the Recipe from the RecipeProvider
-	 * 
-	 * @see android.support.v4.app.LoaderManager.LoaderCallbacks#onCreateLoader(int,
-	 *      android.os.Bundle)
-	 */
 	@Override
 	public Loader<Cursor> onCreateLoader(final int id, final Bundle args)
 	{
@@ -115,12 +101,6 @@ public class RecipeDetailFragment extends Fragment implements
 		inflater.inflate(R.menu.fragment_recipe_detail, menu);
 	}
 
-	/**
-	 * Creates the view for this fragment
-	 * 
-	 * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater,
-	 *      android.view.ViewGroup, android.os.Bundle)
-	 */
 	@Override
 	public View onCreateView(final LayoutInflater inflater,
 			final ViewGroup container, final Bundle savedInstanceState)
@@ -133,21 +113,12 @@ public class RecipeDetailFragment extends Fragment implements
 				false);
 	}
 
-	/**
-	 * @see android.support.v4.app.LoaderManager.LoaderCallbacks#onLoaderReset(android.support.v4.content.Loader)
-	 */
 	@Override
 	public void onLoaderReset(final Loader<Cursor> data)
 	{
 		// Nothing to do
 	}
 
-	/**
-	 * Called when the loader finishes its query to the RecipeProvider
-	 * 
-	 * @see android.support.v4.app.LoaderManager.LoaderCallbacks#onLoadFinished(android.support.v4.content.Loader,
-	 *      java.lang.Object)
-	 */
 	@Override
 	public void onLoadFinished(final Loader<Cursor> loader, final Cursor data)
 	{
@@ -164,11 +135,6 @@ public class RecipeDetailFragment extends Fragment implements
 						.getColumnIndex(RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION)));
 	}
 
-	/**
-	 * Handles selection of a menu item
-	 * 
-	 * @see android.support.v4.app.Fragment#onOptionsItemSelected(android.view.MenuItem)
-	 */
 	@Override
 	public boolean onOptionsItemSelected(final MenuItem item)
 	{
@@ -186,7 +152,8 @@ public class RecipeDetailFragment extends Fragment implements
 	}
 
 	/**
-	 * Hides the edit option if this is not currently showing a valid recipe
+	 * Hides the edit and delete items if this is not currently showing a valid
+	 * recipe
 	 * 
 	 * @see android.support.v4.app.Fragment#onPrepareOptionsMenu(android.view.Menu)
 	 */

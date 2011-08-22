@@ -46,11 +46,6 @@ public class RecipeEditFragment extends Fragment implements
 		return getArguments().getLong(BaseColumns._ID);
 	}
 
-	/**
-	 * Loads the data from the RecipeProvider
-	 * 
-	 * @see android.support.v4.app.Fragment#onActivityCreated(android.os.Bundle)
-	 */
 	@Override
 	public void onActivityCreated(final Bundle savedInstanceState)
 	{
@@ -79,9 +74,6 @@ public class RecipeEditFragment extends Fragment implements
 		}
 	}
 
-	/**
-	 * @see android.support.v4.app.Fragment#onCreate(android.os.Bundle)
-	 */
 	@Override
 	public void onCreate(final Bundle savedInstanceState)
 	{
@@ -89,12 +81,6 @@ public class RecipeEditFragment extends Fragment implements
 		setHasOptionsMenu(true);
 	}
 
-	/**
-	 * Creates the loader to read the Recipe from the RecipeProvider
-	 * 
-	 * @see android.support.v4.app.LoaderManager.LoaderCallbacks#onCreateLoader(int,
-	 *      android.os.Bundle)
-	 */
 	@Override
 	public Loader<Cursor> onCreateLoader(final int id, final Bundle args)
 	{
@@ -116,12 +102,6 @@ public class RecipeEditFragment extends Fragment implements
 		inflater.inflate(R.menu.fragment_recipe_edit, menu);
 	}
 
-	/**
-	 * Creates the view for this fragment
-	 * 
-	 * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater,
-	 *      android.view.ViewGroup, android.os.Bundle)
-	 */
 	@Override
 	public View onCreateView(final LayoutInflater inflater,
 			final ViewGroup container, final Bundle savedInstanceState)
@@ -130,49 +110,12 @@ public class RecipeEditFragment extends Fragment implements
 				.inflate(R.layout.fragment_recipe_edit, container, false);
 	}
 
-	/**
-	 * Saves the recipe
-	 * 
-	 * @see android.support.v4.app.Fragment#onDestroyView()
-	 */
-	@Override
-	public void onDestroyView()
-	{
-		super.onDestroyView();
-		final ContentValues values = new ContentValues();
-		final TextView title = (TextView) getActivity()
-				.findViewById(R.id.title);
-		values.put(RecipeContract.Recipes.COLUMN_NAME_TITLE, title.getText()
-				.toString());
-		final TextView description = (TextView) getActivity().findViewById(
-				R.id.description);
-		values.put(RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION, description
-				.getText().toString());
-		if (getRecipeId() == 0)
-			getActivity().getContentResolver().insert(
-					RecipeContract.Recipes.CONTENT_ID_URI_BASE, values);
-		else
-			getActivity().getContentResolver().update(
-					ContentUris.withAppendedId(
-							RecipeContract.Recipes.CONTENT_ID_URI_PATTERN,
-							getRecipeId()), values, null, null);
-	}
-
-	/**
-	 * @see android.support.v4.app.LoaderManager.LoaderCallbacks#onLoaderReset(android.support.v4.content.Loader)
-	 */
 	@Override
 	public void onLoaderReset(final Loader<Cursor> arg0)
 	{
 		// Nothing to do
 	}
 
-	/**
-	 * Called when the loader finishes its query to the RecipeProvider
-	 * 
-	 * @see android.support.v4.app.LoaderManager.LoaderCallbacks#onLoadFinished(android.support.v4.content.Loader,
-	 *      java.lang.Object)
-	 */
 	@Override
 	public void onLoadFinished(final Loader<Cursor> loader, final Cursor data)
 	{
@@ -187,11 +130,6 @@ public class RecipeEditFragment extends Fragment implements
 						.getColumnIndex(RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION)));
 	}
 
-	/**
-	 * Handles selection of a menu item
-	 * 
-	 * @see android.support.v4.app.Fragment#onOptionsItemSelected(android.view.MenuItem)
-	 */
 	@Override
 	public boolean onOptionsItemSelected(final MenuItem item)
 	{
