@@ -171,6 +171,9 @@ public class RecipeDetailFragment extends Fragment implements
 			case R.id.edit:
 				recipeEditListener.onRecipeEditStarted(getRecipeId());
 				return true;
+			case R.id.delete:
+				recipeEditListener.onRecipeDeleted(getRecipeId());
+				return true;
 			default:
 				return super.onOptionsItemSelected(item);
 		}
@@ -185,5 +188,6 @@ public class RecipeDetailFragment extends Fragment implements
 	public void onPrepareOptionsMenu(final Menu menu)
 	{
 		menu.findItem(R.id.edit).setVisible(getRecipeId() != 0);
+		menu.findItem(R.id.delete).setVisible(getRecipeId() != 0);
 	}
 }

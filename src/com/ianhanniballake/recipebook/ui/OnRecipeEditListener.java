@@ -9,6 +9,14 @@ import android.content.ContentValues;
 public interface OnRecipeEditListener
 {
 	/**
+	 * Handles recipe delete events
+	 * 
+	 * @param recipeId
+	 *            Id of the recipe to delete
+	 */
+	public void onRecipeDeleted(long recipeId);
+
+	/**
 	 * Handles edit cancel events
 	 */
 	public void onRecipeEditCancelled();
