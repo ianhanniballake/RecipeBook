@@ -35,6 +35,14 @@ public class RecipeDetailActivity extends FragmentActivity implements
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_recipe_detail);
+		if (savedInstanceState == null)
+		{
+			// During initial setup, plug in the details fragment.
+			final RecipeDetailFragment details = new RecipeDetailFragment();
+			details.setArguments(getIntent().getExtras());
+			getSupportFragmentManager().beginTransaction()
+					.replace(android.R.id.content, details).commit();
+		}
 		updateHandler = new AsyncQueryHandler(getContentResolver())
 		{
 			@Override
