@@ -56,6 +56,8 @@ public class RecipeListActivity extends FragmentActivity implements
 			final long recipeId = ContentUris.parseId(data.getData());
 			onRecipeDeleted(recipeId);
 		}
+		else
+			super.onActivityResult(requestCode, resultCode, data);
 	}
 
 	@Override
@@ -92,13 +94,6 @@ public class RecipeListActivity extends FragmentActivity implements
 				getSupportFragmentManager().popBackStack();
 			}
 		};
-		// Execute a transaction, replacing any existing fragment
-		// with this one inside the frame.
-		final FragmentTransaction ft = getSupportFragmentManager()
-				.beginTransaction();
-		ft.hide(getSupportFragmentManager().findFragmentById(R.id.details));
-		ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-		ft.commit();
 	}
 
 	@Override

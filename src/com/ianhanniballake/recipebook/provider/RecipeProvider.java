@@ -275,6 +275,8 @@ public class RecipeProvider extends ContentProvider
 		qb.setProjectionMap(allColumnProjectionMap);
 		switch (uriMatcher.match(uri))
 		{
+			case RECIPES:
+				break;
 			case RECIPE_ID:
 				// If the incoming URI is for a single recipe identified by its
 				// ID, appends "_ID = <recipeID>" to the where clause, so that

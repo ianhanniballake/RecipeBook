@@ -1,8 +1,12 @@
 package com.ianhanniballake.recipebook.ui;
 
 import android.app.Activity;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.View;
 import android.widget.ListView;
@@ -14,7 +18,8 @@ import com.ianhanniballake.recipebook.provider.RecipeContract;
  * Fragment which displays the list of recipes and triggers recipe selection
  * events
  */
-public class RecipeListFragment extends ListFragment
+public class RecipeListFragment extends ListFragment implements
+		LoaderManager.LoaderCallbacks<Cursor>
 {
 	/**
 	 * Adapter to display the list's data
@@ -40,6 +45,7 @@ public class RecipeListFragment extends ListFragment
 				new String[] { RecipeContract.Recipes.COLUMN_NAME_TITLE },
 				new int[] { android.R.id.text1 }, 0);
 		setListAdapter(adapter);
+		getLoaderManager().initLoader(0, null, this);
 	}
 
 	/**
@@ -62,6 +68,14 @@ public class RecipeListFragment extends ListFragment
 		}
 	}
 
+	@Override
+	public Loader<Cursor> onCreateLoader(final int id, final Bundle args)
+	{
+		return new CursorLoader(getActivity(),
+				RecipeContract.Recipes.CONTENT_ID_URI_BASE, null, null, null,
+				null);
+	}
+
 	/**
 	 * Handles clicking on a list item
 	 * 
@@ -73,5 +87,17 @@ public class RecipeListFragment extends ListFragment
 			final int position, final long id)
 	{
 		recipeSelectedListener.onRecipeSelected(id);
+	}
+
+	@Override
+	public void onLoaderReset(final Loader<Cursor> loader)
+	{
+		adapter.swapCursor(null);
+	}
+
+	@Override
+	public void onLoadFinished(final Loader<Cursor> loader, final Cursor data)
+	{
+		adapter.swapCursor(data);
 	}
 }

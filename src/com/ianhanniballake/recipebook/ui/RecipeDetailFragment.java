@@ -40,7 +40,7 @@ public class RecipeDetailFragment extends Fragment implements
 	public long getRecipeId()
 	{
 		if (getArguments() == null
-				|| getArguments().containsKey(BaseColumns._ID))
+				|| !getArguments().containsKey(BaseColumns._ID))
 			return 0;
 		return getArguments().getLong(BaseColumns._ID);
 	}
@@ -125,6 +125,10 @@ public class RecipeDetailFragment extends Fragment implements
 	public View onCreateView(final LayoutInflater inflater,
 			final ViewGroup container, final Bundle savedInstanceState)
 	{
+		if (getRecipeId() == 0)
+			return inflater.inflate(
+					R.layout.fragment_recipe_detail_placeholder, container,
+					false);
 		return inflater.inflate(R.layout.fragment_recipe_detail, container,
 				false);
 	}
@@ -133,7 +137,7 @@ public class RecipeDetailFragment extends Fragment implements
 	 * @see android.support.v4.app.LoaderManager.LoaderCallbacks#onLoaderReset(android.support.v4.content.Loader)
 	 */
 	@Override
-	public void onLoaderReset(final Loader<Cursor> arg0)
+	public void onLoaderReset(final Loader<Cursor> data)
 	{
 		// Nothing to do
 	}
@@ -147,6 +151,8 @@ public class RecipeDetailFragment extends Fragment implements
 	@Override
 	public void onLoadFinished(final Loader<Cursor> loader, final Cursor data)
 	{
+		if (!data.moveToFirst())
+			return;
 		final TextView title = (TextView) getActivity()
 				.findViewById(R.id.title);
 		title.setText(data.getString(data

@@ -4,6 +4,7 @@
     <string name="default_recipe_title">New Recipe</string>
     <string name="default_recipe_description"></string>
     <string name="empty_recipe_list">No recipes found</string>
+    <string name="detail_placeholder">Add a new recipe or select an existing recipe to see its details</string>
     <string name="title">Title</string>
     <string name="description">Description</string>
     <string name="edit">Edit</string>
