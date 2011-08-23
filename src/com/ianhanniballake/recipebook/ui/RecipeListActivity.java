@@ -76,7 +76,7 @@ public class RecipeListActivity extends FragmentActivity implements
 					final Object cookie, final int result)
 			{
 				Toast.makeText(RecipeListActivity.this,
-						getText(R.string.deleted), Toast.LENGTH_SHORT);
+						getText(R.string.deleted), Toast.LENGTH_SHORT).show();
 				// Execute a transaction, replacing any existing fragment
 				// with this one inside the frame.
 				final FragmentTransaction ft = getSupportFragmentManager()
@@ -92,7 +92,7 @@ public class RecipeListActivity extends FragmentActivity implements
 					final Object cookie, final int result)
 			{
 				Toast.makeText(RecipeListActivity.this,
-						getText(R.string.saved), Toast.LENGTH_SHORT);
+						getText(R.string.saved), Toast.LENGTH_SHORT).show();
 				getSupportFragmentManager().popBackStack();
 			}
 		};
@@ -123,7 +123,6 @@ public class RecipeListActivity extends FragmentActivity implements
 	@Override
 	public void onRecipeDeleted(final long recipeId)
 	{
-		Toast.makeText(this, getText(R.string.deleting), Toast.LENGTH_LONG);
 		final Uri deleteUri = ContentUris.withAppendedId(
 				RecipeContract.Recipes.CONTENT_ID_URI_PATTERN, recipeId);
 		queryHandler.startDelete(0, null, deleteUri, null, null);
@@ -138,7 +137,6 @@ public class RecipeListActivity extends FragmentActivity implements
 	@Override
 	public void onRecipeEditSave(final long recipeId, final ContentValues values)
 	{
-		Toast.makeText(this, getText(R.string.saving), Toast.LENGTH_LONG);
 		final Uri updateUri = ContentUris.withAppendedId(
 				RecipeContract.Recipes.CONTENT_ID_URI_PATTERN, recipeId);
 		queryHandler.startUpdate(0, null, updateUri, values, null, null);

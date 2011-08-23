@@ -34,7 +34,7 @@ public class RecipeAddActivity extends FragmentActivity implements
 					final Object cookie, final Uri uri)
 			{
 				Toast.makeText(RecipeAddActivity.this, getText(R.string.saved),
-						Toast.LENGTH_SHORT);
+						Toast.LENGTH_SHORT).show();
 				setResult(RESULT_OK, new Intent(Intent.ACTION_PICK, uri));
 				finish();
 			}
@@ -57,7 +57,6 @@ public class RecipeAddActivity extends FragmentActivity implements
 	@Override
 	public void onRecipeEditSave(final long recipeId, final ContentValues values)
 	{
-		Toast.makeText(this, getText(R.string.saving), Toast.LENGTH_LONG);
 		insertHandler.startInsert(0, null,
 				RecipeContract.Recipes.CONTENT_ID_URI_BASE, values);
 	}

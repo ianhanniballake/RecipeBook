@@ -50,7 +50,7 @@ public class RecipeDetailActivity extends FragmentActivity implements
 					final Object cookie, final Uri uri)
 			{
 				Toast.makeText(RecipeDetailActivity.this,
-						getText(R.string.saved), Toast.LENGTH_SHORT);
+						getText(R.string.saved), Toast.LENGTH_SHORT).show();
 				getSupportFragmentManager().popBackStack();
 			}
 		};
@@ -74,7 +74,6 @@ public class RecipeDetailActivity extends FragmentActivity implements
 	@Override
 	public void onRecipeEditSave(final long recipeId, final ContentValues values)
 	{
-		Toast.makeText(this, getText(R.string.saving), Toast.LENGTH_LONG);
 		final Uri updateUri = ContentUris.withAppendedId(
 				RecipeContract.Recipes.CONTENT_ID_URI_PATTERN, recipeId);
 		updateHandler.startUpdate(0, null, updateUri, values, null, null);
