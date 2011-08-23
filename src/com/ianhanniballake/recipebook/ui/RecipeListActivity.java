@@ -81,7 +81,8 @@ public class RecipeListActivity extends FragmentActivity implements
 				// with this one inside the frame.
 				final FragmentTransaction ft = getSupportFragmentManager()
 						.beginTransaction();
-				ft.replace(R.id.details, null);
+				ft.remove(getSupportFragmentManager().findFragmentById(
+						R.id.details));
 				ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
 				ft.commit();
 			}
