@@ -11,8 +11,7 @@
 		android:layout_height="match_parent"
 		android:layout_weight="1">
 	</fragment>
-	<fragment
-		android:name="com.ianhanniballake.recipebook.ui.RecipeDetailFragment"
+	<FrameLayout
 		android:id="@+id/details"
 		android:layout_width="0dp"
 		android:layout_height="match_parent"

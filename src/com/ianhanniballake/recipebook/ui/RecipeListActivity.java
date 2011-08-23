@@ -87,8 +87,8 @@ public class RecipeListActivity extends FragmentActivity implements
 			}
 
 			@Override
-			protected void onInsertComplete(final int token,
-					final Object cookie, final Uri uri)
+			protected void onUpdateComplete(final int token,
+					final Object cookie, final int result)
 			{
 				Toast.makeText(RecipeListActivity.this,
 						getText(R.string.saved), Toast.LENGTH_SHORT);

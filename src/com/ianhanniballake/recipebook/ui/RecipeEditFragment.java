@@ -3,6 +3,7 @@ package com.ianhanniballake.recipebook.ui;
 import android.app.Activity;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,7 +18,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
 import com.ianhanniballake.recipebook.R;
@@ -30,6 +33,24 @@ public class RecipeEditFragment extends Fragment implements
 		LoaderManager.LoaderCallbacks<Cursor>
 {
 	/**
+	 * Focus listener to automatically hide the soft keyboard when closing this
+	 * fragment
+	 */
+	private final OnFocusChangeListener hideKeyboard = new OnFocusChangeListener()
+	{
+		@Override
+		public void onFocusChange(final View v, final boolean hasFocus)
+		{
+			if (!hasFocus)
+			{
+				final InputMethodManager imm = (InputMethodManager) v
+						.getContext().getSystemService(
+								Context.INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+			}
+		}
+	};
+	/**
 	 * Listener that handles recipe edit events
 	 */
 	private OnRecipeEditListener recipeEditListener;
@@ -41,10 +62,9 @@ public class RecipeEditFragment extends Fragment implements
 	 */
 	public long getRecipeId()
 	{
-		if (getArguments() == null
-				|| getArguments().containsKey(BaseColumns._ID))
+		if (getArguments() == null)
 			return 0;
-		return getArguments().getLong(BaseColumns._ID);
+		return getArguments().getLong(BaseColumns._ID, 0);
 	}
 
 	@Override
@@ -122,6 +142,8 @@ public class RecipeEditFragment extends Fragment implements
 	@Override
 	public void onLoadFinished(final Loader<Cursor> loader, final Cursor data)
 	{
+		if (!data.moveToFirst())
+			return;
 		final TextView title = (TextView) getActivity()
 				.findViewById(R.id.title);
 		title.setText(data.getString(data
@@ -136,21 +158,25 @@ public class RecipeEditFragment extends Fragment implements
 	@Override
 	public boolean onOptionsItemSelected(final MenuItem item)
 	{
+		final TextView title = (TextView) getActivity()
+				.findViewById(R.id.title);
+		final TextView description = (TextView) getActivity().findViewById(
+				R.id.description);
 		switch (item.getItemId())
 		{
 			case R.id.save:
 				final ContentValues values = new ContentValues();
-				final TextView title = (TextView) getActivity().findViewById(
-						R.id.title);
 				values.put(RecipeContract.Recipes.COLUMN_NAME_TITLE, title
 						.getText().toString());
-				final TextView description = (TextView) getActivity()
-						.findViewById(R.id.description);
 				values.put(RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION,
 						description.getText().toString());
+				hideKeyboard.onFocusChange(title, false);
+				hideKeyboard.onFocusChange(description, false);
 				recipeEditListener.onRecipeEditSave(getRecipeId(), values);
 				return true;
 			case R.id.cancel:
+				hideKeyboard.onFocusChange(title, false);
+				hideKeyboard.onFocusChange(description, false);
 				recipeEditListener.onRecipeEditCancelled();
 				return true;
 			default:

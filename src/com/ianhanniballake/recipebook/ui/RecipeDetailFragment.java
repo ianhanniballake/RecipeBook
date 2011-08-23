@@ -40,10 +40,9 @@ public class RecipeDetailFragment extends Fragment implements
 	 */
 	public long getRecipeId()
 	{
-		if (getArguments() == null
-				|| !getArguments().containsKey(BaseColumns._ID))
+		if (getArguments() == null)
 			return 0;
-		return getArguments().getLong(BaseColumns._ID);
+		return getArguments().getLong(BaseColumns._ID, 0);
 	}
 
 	@Override
@@ -108,10 +107,6 @@ public class RecipeDetailFragment extends Fragment implements
 	public View onCreateView(final LayoutInflater inflater,
 			final ViewGroup container, final Bundle savedInstanceState)
 	{
-		if (getRecipeId() == 0)
-			return inflater.inflate(
-					R.layout.fragment_recipe_detail_placeholder, container,
-					false);
 		return inflater.inflate(R.layout.fragment_recipe_detail, container,
 				false);
 	}
