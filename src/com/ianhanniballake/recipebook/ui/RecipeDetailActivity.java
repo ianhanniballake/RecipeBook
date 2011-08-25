@@ -4,6 +4,7 @@ import android.content.AsyncQueryHandler;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.BaseColumns;
@@ -34,6 +35,13 @@ public class RecipeDetailActivity extends FragmentActivity implements
 	public void onCreate(final Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
+		if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
+		{
+			// If the screen is now in landscape mode, we can show the
+			// dialog in-line with the list so we don't need this activity.
+			finish();
+			return;
+		}
 		setContentView(R.layout.activity_recipe_detail);
 		if (savedInstanceState == null)
 		{

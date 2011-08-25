@@ -40,6 +40,7 @@ public class RecipeListFragment extends ListFragment implements
 				new String[] { RecipeContract.Recipes.COLUMN_NAME_TITLE },
 				new int[] { android.R.id.text1 }, 0);
 		setListAdapter(adapter);
+		getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 		getLoaderManager().initLoader(0, null, this);
 	}
 

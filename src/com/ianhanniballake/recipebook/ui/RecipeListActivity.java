@@ -41,6 +41,10 @@ public class RecipeListActivity extends FragmentActivity implements
 	 * Handler for asynchronous updates of recipes
 	 */
 	private AsyncQueryHandler queryHandler;
+	/**
+	 * Saves the currently selected position
+	 */
+	private long selectedId = -1;
 
 	@Override
 	protected void onActivityResult(final int requestCode,
@@ -49,20 +53,21 @@ public class RecipeListActivity extends FragmentActivity implements
 		if (requestCode == ADD_RECIPE && resultCode == RESULT_OK)
 		{
 			final long recipeId = ContentUris.parseId(data.getData());
-			onRecipeSelected(recipeId);
+			selectedId = recipeId;
 		}
 		else if (requestCode == VIEW_DETAILS
 				&& resultCode == RecipeDetailActivity.RESULT_DELETED)
 		{
 			final long recipeId = ContentUris.parseId(data.getData());
 			onRecipeDeleted(recipeId);
+			selectedId = -1;
 		}
 		else
 			super.onActivityResult(requestCode, resultCode, data);
 	}
 
 	@Override
-	public void onCreate(final Bundle savedInstanceState)
+	protected void onCreate(final Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_recipe_list);
@@ -96,6 +101,9 @@ public class RecipeListActivity extends FragmentActivity implements
 				getSupportFragmentManager().popBackStack();
 			}
 		};
+		if (savedInstanceState != null)
+			// Restore last state for checked position.
+			selectedId = savedInstanceState.getLong("selectedId", -1);
 	}
 
 	@Override
@@ -162,6 +170,7 @@ public class RecipeListActivity extends FragmentActivity implements
 	@Override
 	public void onRecipeSelected(final long recipeId)
 	{
+		selectedId = recipeId;
 		if (isDualPane)
 		{
 			RecipeDetailFragment details = (RecipeDetailFragment) getSupportFragmentManager()
@@ -190,5 +199,20 @@ public class RecipeListActivity extends FragmentActivity implements
 			intent.putExtra(BaseColumns._ID, recipeId);
 			startActivityForResult(intent, VIEW_DETAILS);
 		}
+	}
+
+	@Override
+	protected void onResume()
+	{
+		super.onResume();
+		if (isDualPane && selectedId != -1)
+			onRecipeSelected(selectedId);
+	}
+
+	@Override
+	protected void onSaveInstanceState(final Bundle outState)
+	{
+		super.onSaveInstanceState(outState);
+		outState.putLong("selectedId", selectedId);
 	}
 }
