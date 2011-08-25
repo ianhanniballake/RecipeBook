@@ -11,13 +11,13 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.view.MenuCompat;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.ianhanniballake.recipebook.R;
 import com.ianhanniballake.recipebook.provider.RecipeContract;
@@ -28,6 +28,10 @@ import com.ianhanniballake.recipebook.provider.RecipeContract;
 public class RecipeDetailFragment extends Fragment implements
 		LoaderManager.LoaderCallbacks<Cursor>
 {
+	/**
+	 * Adapter to display the detailed data
+	 */
+	private SimpleCursorAdapter adapter;
 	/**
 	 * Listener that handles recipe edit events
 	 */
@@ -49,6 +53,11 @@ public class RecipeDetailFragment extends Fragment implements
 	public void onActivityCreated(final Bundle savedInstanceState)
 	{
 		super.onActivityCreated(savedInstanceState);
+		adapter = new SimpleCursorAdapter(getActivity(),
+				R.layout.fragment_recipe_detail, null, new String[] {
+						RecipeContract.Recipes.COLUMN_NAME_TITLE,
+						RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION },
+				new int[] { R.id.title, R.id.description }, 0);
 		if (getRecipeId() != 0)
 			getLoaderManager().initLoader(0, null, this);
 	}
@@ -114,7 +123,7 @@ public class RecipeDetailFragment extends Fragment implements
 	@Override
 	public void onLoaderReset(final Loader<Cursor> data)
 	{
-		// Nothing to do
+		adapter.swapCursor(null);
 	}
 
 	@Override
@@ -122,15 +131,8 @@ public class RecipeDetailFragment extends Fragment implements
 	{
 		if (!data.moveToFirst())
 			return;
-		final TextView title = (TextView) getActivity()
-				.findViewById(R.id.title);
-		title.setText(data.getString(data
-				.getColumnIndex(RecipeContract.Recipes.COLUMN_NAME_TITLE)));
-		final TextView description = (TextView) getActivity().findViewById(
-				R.id.description);
-		description
-				.setText(data.getString(data
-						.getColumnIndex(RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION)));
+		adapter.swapCursor(data);
+		adapter.bindView(getView(), getActivity(), data);
 	}
 
 	@Override

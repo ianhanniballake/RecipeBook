@@ -13,6 +13,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.view.MenuCompat;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -32,6 +33,10 @@ import com.ianhanniballake.recipebook.provider.RecipeContract;
 public class RecipeEditFragment extends Fragment implements
 		LoaderManager.LoaderCallbacks<Cursor>
 {
+	/**
+	 * Adapter to display the detailed data
+	 */
+	private SimpleCursorAdapter adapter;
 	/**
 	 * Focus listener to automatically hide the soft keyboard when closing this
 	 * fragment
@@ -71,6 +76,11 @@ public class RecipeEditFragment extends Fragment implements
 	public void onActivityCreated(final Bundle savedInstanceState)
 	{
 		super.onActivityCreated(savedInstanceState);
+		adapter = new SimpleCursorAdapter(getActivity(),
+				R.layout.fragment_recipe_detail, null, new String[] {
+						RecipeContract.Recipes.COLUMN_NAME_TITLE,
+						RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION },
+				new int[] { R.id.title, R.id.description }, 0);
 		if (getRecipeId() != 0)
 			getLoaderManager().initLoader(0, null, this);
 	}
@@ -136,7 +146,7 @@ public class RecipeEditFragment extends Fragment implements
 	@Override
 	public void onLoaderReset(final Loader<Cursor> arg0)
 	{
-		// Nothing to do
+		adapter.swapCursor(null);
 	}
 
 	@Override
@@ -144,15 +154,8 @@ public class RecipeEditFragment extends Fragment implements
 	{
 		if (!data.moveToFirst())
 			return;
-		final TextView title = (TextView) getActivity()
-				.findViewById(R.id.title);
-		title.setText(data.getString(data
-				.getColumnIndex(RecipeContract.Recipes.COLUMN_NAME_TITLE)));
-		final TextView description = (TextView) getActivity().findViewById(
-				R.id.description);
-		description
-				.setText(data.getString(data
-						.getColumnIndex(RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION)));
+		adapter.swapCursor(data);
+		adapter.bindView(getView(), getActivity(), data);
 	}
 
 	@Override
