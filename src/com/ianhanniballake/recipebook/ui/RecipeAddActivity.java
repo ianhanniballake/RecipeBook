@@ -23,7 +23,7 @@ public class RecipeAddActivity extends FragmentActivity implements
 	private AsyncQueryHandler insertHandler;
 
 	@Override
-	public void onCreate(final Bundle savedInstanceState)
+	protected void onCreate(final Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_recipe_edit);

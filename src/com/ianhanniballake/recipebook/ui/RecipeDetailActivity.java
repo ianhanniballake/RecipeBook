@@ -32,7 +32,7 @@ public class RecipeDetailActivity extends FragmentActivity implements
 	private AsyncQueryHandler updateHandler;
 
 	@Override
-	public void onCreate(final Bundle savedInstanceState)
+	protected void onCreate(final Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
