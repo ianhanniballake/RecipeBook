@@ -30,6 +30,7 @@ public class RecipeListFragment extends ListFragment implements
 	 */
 	private OnRecipeSelectedListener recipeSelectedListener;
 
+	@SuppressWarnings("static-access")
 	@Override
 	public void onActivityCreated(final Bundle savedInstanceState)
 	{
