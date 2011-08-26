@@ -57,11 +57,7 @@ public class RecipeListActivity extends FragmentActivity implements
 		}
 		else if (requestCode == VIEW_DETAILS
 				&& resultCode == RecipeDetailActivity.RESULT_DELETED)
-		{
-			final long recipeId = ContentUris.parseId(data.getData());
-			onRecipeDeleted(recipeId);
 			selectedId = -1;
-		}
 		else
 			super.onActivityResult(requestCode, resultCode, data);
 	}

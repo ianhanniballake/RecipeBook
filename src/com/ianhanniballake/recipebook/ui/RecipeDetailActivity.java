@@ -3,7 +3,6 @@ package com.ianhanniballake.recipebook.ui;
 import android.content.AsyncQueryHandler;
 import android.content.ContentUris;
 import android.content.ContentValues;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
@@ -29,7 +28,7 @@ public class RecipeDetailActivity extends FragmentActivity implements
 	/**
 	 * Handler for asynchronous updates of recipes
 	 */
-	private AsyncQueryHandler updateHandler;
+	private AsyncQueryHandler queryHandler;
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState)
@@ -49,17 +48,26 @@ public class RecipeDetailActivity extends FragmentActivity implements
 			final RecipeDetailFragment details = new RecipeDetailFragment();
 			details.setArguments(getIntent().getExtras());
 			getSupportFragmentManager().beginTransaction()
-					.replace(android.R.id.content, details).commit();
+					.replace(R.id.details, details).commit();
 		}
-		updateHandler = new AsyncQueryHandler(getContentResolver())
+		queryHandler = new AsyncQueryHandler(getContentResolver())
 		{
 			@Override
-			protected void onInsertComplete(final int token,
-					final Object cookie, final Uri uri)
+			protected void onDeleteComplete(final int token,
+					final Object cookie, final int result)
+			{
+				Toast.makeText(RecipeDetailActivity.this,
+						getText(R.string.deleted), Toast.LENGTH_SHORT).show();
+				setResult(RESULT_DELETED);
+				finish();
+			}
+
+			@Override
+			protected void onUpdateComplete(final int token,
+					final Object cookie, final int result)
 			{
 				Toast.makeText(RecipeDetailActivity.this,
 						getText(R.string.saved), Toast.LENGTH_SHORT).show();
-				getSupportFragmentManager().popBackStack();
 			}
 		};
 	}
@@ -67,10 +75,10 @@ public class RecipeDetailActivity extends FragmentActivity implements
 	@Override
 	public void onRecipeDeleted(final long recipeId)
 	{
+		getSupportFragmentManager().popBackStack();
 		final Uri deleteUri = ContentUris.withAppendedId(
 				RecipeContract.Recipes.CONTENT_ID_URI_PATTERN, recipeId);
-		setResult(RESULT_DELETED, new Intent(Intent.ACTION_DELETE, deleteUri));
-		finish();
+		queryHandler.startDelete(0, null, deleteUri, null, null);
 	}
 
 	@Override
@@ -82,9 +90,10 @@ public class RecipeDetailActivity extends FragmentActivity implements
 	@Override
 	public void onRecipeEditSave(final long recipeId, final ContentValues values)
 	{
+		getSupportFragmentManager().popBackStack();
 		final Uri updateUri = ContentUris.withAppendedId(
 				RecipeContract.Recipes.CONTENT_ID_URI_PATTERN, recipeId);
-		updateHandler.startUpdate(0, null, updateUri, values, null, null);
+		queryHandler.startUpdate(0, null, updateUri, values, null, null);
 	}
 
 	@Override
