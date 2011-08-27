@@ -129,7 +129,7 @@ public class RecipeDetailFragment extends Fragment implements
 	@Override
 	public void onLoadFinished(final Loader<Cursor> loader, final Cursor data)
 	{
-		if (!data.moveToFirst())
+		if (!data.moveToFirst() || getView() == null)
 			return;
 		adapter.swapCursor(data);
 		adapter.bindView(getView(), getActivity(), data);
