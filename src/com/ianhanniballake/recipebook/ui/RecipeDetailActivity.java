@@ -3,7 +3,6 @@ package com.ianhanniballake.recipebook.ui;
 import android.content.AsyncQueryHandler;
 import android.content.ContentUris;
 import android.content.ContentValues;
-import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.BaseColumns;
@@ -34,14 +33,13 @@ public class RecipeDetailActivity extends FragmentActivity implements
 	protected void onCreate(final Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
+		setContentView(R.layout.activity_recipe_detail);
+		if (findViewById(R.id.details) == null)
 		{
-			// If the screen is now in landscape mode, we can show the
-			// details in-line with the list so we don't need this activity.
+			// A null details view means we no longer need this activity
 			finish();
 			return;
 		}
-		setContentView(R.layout.activity_recipe_detail);
 		if (savedInstanceState == null)
 		{
 			// During initial setup, plug in the details fragment.
