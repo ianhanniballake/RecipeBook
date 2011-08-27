@@ -37,7 +37,7 @@ public class RecipeDetailActivity extends FragmentActivity implements
 		if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
 		{
 			// If the screen is now in landscape mode, we can show the
-			// dialog in-line with the list so we don't need this activity.
+			// details in-line with the list so we don't need this activity.
 			finish();
 			return;
 		}
