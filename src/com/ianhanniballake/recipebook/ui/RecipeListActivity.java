@@ -97,7 +97,7 @@ public class RecipeListActivity extends FragmentActivity implements
 				getSupportFragmentManager().popBackStack();
 			}
 		};
-		if (savedInstanceState != null)
+		if (savedInstanceState != null && isDualPane)
 			// Restore last state for checked position.
 			selectedId = savedInstanceState.getLong("selectedId", -1);
 	}
