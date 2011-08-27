@@ -16,7 +16,8 @@
 		android:layout_height="wrap_content"
 		android:layout_below="@id/titleLabel"
 		android:layout_alignParentLeft="true"
-		android:layout_marginLeft="30dp" />
+		android:layout_marginLeft="30dp"
+		android:inputType="textCapWords" />
 	<TextView
 		android:id="@+id/descriptionLabel"
 		android:layout_width="wrap_content"
@@ -31,7 +32,7 @@
 		android:layout_below="@id/descriptionLabel"
 		android:layout_alignParentLeft="true"
 		android:layout_marginLeft="30dp"
-		android:inputType="textMultiLine"
+		android:inputType="textCapSentences|textMultiLine"
 		android:scrollHorizontally="false"
 		android:gravity="top|left"
 		android:lines="3" />
