@@ -43,7 +43,7 @@ public class RecipeDetailActivity extends FragmentActivity implements
 		if (savedInstanceState == null)
 		{
 			// During initial setup, plug in the details fragment.
-			final RecipeDetailFragment details = new RecipeDetailFragment();
+			final RecipeDetailFragment details = new RecipeSummaryViewFragment();
 			details.setArguments(getIntent().getExtras());
 			getSupportFragmentManager().beginTransaction()
 					.replace(R.id.details, details).commit();

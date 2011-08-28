@@ -171,10 +171,13 @@ public class RecipeListActivity extends FragmentActivity implements
 		{
 			RecipeDetailFragment details = (RecipeDetailFragment) getSupportFragmentManager()
 					.findFragmentById(R.id.details);
-			if (details == null || details.getRecipeId() != recipeId)
+			if (details == null || details instanceof RecipeEditFragment
+					|| details.getRecipeId() != recipeId)
 			{
+				if (details instanceof RecipeEditFragment)
+					getSupportFragmentManager().popBackStack();
 				// Make new fragment to show this selection.
-				details = new RecipeDetailFragment();
+				details = new RecipeSummaryViewFragment();
 				final Bundle args = new Bundle();
 				args.putLong(BaseColumns._ID, recipeId);
 				details.setArguments(args);
