@@ -97,7 +97,7 @@ public class RecipeDetailActivity extends FragmentActivity implements
 	@Override
 	public void onRecipeEditStarted(final long recipeId)
 	{
-		final Fragment editFragment = new RecipeEditFragment();
+		final Fragment editFragment = new RecipeSummaryEditFragment();
 		final Bundle args = new Bundle();
 		args.putLong(BaseColumns._ID, recipeId);
 		editFragment.setArguments(args);

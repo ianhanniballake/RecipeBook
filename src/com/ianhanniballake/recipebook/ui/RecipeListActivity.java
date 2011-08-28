@@ -149,7 +149,7 @@ public class RecipeListActivity extends FragmentActivity implements
 	@Override
 	public void onRecipeEditStarted(final long recipeId)
 	{
-		final Fragment editFragment = new RecipeEditFragment();
+		final Fragment editFragment = new RecipeSummaryEditFragment();
 		final Bundle args = new Bundle();
 		args.putLong(BaseColumns._ID, recipeId);
 		editFragment.setArguments(args);
@@ -171,10 +171,10 @@ public class RecipeListActivity extends FragmentActivity implements
 		{
 			RecipeDetailFragment details = (RecipeDetailFragment) getSupportFragmentManager()
 					.findFragmentById(R.id.details);
-			if (details == null || details instanceof RecipeEditFragment
+			if (details == null || details instanceof RecipeSummaryEditFragment
 					|| details.getRecipeId() != recipeId)
 			{
-				if (details instanceof RecipeEditFragment)
+				if (details instanceof RecipeSummaryEditFragment)
 					getSupportFragmentManager().popBackStack();
 				// Make new fragment to show this selection.
 				details = new RecipeSummaryViewFragment();

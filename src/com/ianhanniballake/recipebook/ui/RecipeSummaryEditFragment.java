@@ -21,7 +21,7 @@ import com.ianhanniballake.recipebook.provider.RecipeContract;
 /**
  * Fragment which displays the details of a single recipe for editing
  */
-public class RecipeEditFragment extends RecipeDetailFragment
+public class RecipeSummaryEditFragment extends RecipeDetailFragment
 {
 	/**
 	 * Focus listener to automatically hide the soft keyboard when closing this
