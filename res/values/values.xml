@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<integer name="default_ingredient_quantity">0</integer>
+    <integer name="default_ingredient_quantity_numerator">0</integer>
+    <integer name="default_ingredient_quantity_denominator">1</integer>
+</resources>

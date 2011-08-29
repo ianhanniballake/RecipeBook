@@ -56,6 +56,29 @@ public class RecipeProvider extends ContentProvider
 					+ RecipeContract.Recipes.COLUMN_NAME_TITLE + " TEXT,"
 					+ RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION + " TEXT"
 					+ ");");
+			Log.d(TAG, "Creating the " + RecipeContract.Ingredients.TABLE_NAME
+					+ " table");
+			db.execSQL("CREATE TABLE "
+					+ RecipeContract.Ingredients.TABLE_NAME
+					+ " ("
+					+ BaseColumns._ID
+					+ " INTEGER PRIMARY KEY AUTOINCREMENT,"
+					+ RecipeContract.Ingredients.COLUMN_NAME_RECIPE_ID
+					+ " INTEGER,"
+					+ RecipeContract.Ingredients.COLUMN_NAME_QUANTITY
+					+ " INTEGER,"
+					+ RecipeContract.Ingredients.COLUMN_NAME_QUANTITY_NUMERATOR
+					+ " INTEGER,"
+					+ RecipeContract.Ingredients.COLUMN_NAME_QUANTITY_DENOMINATOR
+					+ " INTEGER," + RecipeContract.Ingredients.COLUMN_NAME_UNIT
+					+ " TEXT," + RecipeContract.Ingredients.COLUMN_NAME_ITEM
+					+ " TEXT,"
+					+ RecipeContract.Ingredients.COLUMN_NAME_PREPARATION
+					+ " TEXT,"
+					+ " CONSTRAINT fk_recipe_ingredient FOREIGN KEY ("
+					+ RecipeContract.Ingredients.COLUMN_NAME_RECIPE_ID
+					+ ") REFERENCES " + RecipeContract.Recipes.TABLE_NAME
+					+ " (" + BaseColumns._ID + ") ON DELETE CASCADE" + ");");
 		}
 
 		/**
@@ -72,6 +95,8 @@ public class RecipeProvider extends ContentProvider
 					+ newVersion + ", which will destroy all old data");
 			db.execSQL("DROP TABLE IF EXISTS "
 					+ RecipeContract.Recipes.TABLE_NAME);
+			db.execSQL("DROP TABLE IF EXISTS "
+					+ RecipeContract.Ingredients.TABLE_NAME);
 			onCreate(db);
 		}
 	}
@@ -83,7 +108,15 @@ public class RecipeProvider extends ContentProvider
 	/**
 	 * The database version
 	 */
-	private static final int DATABASE_VERSION = 1;
+	private static final int DATABASE_VERSION = 2;
+	/**
+	 * The incoming URI matches the Recipe ID URI pattern
+	 */
+	private static final int INGREDIENT_ID = 4;
+	/**
+	 * The incoming URI matches the Recipe ID URI pattern
+	 */
+	private static final int INGREDIENTS = 3;
 	/**
 	 * The incoming URI matches the Recipe ID URI pattern
 	 */
@@ -115,6 +148,12 @@ public class RecipeProvider extends ContentProvider
 		// Add a pattern that routes URIs terminated with "recipes" plus an
 		// integer to a recipe ID operation
 		matcher.addURI(RecipeContract.AUTHORITY, "recipes/#", RECIPE_ID);
+		// Add a pattern that routes URIs terminated with "ingredients" to a
+		// INGREDIENTS operation
+		matcher.addURI(RecipeContract.AUTHORITY, "ingredients", INGREDIENTS);
+		// Add a pattern that routes URIs terminated with "ingredients" plus an
+		// integer to a ingredient ID operation
+		matcher.addURI(RecipeContract.AUTHORITY, "ingredients/#", INGREDIENT_ID);
 		return matcher;
 	}
 
@@ -123,12 +162,6 @@ public class RecipeProvider extends ContentProvider
 	 */
 	private DatabaseHelper databaseHelper;
 
-	/**
-	 * Deletes record(s) from the database
-	 * 
-	 * @see android.content.ContentProvider#delete(android.net.Uri,
-	 *      java.lang.String, java.lang.String[])
-	 */
 	@Override
 	public int delete(final Uri uri, final String where,
 			final String[] whereArgs)
@@ -162,6 +195,28 @@ public class RecipeProvider extends ContentProvider
 				count = db.delete(RecipeContract.Recipes.TABLE_NAME,
 						finalWhere, whereArgs);
 				break;
+			case INGREDIENTS:
+				// If the incoming pattern matches the general pattern for
+				// ingredients, does a delete based on the incoming "where"
+				// columns and arguments.
+				count = db.delete(RecipeContract.Ingredients.TABLE_NAME, where,
+						whereArgs);
+				break;
+			case INGREDIENT_ID:
+				// If the incoming URI matches a single ingredient ID, does the
+				// delete based on the incoming data, but modifies the where
+				// clause to restrict it to the particular ingredient ID.
+				finalWhere = BaseColumns._ID
+						+ " = "
+						+ uri.getPathSegments()
+								.get(RecipeContract.Ingredients.INGREDIENT_ID_PATH_POSITION);
+				// If there were additional selection criteria, append them to
+				// the final WHERE clause
+				if (where != null)
+					finalWhere = finalWhere + " AND " + where;
+				count = db.delete(RecipeContract.Ingredients.TABLE_NAME,
+						finalWhere, whereArgs);
+				break;
 			default:
 				throw new IllegalArgumentException("Unknown URI " + uri);
 		}
@@ -169,11 +224,6 @@ public class RecipeProvider extends ContentProvider
 		return count;
 	}
 
-	/**
-	 * Returns the MIME data type of the URI given as a parameter.
-	 * 
-	 * @see android.content.ContentProvider#getType(android.net.Uri)
-	 */
 	@Override
 	public String getType(final Uri uri)
 	{
@@ -187,27 +237,119 @@ public class RecipeProvider extends ContentProvider
 				// type.
 				return RecipeContract.Recipes.CONTENT_TYPE;
 			case RECIPE_ID:
-				// If the pattern is for note IDs, returns the recipe ID content
-				// type.
+				// If the pattern is for recipe IDs, returns the recipe ID
+				// content type.
 				return RecipeContract.Recipes.CONTENT_ITEM_TYPE;
+			case INGREDIENTS:
+				// If the pattern is for ingredients, returns the general
+				// content type.
+				return RecipeContract.Ingredients.CONTENT_TYPE;
+			case INGREDIENT_ID:
+				// If the pattern is for ingredient IDs, returns the ingredient
+				// ID content type.
+				return RecipeContract.Ingredients.CONTENT_ITEM_TYPE;
 			default:
 				throw new IllegalArgumentException("Unknown URI " + uri);
 		}
 	}
 
-	/**
-	 * Inserts a new row into the database.
-	 * 
-	 * @see android.content.ContentProvider#insert(android.net.Uri,
-	 *      android.content.ContentValues)
-	 */
 	@Override
 	public Uri insert(final Uri uri, final ContentValues initialValues)
 	{
 		// Validates the incoming URI. Only the full provider URI is allowed for
 		// inserts.
-		if (uriMatcher.match(uri) != RECIPES)
+		if (uriMatcher.match(uri) == RECIPES)
+			return insertRecipe(uri, initialValues);
+		else if (uriMatcher.match(uri) == INGREDIENTS)
+			return insertIngredient(uri, initialValues);
+		else
 			throw new IllegalArgumentException("Unknown URI " + uri);
+	}
+
+	/**
+	 * Creates a new Ingredient row.
+	 * 
+	 * @param uri
+	 *            The content:// URI of the insertion request.
+	 * @param initialValues
+	 *            A set of column_name/value pairs to add to the database. Must
+	 *            contain the Recipe ID associated with this ingredient
+	 * @return The URI for the newly inserted item.
+	 */
+	private Uri insertIngredient(final Uri uri,
+			final ContentValues initialValues)
+	{
+		ContentValues values;
+		if (initialValues != null)
+			values = new ContentValues(initialValues);
+		else
+			values = new ContentValues();
+		if (!values
+				.containsKey(RecipeContract.Ingredients.COLUMN_NAME_RECIPE_ID))
+			throw new IllegalArgumentException(
+					"Initial values must contain Recipe ID " + initialValues);
+		if (!values
+				.containsKey(RecipeContract.Ingredients.COLUMN_NAME_QUANTITY))
+			values.put(
+					RecipeContract.Ingredients.COLUMN_NAME_QUANTITY,
+					getContext().getResources().getInteger(
+							R.integer.default_ingredient_quantity));
+		if (!values
+				.containsKey(RecipeContract.Ingredients.COLUMN_NAME_QUANTITY_NUMERATOR))
+			values.put(
+					RecipeContract.Ingredients.COLUMN_NAME_QUANTITY_NUMERATOR,
+					getContext().getResources().getInteger(
+							R.integer.default_ingredient_quantity_numerator));
+		if (!values
+				.containsKey(RecipeContract.Ingredients.COLUMN_NAME_QUANTITY_DENOMINATOR))
+			values.put(
+					RecipeContract.Ingredients.COLUMN_NAME_QUANTITY_DENOMINATOR,
+					getContext().getResources().getInteger(
+							R.integer.default_ingredient_quantity_denominator));
+		if (!values.containsKey(RecipeContract.Ingredients.COLUMN_NAME_UNIT))
+			values.put(
+					RecipeContract.Ingredients.COLUMN_NAME_UNIT,
+					getContext().getResources().getString(
+							R.string.default_ingredient_unit));
+		if (!values.containsKey(RecipeContract.Ingredients.COLUMN_NAME_ITEM))
+			values.put(
+					RecipeContract.Ingredients.COLUMN_NAME_ITEM,
+					getContext().getResources().getString(
+							R.string.default_ingredient_item));
+		if (!values
+				.containsKey(RecipeContract.Ingredients.COLUMN_NAME_PREPARATION))
+			values.put(
+					RecipeContract.Ingredients.COLUMN_NAME_PREPARATION,
+					getContext().getResources().getString(
+							R.string.default_ingredient_preparation));
+		final SQLiteDatabase db = databaseHelper.getWritableDatabase();
+		final long rowId = db.insert(RecipeContract.Ingredients.TABLE_NAME,
+				RecipeContract.Ingredients.COLUMN_NAME_ITEM, values);
+		// If the insert succeeded, the row ID exists.
+		if (rowId > 0)
+		{
+			// Creates a URI with the ingredient ID pattern and the new row ID
+			// appended to it.
+			final Uri ingredientUri = ContentUris.withAppendedId(
+					RecipeContract.Ingredients.CONTENT_ID_URI_BASE, rowId);
+			getContext().getContentResolver().notifyChange(ingredientUri, null);
+			return ingredientUri;
+		}
+		// If the insert didn't succeed, then the rowID is <= 0
+		throw new SQLException("Failed to insert row into " + uri);
+	}
+
+	/**
+	 * Creates a new Recipe row.
+	 * 
+	 * @param uri
+	 *            The content:// URI of the insertion request.
+	 * @param initialValues
+	 *            A set of column_name/value pairs to add to the database.
+	 * @return The URI for the newly inserted item.
+	 */
+	private Uri insertRecipe(final Uri uri, final ContentValues initialValues)
+	{
 		ContentValues values;
 		if (initialValues != null)
 			values = new ContentValues(initialValues);
@@ -229,10 +371,10 @@ public class RecipeProvider extends ContentProvider
 		{
 			// Creates a URI with the recipe ID pattern and the new row ID
 			// appended to it.
-			final Uri noteUri = ContentUris.withAppendedId(
+			final Uri recipeUri = ContentUris.withAppendedId(
 					RecipeContract.Recipes.CONTENT_ID_URI_BASE, rowId);
-			getContext().getContentResolver().notifyChange(noteUri, null);
-			return noteUri;
+			getContext().getContentResolver().notifyChange(recipeUri, null);
+			return recipeUri;
 		}
 		// If the insert didn't succeed, then the rowID is <= 0
 		throw new SQLException("Failed to insert row into " + uri);
@@ -250,13 +392,6 @@ public class RecipeProvider extends ContentProvider
 		return true;
 	}
 
-	/**
-	 * Queries the database and returns a cursor containing the results.
-	 * 
-	 * @see android.content.ContentProvider#query(android.net.Uri,
-	 *      java.lang.String[], java.lang.String, java.lang.String[],
-	 *      java.lang.String)
-	 */
 	@Override
 	public Cursor query(final Uri uri, final String[] projection,
 			final String selection, final String[] selectionArgs,
@@ -301,12 +436,6 @@ public class RecipeProvider extends ContentProvider
 		return c;
 	}
 
-	/**
-	 * Updates recipes, notifying listeners as appropriate
-	 * 
-	 * @see android.content.ContentProvider#update(android.net.Uri,
-	 *      android.content.ContentValues, java.lang.String, java.lang.String[])
-	 */
 	@Override
 	public int update(final Uri uri, final ContentValues values,
 			final String where, final String[] whereArgs)

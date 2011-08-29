@@ -3,6 +3,9 @@
     <string name="app_name">Recipe Book</string>
     <string name="default_recipe_title">New Recipe</string>
     <string name="default_recipe_description"></string>
+    <string name="default_ingredient_unit"></string>
+    <string name="default_ingredient_item"></string>
+    <string name="default_ingredient_preparation"></string>
     <string name="empty_recipe_list">No recipes found</string>
     <string name="title">Title</string>
     <string name="description">Description</string>

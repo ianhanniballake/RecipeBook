@@ -13,6 +13,117 @@ import android.provider.BaseColumns;
 public final class RecipeContract
 {
 	/**
+	 * Ingredients table contract
+	 */
+	public static final class Ingredients implements BaseColumns
+	{
+		/**
+		 * Column name of the ingredient item
+		 * <P>
+		 * Type: TEXT
+		 * </P>
+		 */
+		public static final String COLUMN_NAME_ITEM = "item";
+		/**
+		 * Column name of the ingredient item's preparation
+		 * <P>
+		 * Type: TEXT
+		 * </P>
+		 */
+		public static final String COLUMN_NAME_PREPARATION = "preparation";
+		/**
+		 * Column name of the ingredient quantity
+		 * <P>
+		 * Type: INTEGER
+		 * </P>
+		 */
+		public static final String COLUMN_NAME_QUANTITY = "quantity";
+		/**
+		 * Column name of the ingredient quantity's fractional denominator
+		 * <P>
+		 * Type: INTEGER
+		 * </P>
+		 */
+		public static final String COLUMN_NAME_QUANTITY_DENOMINATOR = "quantity_denominator";
+		/**
+		 * Column name of the ingredient quantity's fractional numerator
+		 * <P>
+		 * Type: INTEGER
+		 * </P>
+		 */
+		public static final String COLUMN_NAME_QUANTITY_NUMERATOR = "quantity_numerator";
+		/**
+		 * Column name of the recipe of this ingredient
+		 * <P>
+		 * Type: INTEGER
+		 * </P>
+		 */
+		public static final String COLUMN_NAME_RECIPE_ID = "recipe_id";
+		/**
+		 * Column name of the ingredient unit
+		 * <P>
+		 * Type: TEXT
+		 * </P>
+		 */
+		public static final String COLUMN_NAME_UNIT = "unit";
+		/**
+		 * Path part for the Recipe ID URI
+		 */
+		private static final String PATH_INGREDIENT_ID = "/ingredients/";
+		/**
+		 * Path part for the Recipes URI
+		 */
+		private static final String PATH_INGREDIENTS = "/ingredients";
+		/**
+		 * The content URI base for a single ingredient. Callers must append a
+		 * numeric ingredient id to this Uri to retrieve a ingredient
+		 */
+		public static final Uri CONTENT_ID_URI_BASE = Uri.parse(SCHEME
+				+ AUTHORITY + PATH_INGREDIENT_ID);
+		/**
+		 * The content URI match pattern for a single recipe, specified by its
+		 * ID. Use this to match incoming URIs or to construct an Intent.
+		 */
+		public static final Uri CONTENT_ID_URI_PATTERN = Uri.parse(SCHEME
+				+ AUTHORITY + PATH_INGREDIENT_ID + "/#");
+		/**
+		 * The MIME type of a {@link #CONTENT_URI} sub-directory of a single
+		 * ingredient.
+		 */
+		public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.ianhanniballake.ingredient";
+		/**
+		 * The MIME type of {@link #CONTENT_URI} providing a directory of
+		 * ingredients.
+		 */
+		public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.ianhanniballake.ingredients";
+		/**
+		 * The content:// style URL for this table
+		 */
+		public static final Uri CONTENT_URI = Uri.parse(SCHEME + AUTHORITY
+				+ PATH_INGREDIENTS);
+		/**
+		 * The default sort order for this table
+		 */
+		public static final String DEFAULT_SORT_ORDER = "";
+		/**
+		 * 0-relative position of a recipe ID segment in the path part of a
+		 * recipe ID URI
+		 */
+		public static final int INGREDIENT_ID_PATH_POSITION = 1;
+		/**
+		 * The table name offered by this provider
+		 */
+		public static final String TABLE_NAME = "ingredients";
+
+		/**
+		 * This class cannot be instantiated
+		 */
+		private Ingredients()
+		{
+		}
+	}
+
+	/**
 	 * Recipes table contract
 	 */
 	public static final class Recipes implements BaseColumns
@@ -32,10 +143,6 @@ public final class RecipeContract
 		 */
 		public static final String COLUMN_NAME_TITLE = "title";
 		/**
-		 * The scheme part for this provider's URI
-		 */
-		private static final String SCHEME = "content://";
-		/**
 		 * Path part for the Recipe ID URI
 		 */
 		private static final String PATH_RECIPE_ID = "/recipes/";
@@ -50,8 +157,8 @@ public final class RecipeContract
 		public static final Uri CONTENT_ID_URI_BASE = Uri.parse(SCHEME
 				+ AUTHORITY + PATH_RECIPE_ID);
 		/**
-		 * The content URI match pattern for a single recipe, specified by its ID.
-		 * Use this to match incoming URIs or to construct an Intent.
+		 * The content URI match pattern for a single recipe, specified by its
+		 * ID. Use this to match incoming URIs or to construct an Intent.
 		 */
 		public static final Uri CONTENT_ID_URI_PATTERN = Uri.parse(SCHEME
 				+ AUTHORITY + PATH_RECIPE_ID + "/#");
@@ -96,6 +203,10 @@ public final class RecipeContract
 	 * Base authority for this content provider
 	 */
 	public static final String AUTHORITY = "com.ianhanniballake.recipebook";
+	/**
+	 * The scheme part for this provider's URI
+	 */
+	private static final String SCHEME = "content://";
 
 	/**
 	 * This class cannot be instantiated
