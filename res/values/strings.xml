@@ -16,4 +16,7 @@
     <string name="saved">Recipe Saved</string>
     <string name="delete">Delete</string>
     <string name="deleted">Recipe Deleted</string>
+    <string name="ingredient_details">Details...</string>
+    <string name="empty_ingredient_list">No ingredients found</string>
+    <string name="add_ingredient">Add Ingredient</string>
 </resources>
