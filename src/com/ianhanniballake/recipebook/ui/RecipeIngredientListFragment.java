@@ -20,8 +20,8 @@ import com.ianhanniballake.recipebook.provider.RecipeContract;
 /**
  * Fragment which displays the list of ingredients for a given recipe
  */
-public class RecipeIngredientListFragment extends ListFragment implements
-		LoaderManager.LoaderCallbacks<Cursor>
+public abstract class RecipeIngredientListFragment extends ListFragment
+		implements LoaderManager.LoaderCallbacks<Cursor>
 {
 	/**
 	 * Cursor Adapter which handles the unique binding of ingredients to a
@@ -124,6 +124,13 @@ public class RecipeIngredientListFragment extends ListFragment implements
 	private IngredientCursorAdapter adapter;
 
 	/**
+	 * Gets the layout to be used for each list item
+	 * 
+	 * @return The layout id to inflate for each list item
+	 */
+	protected abstract int getListItemLayout();
+
+	/**
 	 * Getter for the ID associated with the currently displayed recipe
 	 * 
 	 * @return ID for the currently displayed recipe
@@ -140,9 +147,9 @@ public class RecipeIngredientListFragment extends ListFragment implements
 	public void onActivityCreated(final Bundle savedInstanceState)
 	{
 		super.onActivityCreated(savedInstanceState);
-		setEmptyText(getText(R.string.empty_recipe_list));
+		setEmptyText(getText(R.string.empty_ingredient_list));
 		adapter = new IngredientCursorAdapter(getActivity(),
-				R.layout.item_ingredient_list, null, 0);
+				getListItemLayout(), null, 0);
 		setListAdapter(adapter);
 		getListView().setChoiceMode(ListView.CHOICE_MODE_NONE);
 		if (getRecipeId() != 0)
@@ -153,7 +160,7 @@ public class RecipeIngredientListFragment extends ListFragment implements
 	public Loader<Cursor> onCreateLoader(final int id, final Bundle args)
 	{
 		return new CursorLoader(getActivity(),
-				RecipeContract.Ingredients.CONTENT_ID_URI_BASE, null,
+				RecipeContract.Ingredients.CONTENT_URI, null,
 				RecipeContract.Ingredients.COLUMN_NAME_RECIPE_ID + "=?",
 				new String[] { Long.toString(getRecipeId()) }, null);
 	}

@@ -8,7 +8,11 @@ import android.os.Bundle;
 import android.provider.BaseColumns;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentManager.OnBackStackChangedListener;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
 import android.widget.Toast;
 
 import com.ianhanniballake.recipebook.R;
@@ -18,16 +22,117 @@ import com.ianhanniballake.recipebook.provider.RecipeContract;
  * Activity which displays only the Recipe details
  */
 public class RecipeDetailActivity extends FragmentActivity implements
-		OnRecipeEditListener
+		OnRecipeEditListener, OnBackStackChangedListener
 {
+	/**
+	 * Class which handles returning the appropriate page
+	 */
+	private class RecipePagerAdapter extends FragmentStatePagerAdapter
+	{
+		/**
+		 * Creates a new adapter
+		 * 
+		 * @param fm
+		 *            The FragmentManager used to store/retrieve fragments from
+		 */
+		public RecipePagerAdapter(final FragmentManager fm)
+		{
+			super(fm);
+		}
+
+		@Override
+		public int getCount()
+		{
+			return 2;
+		}
+
+		@Override
+		public Fragment getItem(final int position)
+		{
+			if (position == 0)
+			{
+				final RecipeDetailFragment details;
+				if (isEditing)
+					details = new RecipeSummaryEditFragment();
+				else
+					details = new RecipeSummaryViewFragment();
+				final Bundle args = new Bundle();
+				args.putLong(BaseColumns._ID, getRecipeId());
+				details.setArguments(args);
+				return details;
+			}
+			else if (position == 1)
+			{
+				final RecipeIngredientListFragment ingredients;
+				if (isEditing)
+					ingredients = new RecipeIngredientListEditFragment();
+				else
+					ingredients = new RecipeIngredientListViewFragment();
+				final Bundle args = new Bundle();
+				args.putLong(BaseColumns._ID, getRecipeId());
+				ingredients.setArguments(args);
+				return ingredients;
+			}
+			return null;
+		}
+
+		@Override
+		public int getItemPosition(final Object object)
+		{
+			if (object instanceof RecipeSummaryEditFragment)
+				return isEditing ? POSITION_UNCHANGED : POSITION_NONE;
+			if (object instanceof RecipeSummaryViewFragment)
+				return isEditing ? POSITION_NONE : POSITION_UNCHANGED;
+			if (object instanceof RecipeIngredientListEditFragment)
+				return isEditing ? POSITION_UNCHANGED : POSITION_NONE;
+			if (object instanceof RecipeIngredientListViewFragment)
+				return isEditing ? POSITION_NONE : POSITION_UNCHANGED;
+			return POSITION_UNCHANGED;
+		}
+	}
+
 	/**
 	 * Result indicating a recipe deletion
 	 */
 	public static final int RESULT_DELETED = Integer.MIN_VALUE;
 	/**
+	 * PagerAdapter to use to access recipe detail fragments
+	 */
+	private RecipePagerAdapter adapter;
+	/**
+	 * Whether we are currently editing the recipe
+	 */
+	private boolean isEditing = false;
+	/**
 	 * Handler for asynchronous updates of recipes
 	 */
 	private AsyncQueryHandler queryHandler;
+
+	/**
+	 * Getter for the ID associated with the currently displayed recipe
+	 * 
+	 * @return ID for the currently displayed recipe
+	 */
+	private long getRecipeId()
+	{
+		if (getIntent() == null || getIntent().getExtras() == null)
+			return 0;
+		return getIntent().getExtras().getLong(BaseColumns._ID, 0);
+	}
+
+	@Override
+	public void onBackStackChanged()
+	{
+		findViewById(android.R.id.content).post(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				isEditing = !isEditing;
+				adapter.notifyDataSetChanged();
+			}
+		});
+	}
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState)
@@ -40,14 +145,9 @@ public class RecipeDetailActivity extends FragmentActivity implements
 			finish();
 			return;
 		}
-		if (savedInstanceState == null)
-		{
-			// During initial setup, plug in the details fragment.
-			final RecipeDetailFragment details = new RecipeSummaryViewFragment();
-			details.setArguments(getIntent().getExtras());
-			getSupportFragmentManager().beginTransaction()
-					.replace(R.id.details, details).commit();
-		}
+		final ViewPager pager = (ViewPager) findViewById(R.id.details);
+		adapter = new RecipePagerAdapter(getSupportFragmentManager());
+		pager.setAdapter(adapter);
 		queryHandler = new AsyncQueryHandler(getContentResolver())
 		{
 			@Override
@@ -68,12 +168,12 @@ public class RecipeDetailActivity extends FragmentActivity implements
 						getText(R.string.saved), Toast.LENGTH_SHORT).show();
 			}
 		};
+		getSupportFragmentManager().addOnBackStackChangedListener(this);
 	}
 
 	@Override
 	public void onRecipeDeleted(final long recipeId)
 	{
-		getSupportFragmentManager().popBackStack();
 		final Uri deleteUri = ContentUris.withAppendedId(
 				RecipeContract.Recipes.CONTENT_ID_URI_PATTERN, recipeId);
 		queryHandler.startDelete(0, null, deleteUri, null, null);
@@ -82,13 +182,15 @@ public class RecipeDetailActivity extends FragmentActivity implements
 	@Override
 	public void onRecipeEditCancelled()
 	{
-		getSupportFragmentManager().popBackStack();
+		getSupportFragmentManager().popBackStack("toEdit",
+				FragmentManager.POP_BACK_STACK_INCLUSIVE);
 	}
 
 	@Override
 	public void onRecipeEditSave(final long recipeId, final ContentValues values)
 	{
-		getSupportFragmentManager().popBackStack();
+		getSupportFragmentManager().popBackStack("toEdit",
+				FragmentManager.POP_BACK_STACK_INCLUSIVE);
 		final Uri updateUri = ContentUris.withAppendedId(
 				RecipeContract.Recipes.CONTENT_ID_URI_PATTERN, recipeId);
 		queryHandler.startUpdate(0, null, updateUri, values, null, null);
@@ -97,17 +199,23 @@ public class RecipeDetailActivity extends FragmentActivity implements
 	@Override
 	public void onRecipeEditStarted(final long recipeId)
 	{
-		final Fragment editFragment = new RecipeSummaryEditFragment();
-		final Bundle args = new Bundle();
-		args.putLong(BaseColumns._ID, recipeId);
-		editFragment.setArguments(args);
-		// Execute a transaction, replacing any existing fragment
-		// with this one inside the frame.
 		final FragmentTransaction ft = getSupportFragmentManager()
 				.beginTransaction();
-		ft.replace(R.id.details, editFragment);
-		ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-		ft.addToBackStack(null);
+		ft.addToBackStack("toEdit");
 		ft.commit();
+	}
+
+	@Override
+	public void onRestoreInstanceState(final Bundle savedInstanceState)
+	{
+		super.onRestoreInstanceState(savedInstanceState);
+		isEditing = savedInstanceState.getBoolean("isEditing", false);
+	}
+
+	@Override
+	public void onSaveInstanceState(final Bundle outState)
+	{
+		super.onSaveInstanceState(outState);
+		outState.putBoolean("isEditing", isEditing);
 	}
 }
