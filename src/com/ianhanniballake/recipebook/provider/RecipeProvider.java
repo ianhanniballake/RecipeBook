@@ -397,6 +397,127 @@ public class RecipeProvider extends ContentProvider
 			final String selection, final String[] selectionArgs,
 			final String sortOrder)
 	{
+		if (uriMatcher.match(uri) == RECIPES
+				|| uriMatcher.match(uri) == RECIPE_ID)
+			return queryRecipe(uri, projection, selection, selectionArgs,
+					sortOrder);
+		else if (uriMatcher.match(uri) == INGREDIENTS
+				|| uriMatcher.match(uri) == INGREDIENT_ID)
+			return queryIngredient(uri, projection, selection, selectionArgs,
+					sortOrder);
+		else
+			throw new IllegalArgumentException("Unknown URI " + uri);
+	}
+
+	/**
+	 * Queries for ingredient(s).
+	 * 
+	 * @param uri
+	 *            The URI to query. This will be the full URI sent by the
+	 *            client; if the client is requesting a specific record, the URI
+	 *            will end in a record number that the implementation should
+	 *            parse and add to a WHERE or HAVING clause, specifying that _id
+	 *            value.
+	 * @param projection
+	 *            The list of columns to put into the cursor. If null all
+	 *            columns are included.
+	 * @param selection
+	 *            A selection criteria to apply when filtering rows. If null
+	 *            then all rows are included.
+	 * @param selectionArgs
+	 *            You may include ?s in selection, which will be replaced by the
+	 *            values from selectionArgs, in order that they appear in the
+	 *            selection. The values will be bound as Strings.
+	 * @param sortOrder
+	 *            How the rows in the cursor should be sorted. If null then the
+	 *            provider is free to define the sort order.
+	 * @return A Cursor or null.
+	 */
+	private Cursor queryIngredient(final Uri uri, final String[] projection,
+			final String selection, final String[] selectionArgs,
+			final String sortOrder)
+	{
+		// Constructs a new query builder and sets its table name
+		final SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
+		qb.setTables(RecipeContract.Ingredients.TABLE_NAME);
+		final HashMap<String, String> allColumnProjectionMap = new HashMap<String, String>();
+		allColumnProjectionMap.put(BaseColumns._ID, BaseColumns._ID);
+		allColumnProjectionMap.put(
+				RecipeContract.Ingredients.COLUMN_NAME_RECIPE_ID,
+				RecipeContract.Ingredients.COLUMN_NAME_RECIPE_ID);
+		allColumnProjectionMap.put(
+				RecipeContract.Ingredients.COLUMN_NAME_QUANTITY,
+				RecipeContract.Ingredients.COLUMN_NAME_QUANTITY);
+		allColumnProjectionMap.put(
+				RecipeContract.Ingredients.COLUMN_NAME_QUANTITY_NUMERATOR,
+				RecipeContract.Ingredients.COLUMN_NAME_QUANTITY_NUMERATOR);
+		allColumnProjectionMap.put(
+				RecipeContract.Ingredients.COLUMN_NAME_QUANTITY_DENOMINATOR,
+				RecipeContract.Ingredients.COLUMN_NAME_QUANTITY_DENOMINATOR);
+		allColumnProjectionMap.put(RecipeContract.Ingredients.COLUMN_NAME_UNIT,
+				RecipeContract.Ingredients.COLUMN_NAME_UNIT);
+		allColumnProjectionMap.put(RecipeContract.Ingredients.COLUMN_NAME_ITEM,
+				RecipeContract.Ingredients.COLUMN_NAME_ITEM);
+		allColumnProjectionMap.put(
+				RecipeContract.Ingredients.COLUMN_NAME_PREPARATION,
+				RecipeContract.Ingredients.COLUMN_NAME_PREPARATION);
+		qb.setProjectionMap(allColumnProjectionMap);
+		switch (uriMatcher.match(uri))
+		{
+			case INGREDIENTS:
+				break;
+			case INGREDIENT_ID:
+				// If the incoming URI is for a single ingredient identified by
+				// its
+				// ID, appends "_ID = <ingredientId>" to the where clause, so
+				// that
+				// it selects that single ingredient
+				qb.appendWhere(BaseColumns._ID
+						+ "="
+						+ uri.getPathSegments()
+								.get(RecipeContract.Ingredients.INGREDIENT_ID_PATH_POSITION));
+				break;
+		}
+		String orderBy;
+		if (TextUtils.isEmpty(sortOrder))
+			orderBy = RecipeContract.Ingredients.DEFAULT_SORT_ORDER;
+		else
+			orderBy = sortOrder;
+		final SQLiteDatabase db = databaseHelper.getReadableDatabase();
+		final Cursor c = qb.query(db, projection, selection, selectionArgs,
+				null, null, orderBy);
+		c.setNotificationUri(getContext().getContentResolver(), uri);
+		return c;
+	}
+
+	/**
+	 * Queries for recipe(s).
+	 * 
+	 * @param uri
+	 *            The URI to query. This will be the full URI sent by the
+	 *            client; if the client is requesting a specific record, the URI
+	 *            will end in a record number that the implementation should
+	 *            parse and add to a WHERE or HAVING clause, specifying that _id
+	 *            value.
+	 * @param projection
+	 *            The list of columns to put into the cursor. If null all
+	 *            columns are included.
+	 * @param selection
+	 *            A selection criteria to apply when filtering rows. If null
+	 *            then all rows are included.
+	 * @param selectionArgs
+	 *            You may include ?s in selection, which will be replaced by the
+	 *            values from selectionArgs, in order that they appear in the
+	 *            selection. The values will be bound as Strings.
+	 * @param sortOrder
+	 *            How the rows in the cursor should be sorted. If null then the
+	 *            provider is free to define the sort order.
+	 * @return A Cursor or null.
+	 */
+	private Cursor queryRecipe(final Uri uri, final String[] projection,
+			final String selection, final String[] selectionArgs,
+			final String sortOrder)
+	{
 		// Constructs a new query builder and sets its table name
 		final SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
 		qb.setTables(RecipeContract.Recipes.TABLE_NAME);
@@ -421,8 +542,6 @@ public class RecipeProvider extends ContentProvider
 						+ uri.getPathSegments().get(
 								RecipeContract.Recipes.RECIPE_ID_PATH_POSITION));
 				break;
-			default:
-				throw new IllegalArgumentException("Unknown URI " + uri);
 		}
 		String orderBy;
 		if (TextUtils.isEmpty(sortOrder))
@@ -438,17 +557,95 @@ public class RecipeProvider extends ContentProvider
 
 	@Override
 	public int update(final Uri uri, final ContentValues values,
-			final String where, final String[] whereArgs)
+			final String selection, final String[] selectionArgs)
+	{
+		if (uriMatcher.match(uri) == RECIPES
+				|| uriMatcher.match(uri) == RECIPE_ID)
+			return updateRecipe(uri, values, selection, selectionArgs);
+		else if (uriMatcher.match(uri) == INGREDIENTS
+				|| uriMatcher.match(uri) == INGREDIENT_ID)
+			return updateIngredient(uri, values, selection, selectionArgs);
+		else
+			throw new IllegalArgumentException("Unknown URI " + uri);
+	}
+
+	/**
+	 * Update the matching ingredient(s)
+	 * 
+	 * @param uri
+	 *            The URI to query. This can potentially have a record ID if
+	 *            this is an update request for a specific record.
+	 * @param values
+	 *            A Bundle mapping from column names to new column values (NULL
+	 *            is a valid value).
+	 * @param selection
+	 *            An optional filter to match rows to update.
+	 * @param selectionArgs
+	 *            Arguments to the optional filter to match rows to update
+	 * @return The number of rows affected.
+	 */
+	private int updateIngredient(final Uri uri, final ContentValues values,
+			final String selection, final String[] selectionArgs)
 	{
 		final SQLiteDatabase db = databaseHelper.getWritableDatabase();
-		int count;
+		int count = 0;
+		switch (uriMatcher.match(uri))
+		{
+			case INGREDIENTS:
+				// If the incoming URI matches the general ingredients pattern,
+				// does the update based on the incoming data.
+				count = db.update(RecipeContract.Ingredients.TABLE_NAME,
+						values, selection, selectionArgs);
+				break;
+			case INGREDIENT_ID:
+				// If the incoming URI matches a single ingredients ID, does the
+				// update based on the incoming data, but modifies the where
+				// clause to restrict it to the particular recipe ID.
+				uri.getPathSegments().get(
+						RecipeContract.Ingredients.INGREDIENT_ID_PATH_POSITION);
+				String finalWhere = BaseColumns._ID
+						+ " = "
+						+ uri.getPathSegments()
+								.get(RecipeContract.Ingredients.INGREDIENT_ID_PATH_POSITION);
+				// If there were additional selection criteria, append them to
+				// the final WHERE clause
+				if (selection != null)
+					finalWhere = finalWhere + " AND " + selection;
+				count = db.update(RecipeContract.Ingredients.TABLE_NAME,
+						values, finalWhere, selectionArgs);
+				break;
+		}
+		getContext().getContentResolver().notifyChange(uri, null);
+		return count;
+	}
+
+	/**
+	 * Update the matching recipe(s)
+	 * 
+	 * @param uri
+	 *            The URI to query. This can potentially have a record ID if
+	 *            this is an update request for a specific record.
+	 * @param values
+	 *            A Bundle mapping from column names to new column values (NULL
+	 *            is a valid value).
+	 * @param selection
+	 *            An optional filter to match rows to update.
+	 * @param selectionArgs
+	 *            Arguments to the optional filter to match rows to update
+	 * @return The number of rows affected.
+	 */
+	private int updateRecipe(final Uri uri, final ContentValues values,
+			final String selection, final String[] selectionArgs)
+	{
+		final SQLiteDatabase db = databaseHelper.getWritableDatabase();
+		int count = 0;
 		switch (uriMatcher.match(uri))
 		{
 			case RECIPES:
-				// If the incoming URI matches the general notes pattern, does
+				// If the incoming URI matches the general recipes pattern, does
 				// the update based on the incoming data.
 				count = db.update(RecipeContract.Recipes.TABLE_NAME, values,
-						where, whereArgs);
+						selection, selectionArgs);
 				break;
 			case RECIPE_ID:
 				// If the incoming URI matches a single recipe ID, does the
@@ -462,13 +659,11 @@ public class RecipeProvider extends ContentProvider
 								RecipeContract.Recipes.RECIPE_ID_PATH_POSITION);
 				// If there were additional selection criteria, append them to
 				// the final WHERE clause
-				if (where != null)
-					finalWhere = finalWhere + " AND " + where;
+				if (selection != null)
+					finalWhere = finalWhere + " AND " + selection;
 				count = db.update(RecipeContract.Recipes.TABLE_NAME, values,
-						finalWhere, whereArgs);
+						finalWhere, selectionArgs);
 				break;
-			default:
-				throw new IllegalArgumentException("Unknown URI " + uri);
 		}
 		getContext().getContentResolver().notifyChange(uri, null);
 		return count;
