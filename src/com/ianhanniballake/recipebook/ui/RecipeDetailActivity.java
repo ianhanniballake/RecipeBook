@@ -229,7 +229,7 @@ public class RecipeDetailActivity extends FragmentActivity implements
 		final Uri updateUri = ContentUris.withAppendedId(
 				RecipeContract.Recipes.CONTENT_ID_URI_PATTERN, recipeId);
 		recipeQueryHandler.startUpdate(0, null, updateUri, values, null, null);
-		recipeQueryHandler.startDelete(0, null,
+		ingredientQueryHandler.startDelete(0, null,
 				RecipeContract.Ingredients.CONTENT_URI,
 				RecipeContract.Ingredients.COLUMN_NAME_RECIPE_ID + "=?",
 				new String[] { Long.toString(recipeId) });
