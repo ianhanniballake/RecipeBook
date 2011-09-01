@@ -22,7 +22,7 @@ public class RecipeSummaryViewFragment extends RecipeSummaryFragment
 	protected SimpleCursorAdapter createAdapter()
 	{
 		return new SimpleCursorAdapter(getActivity(),
-				R.layout.fragment_recipe_detail, null, new String[] {
+				R.layout.fragment_recipe_summary, null, new String[] {
 						RecipeContract.Recipes.COLUMN_NAME_TITLE,
 						RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION },
 				new int[] { R.id.title, R.id.description }, 0);
@@ -44,7 +44,7 @@ public class RecipeSummaryViewFragment extends RecipeSummaryFragment
 	@Override
 	public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater)
 	{
-		inflater.inflate(R.menu.fragment_recipe_detail, menu);
+		inflater.inflate(R.menu.fragment_recipe_summary, menu);
 		MenuCompat.setShowAsAction(menu.findItem(R.id.edit), 2);
 		MenuCompat.setShowAsAction(menu.findItem(R.id.delete), 2);
 	}
@@ -53,7 +53,7 @@ public class RecipeSummaryViewFragment extends RecipeSummaryFragment
 	public View onCreateView(final LayoutInflater inflater,
 			final ViewGroup container, final Bundle savedInstanceState)
 	{
-		return inflater.inflate(R.layout.fragment_recipe_detail, container,
+		return inflater.inflate(R.layout.fragment_recipe_summary, container,
 				false);
 	}
 

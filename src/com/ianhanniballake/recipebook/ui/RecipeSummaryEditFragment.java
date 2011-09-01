@@ -45,7 +45,7 @@ public class RecipeSummaryEditFragment extends RecipeSummaryFragment
 	protected SimpleCursorAdapter createAdapter()
 	{
 		return new SimpleCursorAdapter(getActivity(),
-				R.layout.fragment_recipe_detail, null, new String[] {
+				R.layout.fragment_recipe_summary, null, new String[] {
 						RecipeContract.Recipes.COLUMN_NAME_TITLE,
 						RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION },
 				new int[] { R.id.title, R.id.description }, 0);
