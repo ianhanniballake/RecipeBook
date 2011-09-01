@@ -53,7 +53,7 @@ public class RecipeDetailActivity extends FragmentActivity implements
 		{
 			if (position == 0)
 			{
-				final RecipeDetailFragment details;
+				final RecipeSummaryFragment details;
 				if (isEditing)
 					details = new RecipeSummaryEditFragment();
 				else

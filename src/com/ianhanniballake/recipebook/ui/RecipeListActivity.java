@@ -169,7 +169,7 @@ public class RecipeListActivity extends FragmentActivity implements
 		selectedId = recipeId;
 		if (isDualPane)
 		{
-			RecipeDetailFragment details = (RecipeDetailFragment) getSupportFragmentManager()
+			RecipeSummaryFragment details = (RecipeSummaryFragment) getSupportFragmentManager()
 					.findFragmentById(R.id.details);
 			if (details == null || details instanceof RecipeSummaryEditFragment
 					|| details.getRecipeId() != recipeId)

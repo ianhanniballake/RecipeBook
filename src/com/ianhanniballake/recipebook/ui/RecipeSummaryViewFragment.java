@@ -16,7 +16,7 @@ import com.ianhanniballake.recipebook.provider.RecipeContract;
 /**
  * Fragment which displays the details of a single recipe
  */
-public class RecipeSummaryViewFragment extends RecipeDetailFragment
+public class RecipeSummaryViewFragment extends RecipeSummaryFragment
 {
 	@Override
 	protected SimpleCursorAdapter createAdapter()

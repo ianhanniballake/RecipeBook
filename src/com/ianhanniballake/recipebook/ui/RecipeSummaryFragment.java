@@ -20,7 +20,7 @@ import com.ianhanniballake.recipebook.provider.RecipeContract;
 /**
  * Fragment which displays the details of a single recipe
  */
-public abstract class RecipeDetailFragment extends Fragment implements
+public abstract class RecipeSummaryFragment extends Fragment implements
 		LoaderManager.LoaderCallbacks<Cursor>
 {
 	/**
