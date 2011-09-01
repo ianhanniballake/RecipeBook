@@ -1,6 +1,5 @@
 package com.ianhanniballake.recipebook.ui;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.view.MenuCompat;
@@ -91,14 +90,10 @@ public class RecipeSummaryEditFragment extends RecipeDetailFragment
 		switch (item.getItemId())
 		{
 			case R.id.save:
-				final ContentValues values = new ContentValues();
-				values.put(RecipeContract.Recipes.COLUMN_NAME_TITLE, title
-						.getText().toString());
-				values.put(RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION,
-						description.getText().toString());
 				hideKeyboard.onFocusChange(title, false);
 				hideKeyboard.onFocusChange(description, false);
-				recipeEditListener.onRecipeEditSave(getRecipeId(), values);
+				recipeEditListener.onRecipeEditSave(getRecipeId(),
+						getContentValues());
 				return true;
 			case R.id.cancel:
 				hideKeyboard.onFocusChange(title, false);

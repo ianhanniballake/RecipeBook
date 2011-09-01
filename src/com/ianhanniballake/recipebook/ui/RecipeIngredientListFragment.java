@@ -1,5 +1,9 @@
 package com.ianhanniballake.recipebook.ui;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -111,7 +115,7 @@ public abstract class RecipeIngredientListFragment extends ListFragment
 			if (!preparation.equals(""))
 			{
 				if (sb.length() > 0)
-					sb.append(" - ");
+					sb.append("; ");
 				sb.append(preparation);
 			}
 			return sb;
@@ -122,6 +126,95 @@ public abstract class RecipeIngredientListFragment extends ListFragment
 	 * Adapter to display the list's data
 	 */
 	private IngredientCursorAdapter adapter;
+
+	/**
+	 * Gets all of the current ingredient values
+	 * 
+	 * @return A ContentValues for each ingredient
+	 */
+	public List<ContentValues> getContentValues()
+	{
+		final int childCount = getListView().getChildCount();
+		final ArrayList<ContentValues> allContentValues = new ArrayList<ContentValues>();
+		for (int childIndex = 0; childIndex < childCount; childIndex++)
+		{
+			final View view = getListView().getChildAt(childIndex);
+			final TextView raw = (TextView) view.findViewById(R.id.raw);
+			final String rawText = raw.getText().toString();
+			if (rawText.equals(""))
+				continue;
+			final ContentValues contentValues = new ContentValues();
+			contentValues.put(RecipeContract.Ingredients.COLUMN_NAME_RECIPE_ID,
+					getRecipeId());
+			allContentValues.add(contentValues);
+			int startIndex = 0;
+			int endIndex = rawText.indexOf(' ', startIndex);
+			try
+			{
+				final int quantity = Integer.parseInt(rawText.substring(
+						startIndex, endIndex));
+				contentValues.put(
+						RecipeContract.Ingredients.COLUMN_NAME_QUANTITY,
+						quantity);
+				startIndex = endIndex + 1;
+			} catch (final NumberFormatException e)
+			{
+				// Don't change startIndex to retry that token
+			}
+			endIndex = rawText.indexOf('/', startIndex);
+			try
+			{
+				final int quantityNumerator = Integer.parseInt(rawText
+						.substring(startIndex, endIndex));
+				contentValues
+						.put(RecipeContract.Ingredients.COLUMN_NAME_QUANTITY_NUMERATOR,
+								quantityNumerator);
+				startIndex = endIndex + 1;
+			} catch (final NumberFormatException e)
+			{
+				// Don't change startIndex to retry that token
+			}
+			endIndex = rawText.indexOf(' ', startIndex);
+			try
+			{
+				final int quantityDenominator = Integer.parseInt(rawText
+						.substring(startIndex, endIndex));
+				contentValues
+						.put(RecipeContract.Ingredients.COLUMN_NAME_QUANTITY_DENOMINATOR,
+								quantityDenominator);
+				startIndex = endIndex + 1;
+			} catch (final NumberFormatException e)
+			{
+				// Don't change startIndex to retry that token
+			}
+			endIndex = rawText.indexOf(' ', startIndex);
+			// TODO Add unit check against master list of unit types
+			final String unit = rawText.substring(startIndex, endIndex);
+			contentValues
+					.put(RecipeContract.Ingredients.COLUMN_NAME_UNIT, unit);
+			startIndex = endIndex + 1;
+			endIndex = Math.max(rawText.indexOf(';', startIndex),
+					rawText.indexOf(',', startIndex));
+			// Take everything until the end of the string as the item if there
+			// is no preparation
+			if (endIndex == -1)
+				endIndex = rawText.length();
+			final String item = rawText.substring(startIndex, endIndex);
+			contentValues
+					.put(RecipeContract.Ingredients.COLUMN_NAME_ITEM, item);
+			startIndex = endIndex + 1;
+			endIndex = rawText.length();
+			if (endIndex > startIndex)
+			{
+				final String preparation = rawText.substring(startIndex,
+						endIndex);
+				contentValues.put(
+						RecipeContract.Ingredients.COLUMN_NAME_PREPARATION,
+						preparation);
+			}
+		}
+		return allContentValues;
+	}
 
 	/**
 	 * Gets the layout to be used for each list item

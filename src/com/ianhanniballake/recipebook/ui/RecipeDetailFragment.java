@@ -2,6 +2,7 @@ package com.ianhanniballake.recipebook.ui;
 
 import android.app.Activity;
 import android.content.ContentUris;
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,7 +12,9 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 
+import com.ianhanniballake.recipebook.R;
 import com.ianhanniballake.recipebook.provider.RecipeContract;
 
 /**
@@ -36,6 +39,26 @@ public abstract class RecipeDetailFragment extends Fragment implements
 	 * @return CursorAdapter that will be used to bind the view
 	 */
 	protected abstract SimpleCursorAdapter createAdapter();
+
+	/**
+	 * Gets the content values associated with this detail fragment, which can
+	 * be used for update statements
+	 * 
+	 * @return current values in this fragment
+	 */
+	public ContentValues getContentValues()
+	{
+		final TextView title = (TextView) getActivity()
+				.findViewById(R.id.title);
+		final TextView description = (TextView) getActivity().findViewById(
+				R.id.description);
+		final ContentValues values = new ContentValues();
+		values.put(RecipeContract.Recipes.COLUMN_NAME_TITLE, title.getText()
+				.toString());
+		values.put(RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION, description
+				.getText().toString());
+		return values;
+	}
 
 	/**
 	 * Getter for the ID associated with the currently displayed recipe

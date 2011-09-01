@@ -1,5 +1,7 @@
 package com.ianhanniballake.recipebook.ui;
 
+import java.util.List;
+
 import android.content.AsyncQueryHandler;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -71,6 +73,7 @@ public class RecipeDetailActivity extends FragmentActivity implements
 				final Bundle args = new Bundle();
 				args.putLong(BaseColumns._ID, getRecipeId());
 				ingredients.setArguments(args);
+				ingredientFragment = ingredients;
 				return ingredients;
 			}
 			return null;
@@ -100,13 +103,22 @@ public class RecipeDetailActivity extends FragmentActivity implements
 	 */
 	private RecipePagerAdapter adapter;
 	/**
+	 * Reference to the current ingredient fragment used in saving the updated
+	 * recipe
+	 */
+	private RecipeIngredientListFragment ingredientFragment;
+	/**
+	 * Handler for asynchronous updates of ingredients
+	 */
+	private AsyncQueryHandler ingredientQueryHandler;
+	/**
 	 * Whether we are currently editing the recipe
 	 */
 	private boolean isEditing = false;
 	/**
 	 * Handler for asynchronous updates of recipes
 	 */
-	private AsyncQueryHandler queryHandler;
+	private AsyncQueryHandler recipeQueryHandler;
 
 	/**
 	 * Getter for the ID associated with the currently displayed recipe
@@ -148,7 +160,7 @@ public class RecipeDetailActivity extends FragmentActivity implements
 		final ViewPager pager = (ViewPager) findViewById(R.id.details);
 		adapter = new RecipePagerAdapter(getSupportFragmentManager());
 		pager.setAdapter(adapter);
-		queryHandler = new AsyncQueryHandler(getContentResolver())
+		recipeQueryHandler = new AsyncQueryHandler(getContentResolver())
 		{
 			@Override
 			protected void onDeleteComplete(final int token,
@@ -168,6 +180,31 @@ public class RecipeDetailActivity extends FragmentActivity implements
 						getText(R.string.saved), Toast.LENGTH_SHORT).show();
 			}
 		};
+		ingredientQueryHandler = new AsyncQueryHandler(getContentResolver())
+		{
+			@Override
+			protected void onDeleteComplete(final int token,
+					final Object cookie, final int result)
+			{
+				final List<ContentValues> allContentValues = ingredientFragment
+						.getContentValues();
+				int currentToken = 0;
+				for (final ContentValues contentValues : allContentValues)
+					ingredientQueryHandler.startInsert(++currentToken, null,
+							RecipeContract.Ingredients.CONTENT_URI,
+							contentValues);
+				getSupportFragmentManager().popBackStack("toEdit",
+						FragmentManager.POP_BACK_STACK_INCLUSIVE);
+			}
+
+			@Override
+			protected void onUpdateComplete(final int token,
+					final Object cookie, final int result)
+			{
+				// TODO count number of returned updates to check when we can
+				// return
+			}
+		};
 		getSupportFragmentManager().addOnBackStackChangedListener(this);
 	}
 
@@ -176,7 +213,7 @@ public class RecipeDetailActivity extends FragmentActivity implements
 	{
 		final Uri deleteUri = ContentUris.withAppendedId(
 				RecipeContract.Recipes.CONTENT_ID_URI_PATTERN, recipeId);
-		queryHandler.startDelete(0, null, deleteUri, null, null);
+		recipeQueryHandler.startDelete(0, null, deleteUri, null, null);
 	}
 
 	@Override
@@ -189,11 +226,13 @@ public class RecipeDetailActivity extends FragmentActivity implements
 	@Override
 	public void onRecipeEditSave(final long recipeId, final ContentValues values)
 	{
-		getSupportFragmentManager().popBackStack("toEdit",
-				FragmentManager.POP_BACK_STACK_INCLUSIVE);
 		final Uri updateUri = ContentUris.withAppendedId(
 				RecipeContract.Recipes.CONTENT_ID_URI_PATTERN, recipeId);
-		queryHandler.startUpdate(0, null, updateUri, values, null, null);
+		recipeQueryHandler.startUpdate(0, null, updateUri, values, null, null);
+		recipeQueryHandler.startDelete(0, null,
+				RecipeContract.Ingredients.CONTENT_URI,
+				RecipeContract.Ingredients.COLUMN_NAME_RECIPE_ID + "=?",
+				new String[] { Long.toString(recipeId) });
 	}
 
 	@Override
