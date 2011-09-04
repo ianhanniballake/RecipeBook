@@ -42,12 +42,6 @@ public class RecipeAddActivity extends FragmentActivity implements
 	}
 
 	@Override
-	public void onRecipeDeleted(final long recipeId)
-	{
-		// Not used
-	}
-
-	@Override
 	public void onRecipeEditCancelled()
 	{
 		setResult(RESULT_CANCELED);
@@ -59,11 +53,5 @@ public class RecipeAddActivity extends FragmentActivity implements
 	{
 		insertHandler.startInsert(0, null,
 				RecipeContract.Recipes.CONTENT_ID_URI_BASE, values);
-	}
-
-	@Override
-	public void onRecipeEditStarted(final long recipeId)
-	{
-		// Not used
 	}
 }

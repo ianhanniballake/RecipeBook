@@ -1,6 +1,5 @@
 package com.ianhanniballake.recipebook.ui;
 
-import android.app.Activity;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -27,10 +26,6 @@ public abstract class RecipeSummaryFragment extends Fragment implements
 	 * Adapter to display the detailed data
 	 */
 	private SimpleCursorAdapter adapter;
-	/**
-	 * Listener that handles recipe edit events
-	 */
-	protected OnRecipeEditListener recipeEditListener;
 
 	/**
 	 * Creates the appropriate adapter for this fragment. Will be used to bind
@@ -65,7 +60,7 @@ public abstract class RecipeSummaryFragment extends Fragment implements
 	 * 
 	 * @return ID for the currently displayed recipe
 	 */
-	public long getRecipeId()
+	protected long getRecipeId()
 	{
 		if (getArguments() == null)
 			return 0;
@@ -79,26 +74,6 @@ public abstract class RecipeSummaryFragment extends Fragment implements
 		adapter = createAdapter();
 		if (getRecipeId() != 0)
 			getLoaderManager().initLoader(0, null, this);
-	}
-
-	/**
-	 * Attaches to the parent activity, saving a reference to it to call back
-	 * recipe edit events
-	 * 
-	 * @see android.support.v4.app.Fragment#onAttach(android.app.Activity)
-	 */
-	@Override
-	public void onAttach(final Activity activity)
-	{
-		super.onAttach(activity);
-		try
-		{
-			recipeEditListener = (OnRecipeEditListener) activity;
-		} catch (final ClassCastException e)
-		{
-			throw new ClassCastException(activity.toString()
-					+ " must implement OnRecipeEditListener");
-		}
 	}
 
 	@Override

@@ -228,7 +228,7 @@ public abstract class RecipeIngredientListFragment extends ListFragment
 	 * 
 	 * @return ID for the currently displayed recipe
 	 */
-	public long getRecipeId()
+	protected long getRecipeId()
 	{
 		if (getArguments() == null)
 			return 0;
