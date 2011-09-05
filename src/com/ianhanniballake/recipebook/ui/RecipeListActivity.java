@@ -68,9 +68,10 @@ public class RecipeListActivity extends FragmentActivity implements
 	@Override
 	public boolean onCreateOptionsMenu(final Menu menu)
 	{
+		super.onCreateOptionsMenu(menu);
 		getMenuInflater().inflate(R.menu.fragment_recipe_list, menu);
 		MenuCompat.setShowAsAction(menu.findItem(R.id.add), 2);
-		return super.onCreateOptionsMenu(menu);
+		return true;
 	}
 
 	@Override

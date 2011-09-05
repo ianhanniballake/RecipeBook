@@ -115,6 +115,10 @@ public class RecipeDetailFragment extends Fragment implements
 	 */
 	private RecipePagerAdapter adapter;
 	/**
+	 * Current number of ingredients that have been inserted
+	 */
+	private int currentIngredientUpdateCount = 0;
+	/**
 	 * Focus listener to automatically hide the soft keyboard when closing this
 	 * fragment
 	 */
@@ -148,7 +152,11 @@ public class RecipeDetailFragment extends Fragment implements
 	/**
 	 * Listener that handles recipe delete events
 	 */
-	private OnRecipeDeleteListener recipeDeleteListener;
+	private OnRecipeDeleteListener recipeDeleteListener = null;
+	/**
+	 * Listener that handles recipe edit finish events
+	 */
+	private OnRecipeEditFinishListener recipeEditFinishListener = null;
 	/**
 	 * Handler for asynchronous updates of recipes
 	 */
@@ -158,6 +166,10 @@ public class RecipeDetailFragment extends Fragment implements
 	 * recipe
 	 */
 	private RecipeSummaryFragment summaryFragment;
+	/**
+	 * Total number of ingredients that need to be inserted
+	 */
+	private int totalIngredientCount = 0;
 
 	/**
 	 * Getter for the ID associated with the currently displayed recipe
@@ -189,14 +201,10 @@ public class RecipeDetailFragment extends Fragment implements
 	public void onAttach(final Activity activity)
 	{
 		super.onAttach(activity);
-		try
-		{
+		if (activity instanceof OnRecipeDeleteListener)
 			recipeDeleteListener = (OnRecipeDeleteListener) activity;
-		} catch (final ClassCastException e)
-		{
-			throw new ClassCastException(activity.toString()
-					+ " must implement OnRecipeDeleteListener");
-		}
+		if (activity instanceof OnRecipeEditFinishListener)
+			recipeEditFinishListener = (OnRecipeEditFinishListener) activity;
 	}
 
 	@Override
@@ -227,15 +235,38 @@ public class RecipeDetailFragment extends Fragment implements
 			{
 				Toast.makeText(getActivity(), getText(R.string.deleted),
 						Toast.LENGTH_SHORT).show();
-				recipeDeleteListener.onRecipeDeleted();
+				if (recipeDeleteListener != null)
+					recipeDeleteListener.onRecipeDeleted();
+			}
+
+			@Override
+			protected void onInsertComplete(final int token,
+					final Object cookie, final Uri uri)
+			{
+				// Set the newly created recipe id
+				final long newRecipeId = ContentUris.parseId(uri);
+				final Bundle args = getArguments();
+				args.putLong(BaseColumns._ID, newRecipeId);
+				setArguments(args);
+				// Don't need to delete existing ingredients as this is a new
+				// recipe
+				startIngredientInsert();
 			}
 
 			@Override
 			protected void onUpdateComplete(final int token,
 					final Object cookie, final int result)
 			{
-				Toast.makeText(getActivity(), getText(R.string.saved),
-						Toast.LENGTH_SHORT).show();
+				// Delete all existing ingredients in preparation for loading
+				// the updated ingredients
+				ingredientQueryHandler
+						.startDelete(
+								0,
+								null,
+								RecipeContract.Ingredients.CONTENT_URI,
+								RecipeContract.Ingredients.COLUMN_NAME_RECIPE_ID
+										+ "=?",
+								new String[] { Long.toString(getRecipeId()) });
 			}
 		};
 		ingredientQueryHandler = new AsyncQueryHandler(getActivity()
@@ -245,23 +276,27 @@ public class RecipeDetailFragment extends Fragment implements
 			protected void onDeleteComplete(final int token,
 					final Object cookie, final int result)
 			{
-				final List<ContentValues> allContentValues = ingredientFragment
-						.getContentValues();
-				int currentToken = 0;
-				for (final ContentValues contentValues : allContentValues)
-					ingredientQueryHandler.startInsert(++currentToken, null,
-							RecipeContract.Ingredients.CONTENT_URI,
-							contentValues);
-				getActivity().getSupportFragmentManager().popBackStack(
-						"toEdit", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+				// After we've delete all existing ingredients, start putting in
+				// the new ingredients
+				startIngredientInsert();
 			}
 
 			@Override
 			protected void onUpdateComplete(final int token,
 					final Object cookie, final int result)
 			{
-				// TODO count number of returned updates to check when we can
-				// return
+				currentIngredientUpdateCount++;
+				if (currentIngredientUpdateCount == totalIngredientCount)
+				{
+					Toast.makeText(getActivity(), getText(R.string.saved),
+							Toast.LENGTH_SHORT).show();
+					isEditing = false;
+					getActivity().getSupportFragmentManager().popBackStack(
+							"toEdit", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+					if (recipeEditFinishListener != null)
+						recipeEditFinishListener
+								.onRecipeEditSave(getRecipeId());
+				}
 			}
 		};
 		getActivity().getSupportFragmentManager()
@@ -277,18 +312,13 @@ public class RecipeDetailFragment extends Fragment implements
 	@Override
 	public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater)
 	{
-		if (isEditing)
-		{
-			inflater.inflate(R.menu.fragment_recipe_edit, menu);
-			MenuCompat.setShowAsAction(menu.findItem(R.id.save), 2);
-			MenuCompat.setShowAsAction(menu.findItem(R.id.cancel), 2);
-		}
-		else
-		{
-			inflater.inflate(R.menu.fragment_recipe_summary, menu);
-			MenuCompat.setShowAsAction(menu.findItem(R.id.edit), 2);
-			MenuCompat.setShowAsAction(menu.findItem(R.id.delete), 2);
-		}
+		super.onCreateOptionsMenu(menu, inflater);
+		inflater.inflate(R.menu.fragment_recipe_edit, menu);
+		MenuCompat.setShowAsAction(menu.findItem(R.id.save), 2);
+		MenuCompat.setShowAsAction(menu.findItem(R.id.cancel), 2);
+		inflater.inflate(R.menu.fragment_recipe_summary, menu);
+		MenuCompat.setShowAsAction(menu.findItem(R.id.edit), 2);
+		MenuCompat.setShowAsAction(menu.findItem(R.id.delete), 2);
 	}
 
 	@Override
@@ -322,12 +352,27 @@ public class RecipeDetailFragment extends Fragment implements
 			case R.id.save:
 				hideKeyboard.onFocusChange(title, false);
 				hideKeyboard.onFocusChange(description, false);
-				onRecipeEditSave();
+				final long recipeId = getRecipeId();
+				if (recipeId == 0)
+					recipeQueryHandler.startInsert(0, null,
+							RecipeContract.Recipes.CONTENT_ID_URI_BASE,
+							summaryFragment.getContentValues());
+				else
+				{
+					final Uri updateUri = ContentUris.withAppendedId(
+							RecipeContract.Recipes.CONTENT_ID_URI_PATTERN,
+							getRecipeId());
+					recipeQueryHandler.startUpdate(0, null, updateUri,
+							summaryFragment.getContentValues(), null, null);
+				}
 				return true;
 			case R.id.cancel:
 				hideKeyboard.onFocusChange(title, false);
 				hideKeyboard.onFocusChange(description, false);
-				onRecipeEditCancelled();
+				getActivity().getSupportFragmentManager().popBackStack(
+						"toEdit", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+				if (recipeEditFinishListener != null)
+					recipeEditFinishListener.onRecipeEditCancelled();
 				return true;
 			default:
 				return super.onOptionsItemSelected(item);
@@ -343,8 +388,20 @@ public class RecipeDetailFragment extends Fragment implements
 	@Override
 	public void onPrepareOptionsMenu(final Menu menu)
 	{
-		menu.findItem(R.id.edit).setVisible(getRecipeId() != 0);
-		menu.findItem(R.id.delete).setVisible(getRecipeId() != 0);
+		if (isEditing)
+		{
+			menu.findItem(R.id.save).setVisible(getRecipeId() != 0);
+			menu.findItem(R.id.cancel).setVisible(getRecipeId() != 0);
+			menu.findItem(R.id.edit).setVisible(false);
+			menu.findItem(R.id.delete).setVisible(false);
+		}
+		else
+		{
+			menu.findItem(R.id.save).setVisible(false);
+			menu.findItem(R.id.cancel).setVisible(false);
+			menu.findItem(R.id.edit).setVisible(getRecipeId() != 0);
+			menu.findItem(R.id.delete).setVisible(getRecipeId() != 0);
+		}
 	}
 
 	/**
@@ -355,30 +412,6 @@ public class RecipeDetailFragment extends Fragment implements
 		final Uri deleteUri = ContentUris.withAppendedId(
 				RecipeContract.Recipes.CONTENT_ID_URI_PATTERN, getRecipeId());
 		recipeQueryHandler.startDelete(0, null, deleteUri, null, null);
-	}
-
-	/**
-	 * Handles recipe edit cancellation events
-	 */
-	public void onRecipeEditCancelled()
-	{
-		getActivity().getSupportFragmentManager().popBackStack("toEdit",
-				FragmentManager.POP_BACK_STACK_INCLUSIVE);
-	}
-
-	/**
-	 * Handles recipe save events
-	 */
-	public void onRecipeEditSave()
-	{
-		final Uri updateUri = ContentUris.withAppendedId(
-				RecipeContract.Recipes.CONTENT_ID_URI_PATTERN, getRecipeId());
-		recipeQueryHandler.startUpdate(0, null, updateUri,
-				summaryFragment.getContentValues(), null, null);
-		ingredientQueryHandler.startDelete(0, null,
-				RecipeContract.Ingredients.CONTENT_URI,
-				RecipeContract.Ingredients.COLUMN_NAME_RECIPE_ID + "=?",
-				new String[] { Long.toString(getRecipeId()) });
 	}
 
 	/**
@@ -397,5 +430,20 @@ public class RecipeDetailFragment extends Fragment implements
 	{
 		super.onSaveInstanceState(outState);
 		outState.putBoolean("isEditing", isEditing);
+	}
+
+	/**
+	 * Kicks off the insertion of all of the updated ingredients
+	 */
+	private void startIngredientInsert()
+	{
+		final List<ContentValues> allContentValues = ingredientFragment
+				.getContentValues();
+		int currentToken = 0;
+		totalIngredientCount = allContentValues.size();
+		currentIngredientUpdateCount = 0;
+		for (final ContentValues contentValues : allContentValues)
+			ingredientQueryHandler.startInsert(++currentToken, null,
+					RecipeContract.Ingredients.CONTENT_URI, contentValues);
 	}
 }

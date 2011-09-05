@@ -4,10 +4,10 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent">
 	<fragment
-		android:name="com.ianhanniballake.recipebook.ui.RecipeSummaryEditFragment"
+		android:name="com.ianhanniballake.recipebook.ui.RecipeDetailFragment"
 		android:id="@+id/edit"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent" >
-	    <!-- Preview: layout=@layout/fragment_recipe_edit -->
+	    <!-- Preview: layout=@layout/fragment_recipe_detail -->
 	</fragment>
 </FrameLayout>
