@@ -70,7 +70,7 @@ public class RecipeDetailFragment extends Fragment implements
 				else
 					summary = new RecipeSummaryViewFragment();
 				final Bundle args = new Bundle();
-				args.putLong(BaseColumns._ID, getRecipeId());
+				args.putLong(BaseColumns._ID, recipeId);
 				summary.setArguments(args);
 				summaryFragment = summary;
 				return summary;
@@ -83,7 +83,7 @@ public class RecipeDetailFragment extends Fragment implements
 				else
 					ingredients = new RecipeIngredientListViewFragment();
 				final Bundle args = new Bundle();
-				args.putLong(BaseColumns._ID, getRecipeId());
+				args.putLong(BaseColumns._ID, recipeId);
 				ingredients.setArguments(args);
 				ingredientFragment = ingredients;
 				return ingredients;
@@ -117,7 +117,7 @@ public class RecipeDetailFragment extends Fragment implements
 	/**
 	 * Current number of ingredients that have been inserted
 	 */
-	private int currentIngredientUpdateCount = 0;
+	private int currentIngredientInsertCount = 0;
 	/**
 	 * Focus listener to automatically hide the soft keyboard when closing this
 	 * fragment
@@ -158,6 +158,10 @@ public class RecipeDetailFragment extends Fragment implements
 	 */
 	private OnRecipeEditFinishListener recipeEditFinishListener = null;
 	/**
+	 * Id of the current recipe to show
+	 */
+	private long recipeId = 0;
+	/**
 	 * Handler for asynchronous updates of recipes
 	 */
 	private AsyncQueryHandler recipeQueryHandler;
@@ -171,24 +175,19 @@ public class RecipeDetailFragment extends Fragment implements
 	 */
 	private int totalIngredientCount = 0;
 
-	/**
-	 * Getter for the ID associated with the currently displayed recipe
-	 * 
-	 * @return ID for the currently displayed recipe
-	 */
-	public long getRecipeId()
-	{
-		if (getArguments() == null)
-			return 0;
-		return getArguments().getLong(BaseColumns._ID, 0);
-	}
-
 	@Override
 	public void onActivityCreated(final Bundle savedInstanceState)
 	{
 		super.onActivityCreated(savedInstanceState);
+		if (getArguments() != null)
+			recipeId = getArguments().getLong(BaseColumns._ID, 0);
 		if (savedInstanceState != null)
+		{
+			recipeId = savedInstanceState.getLong(BaseColumns._ID);
 			isEditing = savedInstanceState.getBoolean("isEditing", false);
+		}
+		if (recipeId == 0)
+			isEditing = true;
 	}
 
 	/**
@@ -245,9 +244,7 @@ public class RecipeDetailFragment extends Fragment implements
 			{
 				// Set the newly created recipe id
 				final long newRecipeId = ContentUris.parseId(uri);
-				final Bundle args = getArguments();
-				args.putLong(BaseColumns._ID, newRecipeId);
-				setArguments(args);
+				recipeId = newRecipeId;
 				// Don't need to delete existing ingredients as this is a new
 				// recipe
 				startIngredientInsert();
@@ -266,7 +263,7 @@ public class RecipeDetailFragment extends Fragment implements
 								RecipeContract.Ingredients.CONTENT_URI,
 								RecipeContract.Ingredients.COLUMN_NAME_RECIPE_ID
 										+ "=?",
-								new String[] { Long.toString(getRecipeId()) });
+								new String[] { Long.toString(recipeId) });
 			}
 		};
 		ingredientQueryHandler = new AsyncQueryHandler(getActivity()
@@ -282,21 +279,12 @@ public class RecipeDetailFragment extends Fragment implements
 			}
 
 			@Override
-			protected void onUpdateComplete(final int token,
-					final Object cookie, final int result)
+			protected void onInsertComplete(final int token,
+					final Object cookie, final Uri uri)
 			{
-				currentIngredientUpdateCount++;
-				if (currentIngredientUpdateCount == totalIngredientCount)
-				{
-					Toast.makeText(getActivity(), getText(R.string.saved),
-							Toast.LENGTH_SHORT).show();
-					isEditing = false;
-					getActivity().getSupportFragmentManager().popBackStack(
-							"toEdit", FragmentManager.POP_BACK_STACK_INCLUSIVE);
-					if (recipeEditFinishListener != null)
-						recipeEditFinishListener
-								.onRecipeEditSave(getRecipeId());
-				}
+				currentIngredientInsertCount++;
+				if (currentIngredientInsertCount == totalIngredientCount)
+					onIngredientInsertsComplete();
 			}
 		};
 		getActivity().getSupportFragmentManager()
@@ -334,6 +322,19 @@ public class RecipeDetailFragment extends Fragment implements
 		return v;
 	}
 
+	/**
+	 * Called when all ingredients have been inserted
+	 */
+	private void onIngredientInsertsComplete()
+	{
+		Toast.makeText(getActivity(), getText(R.string.saved),
+				Toast.LENGTH_SHORT).show();
+		getActivity().getSupportFragmentManager().popBackStack("toEdit",
+				FragmentManager.POP_BACK_STACK_INCLUSIVE);
+		if (recipeEditFinishListener != null)
+			recipeEditFinishListener.onRecipeEditSave(recipeId);
+	}
+
 	@Override
 	public boolean onOptionsItemSelected(final MenuItem item)
 	{
@@ -352,7 +353,6 @@ public class RecipeDetailFragment extends Fragment implements
 			case R.id.save:
 				hideKeyboard.onFocusChange(title, false);
 				hideKeyboard.onFocusChange(description, false);
-				final long recipeId = getRecipeId();
 				if (recipeId == 0)
 					recipeQueryHandler.startInsert(0, null,
 							RecipeContract.Recipes.CONTENT_ID_URI_BASE,
@@ -361,7 +361,7 @@ public class RecipeDetailFragment extends Fragment implements
 				{
 					final Uri updateUri = ContentUris.withAppendedId(
 							RecipeContract.Recipes.CONTENT_ID_URI_PATTERN,
-							getRecipeId());
+							recipeId);
 					recipeQueryHandler.startUpdate(0, null, updateUri,
 							summaryFragment.getContentValues(), null, null);
 				}
@@ -390,8 +390,8 @@ public class RecipeDetailFragment extends Fragment implements
 	{
 		if (isEditing)
 		{
-			menu.findItem(R.id.save).setVisible(getRecipeId() != 0);
-			menu.findItem(R.id.cancel).setVisible(getRecipeId() != 0);
+			menu.findItem(R.id.save).setVisible(true);
+			menu.findItem(R.id.cancel).setVisible(true);
 			menu.findItem(R.id.edit).setVisible(false);
 			menu.findItem(R.id.delete).setVisible(false);
 		}
@@ -399,8 +399,8 @@ public class RecipeDetailFragment extends Fragment implements
 		{
 			menu.findItem(R.id.save).setVisible(false);
 			menu.findItem(R.id.cancel).setVisible(false);
-			menu.findItem(R.id.edit).setVisible(getRecipeId() != 0);
-			menu.findItem(R.id.delete).setVisible(getRecipeId() != 0);
+			menu.findItem(R.id.edit).setVisible(true);
+			menu.findItem(R.id.delete).setVisible(recipeId != 0);
 		}
 	}
 
@@ -410,7 +410,7 @@ public class RecipeDetailFragment extends Fragment implements
 	public void onRecipeDeleted()
 	{
 		final Uri deleteUri = ContentUris.withAppendedId(
-				RecipeContract.Recipes.CONTENT_ID_URI_PATTERN, getRecipeId());
+				RecipeContract.Recipes.CONTENT_ID_URI_PATTERN, recipeId);
 		recipeQueryHandler.startDelete(0, null, deleteUri, null, null);
 	}
 
@@ -430,6 +430,7 @@ public class RecipeDetailFragment extends Fragment implements
 	{
 		super.onSaveInstanceState(outState);
 		outState.putBoolean("isEditing", isEditing);
+		outState.putLong(BaseColumns._ID, recipeId);
 	}
 
 	/**
@@ -441,7 +442,40 @@ public class RecipeDetailFragment extends Fragment implements
 				.getContentValues();
 		int currentToken = 0;
 		totalIngredientCount = allContentValues.size();
-		currentIngredientUpdateCount = 0;
+		if (totalIngredientCount == 0)
+		{
+			// onIngredientInsertsComplete();
+			// return;
+			// Insert some fake ingredients
+			for (int h = 0; h < 50; h++)
+			{
+				final ContentValues contentValues = new ContentValues();
+				contentValues.put(
+						RecipeContract.Ingredients.COLUMN_NAME_RECIPE_ID,
+						recipeId);
+				allContentValues.add(contentValues);
+				contentValues.put(
+						RecipeContract.Ingredients.COLUMN_NAME_QUANTITY, h + 1);
+				if (h % 5 == 0)
+				{
+					contentValues
+							.put(RecipeContract.Ingredients.COLUMN_NAME_QUANTITY_NUMERATOR,
+									1);
+					contentValues
+							.put(RecipeContract.Ingredients.COLUMN_NAME_QUANTITY_DENOMINATOR,
+									h + 1);
+				}
+				contentValues.put(RecipeContract.Ingredients.COLUMN_NAME_UNIT,
+						"lbs");
+				contentValues.put(RecipeContract.Ingredients.COLUMN_NAME_ITEM,
+						"top sirloin");
+				contentValues.put(
+						RecipeContract.Ingredients.COLUMN_NAME_PREPARATION,
+						"grilled");
+			}
+			totalIngredientCount = allContentValues.size();
+		}
+		currentIngredientInsertCount = 0;
 		for (final ContentValues contentValues : allContentValues)
 			ingredientQueryHandler.startInsert(++currentToken, null,
 					RecipeContract.Ingredients.CONTENT_URI, contentValues);

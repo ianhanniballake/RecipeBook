@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/titleLabel"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="20dp" />
+        android:layout_marginLeft="30dp" />
     <TextView
         android:id="@+id/descriptionLabel"
         android:layout_width="wrap_content"
@@ -30,6 +30,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/descriptionLabel"
         android:layout_alignParentLeft="true"
-        android:layout_marginLeft="20dp"
-        android:minLines="3" />
+        android:layout_marginLeft="30dp"
+        android:scrollHorizontally="false"
+        android:gravity="top|left"
+        android:lines="3" />
 </RelativeLayout>

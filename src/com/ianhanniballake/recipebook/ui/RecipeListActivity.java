@@ -91,13 +91,13 @@ public class RecipeListActivity extends FragmentActivity implements
 	@Override
 	public void onRecipeSelected(final long recipeId)
 	{
-		selectedId = recipeId;
 		if (isDualPane)
 		{
 			RecipeDetailFragment details = (RecipeDetailFragment) getSupportFragmentManager()
 					.findFragmentById(R.id.details);
-			if (details == null || details.getRecipeId() != recipeId)
+			if (details == null || selectedId != recipeId)
 			{
+				selectedId = recipeId;
 				// Make new fragment to show this selection.
 				details = new RecipeDetailFragment();
 				final Bundle args = new Bundle();
@@ -114,6 +114,7 @@ public class RecipeListActivity extends FragmentActivity implements
 		}
 		else
 		{
+			selectedId = recipeId;
 			// We need to launch a new activity to display the details
 			final Intent intent = new Intent();
 			intent.setClass(this, RecipeDetailActivity.class);

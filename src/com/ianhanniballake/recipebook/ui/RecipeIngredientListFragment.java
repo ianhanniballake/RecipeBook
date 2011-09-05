@@ -162,31 +162,26 @@ public abstract class RecipeIngredientListFragment extends ListFragment
 				// Don't change startIndex to retry that token
 			}
 			endIndex = rawText.indexOf('/', startIndex);
-			try
-			{
-				final int quantityNumerator = Integer.parseInt(rawText
-						.substring(startIndex, endIndex));
-				contentValues
-						.put(RecipeContract.Ingredients.COLUMN_NAME_QUANTITY_NUMERATOR,
-								quantityNumerator);
-				startIndex = endIndex + 1;
-			} catch (final NumberFormatException e)
-			{
-				// Don't change startIndex to retry that token
-			}
-			endIndex = rawText.indexOf(' ', startIndex);
-			try
-			{
-				final int quantityDenominator = Integer.parseInt(rawText
-						.substring(startIndex, endIndex));
-				contentValues
-						.put(RecipeContract.Ingredients.COLUMN_NAME_QUANTITY_DENOMINATOR,
-								quantityDenominator);
-				startIndex = endIndex + 1;
-			} catch (final NumberFormatException e)
-			{
-				// Don't change startIndex to retry that token
-			}
+			if (endIndex != -1)
+				try
+				{
+					final int quantityNumerator = Integer.parseInt(rawText
+							.substring(startIndex, endIndex));
+					int tempStartIndex = endIndex + 1;
+					endIndex = rawText.indexOf(' ', tempStartIndex);
+					final int quantityDenominator = Integer.parseInt(rawText
+							.substring(tempStartIndex, endIndex));
+					startIndex = endIndex + 1;
+					contentValues
+							.put(RecipeContract.Ingredients.COLUMN_NAME_QUANTITY_NUMERATOR,
+									quantityNumerator);
+					contentValues
+							.put(RecipeContract.Ingredients.COLUMN_NAME_QUANTITY_DENOMINATOR,
+									quantityDenominator);
+				} catch (final NumberFormatException e)
+				{
+					// Don't change startIndex to retry that token
+				}
 			endIndex = rawText.indexOf(' ', startIndex);
 			// TODO Add unit check against master list of unit types
 			final String unit = rawText.substring(startIndex, endIndex);
