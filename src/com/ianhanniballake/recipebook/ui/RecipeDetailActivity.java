@@ -32,7 +32,7 @@ public class RecipeDetailActivity extends FragmentActivity implements
 		long recipeId = 0;
 		if (getIntent() != null && getIntent().getExtras() != null)
 			recipeId = getIntent().getExtras().getLong(BaseColumns._ID, 0);
-		final RecipeDetailFragment details = new RecipeDetailFragment();
+		final RecipeDetailViewFragment details = new RecipeDetailViewFragment();
 		final Bundle args = new Bundle();
 		args.putLong(BaseColumns._ID, recipeId);
 		details.setArguments(args);

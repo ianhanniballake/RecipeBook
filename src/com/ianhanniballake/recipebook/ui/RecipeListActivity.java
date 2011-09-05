@@ -99,7 +99,7 @@ public class RecipeListActivity extends FragmentActivity implements
 			{
 				selectedId = recipeId;
 				// Make new fragment to show this selection.
-				details = new RecipeDetailFragment();
+				details = new RecipeDetailViewFragment();
 				final Bundle args = new Bundle();
 				args.putLong(BaseColumns._ID, recipeId);
 				details.setArguments(args);
@@ -116,8 +116,7 @@ public class RecipeListActivity extends FragmentActivity implements
 		{
 			selectedId = recipeId;
 			// We need to launch a new activity to display the details
-			final Intent intent = new Intent();
-			intent.setClass(this, RecipeDetailActivity.class);
+			final Intent intent = new Intent(this, RecipeDetailActivity.class);
 			intent.putExtra(BaseColumns._ID, recipeId);
 			startActivityForResult(intent, VIEW_DETAILS);
 		}
