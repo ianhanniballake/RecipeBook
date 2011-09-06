@@ -68,7 +68,7 @@ public class RecipeDetailEditFragment extends RecipeDetailFragment
 			}
 			else if (position == 1)
 			{
-				final RecipeIngredientListFragment ingredients = new RecipeIngredientListEditFragment();
+				final RecipeIngredientListEditFragment ingredients = new RecipeIngredientListEditFragment();
 				final Bundle args = new Bundle();
 				args.putLong(BaseColumns._ID, recipeId);
 				ingredients.setArguments(args);
@@ -109,7 +109,7 @@ public class RecipeDetailEditFragment extends RecipeDetailFragment
 	 * Reference to the current ingredient fragment used in saving the updated
 	 * recipe
 	 */
-	private RecipeIngredientListFragment ingredientFragment;
+	private RecipeIngredientListEditFragment ingredientFragment;
 	/**
 	 * Handler for asynchronous updates of ingredients
 	 */
