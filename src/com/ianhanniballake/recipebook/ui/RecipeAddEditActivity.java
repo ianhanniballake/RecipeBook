@@ -14,7 +14,7 @@ import com.ianhanniballake.recipebook.provider.RecipeContract;
 /**
  * Activity responsible for creating new Recipes
  */
-public class RecipeAddActivity extends FragmentActivity implements
+public class RecipeAddEditActivity extends FragmentActivity implements
 		OnRecipeEditFinishListener
 {
 	@Override

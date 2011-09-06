@@ -185,7 +185,7 @@ public class RecipeDetailViewFragment extends RecipeDetailFragment
 	 */
 	public void onRecipeEditStarted()
 	{
-		final Intent intent = new Intent(getActivity(), RecipeAddActivity.class);
+		final Intent intent = new Intent(getActivity(), RecipeAddEditActivity.class);
 		intent.putExtra(BaseColumns._ID, recipeId);
 		startActivityForResult(intent, EDIT_RECIPE);
 	}
