@@ -1,5 +1,7 @@
 package com.ianhanniballake.recipebook.model;
 
+import java.util.Arrays;
+
 import android.content.ContentValues;
 import android.content.res.Resources;
 import android.database.Cursor;
@@ -113,9 +115,20 @@ public class Ingredient
 						.getInteger(R.integer.default_ingredient_quantity_denominator);
 			}
 		endIndex = rawText.indexOf(' ', startIndex);
-		// TODO Add unit check against master list of unit types
-		unit = rawText.substring(startIndex, endIndex);
-		startIndex = endIndex + 1;
+		String possibleUnit = rawText.substring(startIndex, endIndex);
+		// Strip off periods or final S's (lbs. -> lb, etc)
+		if (possibleUnit.endsWith("s."))
+			possibleUnit = possibleUnit.substring(0, possibleUnit.length() - 2);
+		else if (possibleUnit.endsWith("."))
+			possibleUnit = possibleUnit.substring(0, possibleUnit.length() - 1);
+		if (Arrays.asList(resources.getStringArray(R.array.units)).contains(
+				possibleUnit))
+		{
+			unit = possibleUnit;
+			startIndex = endIndex + 1;
+		}
+		else
+			unit = resources.getString(R.string.default_ingredient_unit);
 		endIndex = Math.max(rawText.indexOf(';', startIndex),
 				rawText.indexOf(',', startIndex));
 		// Take everything until the end of the string as the item if there
