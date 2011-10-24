@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="units">
-        <item>teaspoon</item>
-        <item>t</item>
-        <item>tsp</item>
-        <item>tablespoon</item>
-        <item>T</item>
-        <item>tbsp</item>
-        <item>oz</item>
-        <item>cup</item>
-        <item>gallon</item>
-        <item>pound</item>
-        <item>lb</item>
-    </string-array>
+	<string-array name="units">
+		<item>teaspoon</item>
+		<item>t</item>
+		<item>tsp</item>
+		<item>tablespoon</item>
+		<item>T</item>
+		<item>tbsp</item>
+		<item>oz</item>
+		<item>cup</item>
+		<item>gallon</item>
+		<item>pound</item>
+		<item>lb</item>
+	</string-array>
 </resources>

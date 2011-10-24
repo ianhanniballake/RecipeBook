@@ -80,7 +80,8 @@ public class RecipeListActivity extends FragmentActivity implements
 		switch (item.getItemId())
 		{
 			case R.id.add:
-				final Intent intent = new Intent(this, RecipeAddEditActivity.class);
+				final Intent intent = new Intent(this,
+						RecipeAddEditActivity.class);
 				startActivityForResult(intent, ADD_RECIPE);
 				return true;
 			default:
