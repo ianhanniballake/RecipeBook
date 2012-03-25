@@ -10,7 +10,7 @@ import android.provider.BaseColumns;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.MenuCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.PagerAdapter;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -138,8 +138,10 @@ public class RecipeDetailViewFragment extends RecipeDetailFragment
 	{
 		super.onCreateOptionsMenu(menu, inflater);
 		inflater.inflate(R.menu.fragment_recipe_summary, menu);
-		MenuCompat.setShowAsAction(menu.findItem(R.id.edit), 2);
-		MenuCompat.setShowAsAction(menu.findItem(R.id.delete), 2);
+		MenuItemCompat.setShowAsAction(menu.findItem(R.id.edit),
+				MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
+		MenuItemCompat.setShowAsAction(menu.findItem(R.id.delete),
+				MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
 	}
 
 	@Override
@@ -188,6 +190,6 @@ public class RecipeDetailViewFragment extends RecipeDetailFragment
 		final Intent intent = new Intent(getActivity(),
 				RecipeAddEditActivity.class);
 		intent.putExtra(BaseColumns._ID, recipeId);
-		startActivityForResult(intent, EDIT_RECIPE);
+		startActivityForResult(intent, RecipeDetailViewFragment.EDIT_RECIPE);
 	}
 }

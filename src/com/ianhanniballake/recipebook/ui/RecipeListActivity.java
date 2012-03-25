@@ -1,12 +1,13 @@
 package com.ianhanniballake.recipebook.ui;
 
+import android.app.Activity;
 import android.content.ContentUris;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.BaseColumns;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.MenuCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -40,12 +41,13 @@ public class RecipeListActivity extends FragmentActivity implements
 	protected void onActivityResult(final int requestCode,
 			final int resultCode, final Intent data)
 	{
-		if (requestCode == ADD_RECIPE && resultCode == RESULT_OK)
+		if (requestCode == RecipeListActivity.ADD_RECIPE
+				&& resultCode == Activity.RESULT_OK)
 		{
 			final long recipeId = ContentUris.parseId(data.getData());
 			selectedId = recipeId;
 		}
-		else if (requestCode == VIEW_DETAILS
+		else if (requestCode == RecipeListActivity.VIEW_DETAILS
 				&& resultCode == RecipeDetailActivity.RESULT_DELETED)
 			selectedId = -1;
 		else
@@ -70,7 +72,8 @@ public class RecipeListActivity extends FragmentActivity implements
 	{
 		super.onCreateOptionsMenu(menu);
 		getMenuInflater().inflate(R.menu.fragment_recipe_list, menu);
-		MenuCompat.setShowAsAction(menu.findItem(R.id.add), 2);
+		MenuItemCompat.setShowAsAction(menu.findItem(R.id.add),
+				MenuItemCompat.SHOW_AS_ACTION_ALWAYS);
 		return true;
 	}
 
@@ -82,7 +85,7 @@ public class RecipeListActivity extends FragmentActivity implements
 			case R.id.add:
 				final Intent intent = new Intent(this,
 						RecipeAddEditActivity.class);
-				startActivityForResult(intent, ADD_RECIPE);
+				startActivityForResult(intent, RecipeListActivity.ADD_RECIPE);
 				return true;
 			default:
 				return super.onOptionsItemSelected(item);
@@ -119,7 +122,7 @@ public class RecipeListActivity extends FragmentActivity implements
 			// We need to launch a new activity to display the details
 			final Intent intent = new Intent(this, RecipeDetailActivity.class);
 			intent.putExtra(BaseColumns._ID, recipeId);
-			startActivityForResult(intent, VIEW_DETAILS);
+			startActivityForResult(intent, RecipeListActivity.VIEW_DETAILS);
 		}
 	}
 

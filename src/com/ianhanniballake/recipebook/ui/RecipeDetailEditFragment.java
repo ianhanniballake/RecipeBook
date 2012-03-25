@@ -13,7 +13,7 @@ import android.provider.BaseColumns;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.MenuCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.PagerAdapter;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -222,8 +222,10 @@ public class RecipeDetailEditFragment extends RecipeDetailFragment
 	{
 		super.onCreateOptionsMenu(menu, inflater);
 		inflater.inflate(R.menu.fragment_recipe_edit, menu);
-		MenuCompat.setShowAsAction(menu.findItem(R.id.save), 2);
-		MenuCompat.setShowAsAction(menu.findItem(R.id.cancel), 2);
+		MenuItemCompat.setShowAsAction(menu.findItem(R.id.save),
+				MenuItemCompat.SHOW_AS_ACTION_ALWAYS);
+		MenuItemCompat.setShowAsAction(menu.findItem(R.id.cancel),
+				MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
 	}
 
 	/**
