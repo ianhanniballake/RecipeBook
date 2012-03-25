@@ -3,12 +3,14 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:orientation="vertical" >
+
 	<ListView
 		android:id="@id/android:list"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
 		android:layout_weight="1"
 		android:drawSelectorOnTop="true" />
+
 	<TextView
 		android:id="@id/android:empty"
 		android:layout_width="wrap_content"
@@ -16,10 +18,11 @@
 		android:layout_weight="1"
 		android:text="@string/empty_ingredient_list"
 		android:textAppearance="?android:attr/textAppearanceMedium" />
+
 	<Button
-		android:id="@+id/addButton"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:gravity="right"
 		android:text="@string/add_ingredient" />
+
 </LinearLayout>

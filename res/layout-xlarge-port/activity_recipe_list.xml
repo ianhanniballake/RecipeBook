@@ -3,16 +3,19 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:orientation="horizontal" >
+
 	<fragment
-		android:id="@+id/list"
+		android:name="com.ianhanniballake.recipebook.ui.RecipeListFragment"
 		android:layout_width="?android:attr/listPreferredItemHeight"
-		android:layout_height="match_parent"
-		android:name="com.ianhanniballake.recipebook.ui.RecipeListFragment" >
+		android:layout_height="match_parent" >
+
 		<!-- Preview: layout=@layout/item_recipe_list -->
 	</fragment>
+
 	<FrameLayout
 		android:id="@+id/details"
 		android:layout_width="0dp"
 		android:layout_height="match_parent"
 		android:layout_weight="1" />
+
 </LinearLayout>
