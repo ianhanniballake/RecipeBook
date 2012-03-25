@@ -17,6 +17,7 @@ import android.provider.BaseColumns;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.ianhanniballake.recipebook.BuildConfig;
 import com.ianhanniballake.recipebook.R;
 
 /**
@@ -38,7 +39,8 @@ public class RecipeProvider extends ContentProvider
 		 */
 		DatabaseHelper(final Context context)
 		{
-			super(context, DATABASE_NAME, null, DATABASE_VERSION);
+			super(context, RecipeProvider.DATABASE_NAME, null,
+					RecipeProvider.DATABASE_VERSION);
 		}
 
 		/**
@@ -48,16 +50,18 @@ public class RecipeProvider extends ContentProvider
 		@Override
 		public void onCreate(final SQLiteDatabase db)
 		{
-			Log.d(TAG, "Creating the " + RecipeContract.Recipes.TABLE_NAME
-					+ " table");
+			if (BuildConfig.DEBUG)
+				Log.d(RecipeProvider.TAG, "Creating the "
+						+ RecipeContract.Recipes.TABLE_NAME + " table");
 			db.execSQL("CREATE TABLE " + RecipeContract.Recipes.TABLE_NAME
 					+ " (" + BaseColumns._ID
 					+ " INTEGER PRIMARY KEY AUTOINCREMENT,"
 					+ RecipeContract.Recipes.COLUMN_NAME_TITLE + " TEXT,"
 					+ RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION + " TEXT"
 					+ ");");
-			Log.d(TAG, "Creating the " + RecipeContract.Ingredients.TABLE_NAME
-					+ " table");
+			if (BuildConfig.DEBUG)
+				Log.d(RecipeProvider.TAG, "Creating the "
+						+ RecipeContract.Ingredients.TABLE_NAME + " table");
 			db.execSQL("CREATE TABLE "
 					+ RecipeContract.Ingredients.TABLE_NAME
 					+ " ("
@@ -91,8 +95,9 @@ public class RecipeProvider extends ContentProvider
 		public void onUpgrade(final SQLiteDatabase db, final int oldVersion,
 				final int newVersion)
 		{
-			Log.w(TAG, "Upgrading database from version " + oldVersion + " to "
-					+ newVersion + ", which will destroy all old data");
+			Log.w(RecipeProvider.TAG, "Upgrading database from version "
+					+ oldVersion + " to " + newVersion
+					+ ", which will destroy all old data");
 			db.execSQL("DROP TABLE IF EXISTS "
 					+ RecipeContract.Recipes.TABLE_NAME);
 			db.execSQL("DROP TABLE IF EXISTS "
@@ -132,7 +137,8 @@ public class RecipeProvider extends ContentProvider
 	/**
 	 * A UriMatcher instance
 	 */
-	private static final UriMatcher uriMatcher = buildUriMatcher();
+	private static final UriMatcher uriMatcher = RecipeProvider
+			.buildUriMatcher();
 
 	/**
 	 * Creates and initializes the URI matcher
@@ -144,16 +150,20 @@ public class RecipeProvider extends ContentProvider
 		final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
 		// Add a pattern that routes URIs terminated with "recipes" to a RECIPES
 		// operation
-		matcher.addURI(RecipeContract.AUTHORITY, "recipes", RECIPES);
+		matcher.addURI(RecipeContract.AUTHORITY, "recipes",
+				RecipeProvider.RECIPES);
 		// Add a pattern that routes URIs terminated with "recipes" plus an
 		// integer to a recipe ID operation
-		matcher.addURI(RecipeContract.AUTHORITY, "recipes/#", RECIPE_ID);
+		matcher.addURI(RecipeContract.AUTHORITY, "recipes/#",
+				RecipeProvider.RECIPE_ID);
 		// Add a pattern that routes URIs terminated with "ingredients" to a
 		// INGREDIENTS operation
-		matcher.addURI(RecipeContract.AUTHORITY, "ingredients", INGREDIENTS);
+		matcher.addURI(RecipeContract.AUTHORITY, "ingredients",
+				RecipeProvider.INGREDIENTS);
 		// Add a pattern that routes URIs terminated with "ingredients" plus an
 		// integer to a ingredient ID operation
-		matcher.addURI(RecipeContract.AUTHORITY, "ingredients/#", INGREDIENT_ID);
+		matcher.addURI(RecipeContract.AUTHORITY, "ingredients/#",
+				RecipeProvider.INGREDIENT_ID);
 		return matcher;
 	}
 
@@ -171,7 +181,7 @@ public class RecipeProvider extends ContentProvider
 		String finalWhere;
 		int count;
 		// Does the delete based on the incoming URI pattern.
-		switch (uriMatcher.match(uri))
+		switch (RecipeProvider.uriMatcher.match(uri))
 		{
 			case RECIPES:
 				// If the incoming pattern matches the general pattern for
@@ -230,7 +240,7 @@ public class RecipeProvider extends ContentProvider
 		/**
 		 * Chooses the MIME type based on the incoming URI pattern
 		 */
-		switch (uriMatcher.match(uri))
+		switch (RecipeProvider.uriMatcher.match(uri))
 		{
 			case RECIPES:
 				// If the pattern is for recipes, returns the general content
@@ -258,9 +268,9 @@ public class RecipeProvider extends ContentProvider
 	{
 		// Validates the incoming URI. Only the full provider URI is allowed for
 		// inserts.
-		if (uriMatcher.match(uri) == RECIPES)
+		if (RecipeProvider.uriMatcher.match(uri) == RecipeProvider.RECIPES)
 			return insertRecipe(uri, initialValues);
-		else if (uriMatcher.match(uri) == INGREDIENTS)
+		else if (RecipeProvider.uriMatcher.match(uri) == RecipeProvider.INGREDIENTS)
 			return insertIngredient(uri, initialValues);
 		else
 			throw new IllegalArgumentException("Unknown URI " + uri);
@@ -397,12 +407,12 @@ public class RecipeProvider extends ContentProvider
 			final String selection, final String[] selectionArgs,
 			final String sortOrder)
 	{
-		if (uriMatcher.match(uri) == RECIPES
-				|| uriMatcher.match(uri) == RECIPE_ID)
+		if (RecipeProvider.uriMatcher.match(uri) == RecipeProvider.RECIPES
+				|| RecipeProvider.uriMatcher.match(uri) == RecipeProvider.RECIPE_ID)
 			return queryRecipe(uri, projection, selection, selectionArgs,
 					sortOrder);
-		else if (uriMatcher.match(uri) == INGREDIENTS
-				|| uriMatcher.match(uri) == INGREDIENT_ID)
+		else if (RecipeProvider.uriMatcher.match(uri) == RecipeProvider.INGREDIENTS
+				|| RecipeProvider.uriMatcher.match(uri) == RecipeProvider.INGREDIENT_ID)
 			return queryIngredient(uri, projection, selection, selectionArgs,
 					sortOrder);
 		else
@@ -462,7 +472,7 @@ public class RecipeProvider extends ContentProvider
 				RecipeContract.Ingredients.COLUMN_NAME_PREPARATION,
 				RecipeContract.Ingredients.COLUMN_NAME_PREPARATION);
 		qb.setProjectionMap(allColumnProjectionMap);
-		switch (uriMatcher.match(uri))
+		switch (RecipeProvider.uriMatcher.match(uri))
 		{
 			case INGREDIENTS:
 				break;
@@ -529,7 +539,7 @@ public class RecipeProvider extends ContentProvider
 				RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION,
 				RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION);
 		qb.setProjectionMap(allColumnProjectionMap);
-		switch (uriMatcher.match(uri))
+		switch (RecipeProvider.uriMatcher.match(uri))
 		{
 			case RECIPES:
 				break;
@@ -559,11 +569,11 @@ public class RecipeProvider extends ContentProvider
 	public int update(final Uri uri, final ContentValues values,
 			final String selection, final String[] selectionArgs)
 	{
-		if (uriMatcher.match(uri) == RECIPES
-				|| uriMatcher.match(uri) == RECIPE_ID)
+		if (RecipeProvider.uriMatcher.match(uri) == RecipeProvider.RECIPES
+				|| RecipeProvider.uriMatcher.match(uri) == RecipeProvider.RECIPE_ID)
 			return updateRecipe(uri, values, selection, selectionArgs);
-		else if (uriMatcher.match(uri) == INGREDIENTS
-				|| uriMatcher.match(uri) == INGREDIENT_ID)
+		else if (RecipeProvider.uriMatcher.match(uri) == RecipeProvider.INGREDIENTS
+				|| RecipeProvider.uriMatcher.match(uri) == RecipeProvider.INGREDIENT_ID)
 			return updateIngredient(uri, values, selection, selectionArgs);
 		else
 			throw new IllegalArgumentException("Unknown URI " + uri);
@@ -589,7 +599,7 @@ public class RecipeProvider extends ContentProvider
 	{
 		final SQLiteDatabase db = databaseHelper.getWritableDatabase();
 		int count = 0;
-		switch (uriMatcher.match(uri))
+		switch (RecipeProvider.uriMatcher.match(uri))
 		{
 			case INGREDIENTS:
 				// If the incoming URI matches the general ingredients pattern,
@@ -639,7 +649,7 @@ public class RecipeProvider extends ContentProvider
 	{
 		final SQLiteDatabase db = databaseHelper.getWritableDatabase();
 		int count = 0;
-		switch (uriMatcher.match(uri))
+		switch (RecipeProvider.uriMatcher.match(uri))
 		{
 			case RECIPES:
 				// If the incoming URI matches the general recipes pattern, does
