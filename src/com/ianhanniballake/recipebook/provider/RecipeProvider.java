@@ -487,6 +487,8 @@ public class RecipeProvider extends ContentProvider
 						+ uri.getPathSegments()
 								.get(RecipeContract.Ingredients.INGREDIENT_ID_PATH_POSITION));
 				break;
+			default:
+				throw new IllegalArgumentException("Unknown URI " + uri);
 		}
 		String orderBy;
 		if (TextUtils.isEmpty(sortOrder))
@@ -552,6 +554,8 @@ public class RecipeProvider extends ContentProvider
 						+ uri.getPathSegments().get(
 								RecipeContract.Recipes.RECIPE_ID_PATH_POSITION));
 				break;
+			default:
+				throw new IllegalArgumentException("Unknown URI " + uri);
 		}
 		String orderBy;
 		if (TextUtils.isEmpty(sortOrder))
@@ -624,6 +628,8 @@ public class RecipeProvider extends ContentProvider
 				count = db.update(RecipeContract.Ingredients.TABLE_NAME,
 						values, finalWhere, selectionArgs);
 				break;
+			default:
+				throw new IllegalArgumentException("Unknown URI " + uri);
 		}
 		getContext().getContentResolver().notifyChange(uri, null);
 		return count;
@@ -674,6 +680,8 @@ public class RecipeProvider extends ContentProvider
 				count = db.update(RecipeContract.Recipes.TABLE_NAME, values,
 						finalWhere, selectionArgs);
 				break;
+			default:
+				throw new IllegalArgumentException("Unknown URI " + uri);
 		}
 		getContext().getContentResolver().notifyChange(uri, null);
 		return count;

@@ -81,7 +81,7 @@ public class RecipeDetailViewFragment extends RecipeDetailFragment
 	/**
 	 * Listener that handles recipe delete events
 	 */
-	private OnRecipeDeleteListener recipeDeleteListener = null;
+	OnRecipeDeleteListener recipeDeleteListener = null;
 	/**
 	 * Handler for asynchronous updates of recipes
 	 */

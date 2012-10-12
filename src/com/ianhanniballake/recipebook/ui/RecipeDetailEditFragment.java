@@ -86,7 +86,7 @@ public class RecipeDetailEditFragment extends RecipeDetailFragment
 	/**
 	 * Current number of ingredients that have been inserted
 	 */
-	private int currentIngredientInsertCount = 0;
+	int currentIngredientInsertCount = 0;
 	/**
 	 * Focus listener to automatically hide the soft keyboard when closing this
 	 * fragment
@@ -109,11 +109,11 @@ public class RecipeDetailEditFragment extends RecipeDetailFragment
 	 * Reference to the current ingredient fragment used in saving the updated
 	 * recipe
 	 */
-	private RecipeIngredientListEditFragment ingredientFragment;
+	RecipeIngredientListEditFragment ingredientFragment;
 	/**
 	 * Handler for asynchronous updates of ingredients
 	 */
-	private AsyncQueryHandler ingredientQueryHandler;
+	AsyncQueryHandler ingredientQueryHandler;
 	/**
 	 * Listener that handles recipe edit finish events
 	 */
@@ -126,11 +126,11 @@ public class RecipeDetailEditFragment extends RecipeDetailFragment
 	 * Reference to the current summary fragment used in saving the updated
 	 * recipe
 	 */
-	private RecipeSummaryFragment summaryFragment;
+	RecipeSummaryFragment summaryFragment;
 	/**
 	 * Total number of ingredients that need to be inserted
 	 */
-	private int totalIngredientCount = 0;
+	int totalIngredientCount = 0;
 
 	@Override
 	protected PagerAdapter getPagerAdapter(final FragmentManager fm)
@@ -231,7 +231,7 @@ public class RecipeDetailEditFragment extends RecipeDetailFragment
 	/**
 	 * Called when all ingredients have been inserted
 	 */
-	private void onIngredientInsertsComplete()
+	void onIngredientInsertsComplete()
 	{
 		Toast.makeText(getActivity(), getText(R.string.saved),
 				Toast.LENGTH_SHORT).show();
@@ -280,7 +280,7 @@ public class RecipeDetailEditFragment extends RecipeDetailFragment
 	/**
 	 * Kicks off the insertion of all of the updated ingredients
 	 */
-	private void startIngredientInsert()
+	void startIngredientInsert()
 	{
 		final List<ContentValues> allContentValues = ingredientFragment
 				.getContentValues();
