@@ -65,6 +65,16 @@ public class RecipeProvider extends ContentProvider
 					+ " CONSTRAINT fk_recipe_ingredient FOREIGN KEY ("
 					+ RecipeContract.Ingredients.COLUMN_NAME_RECIPE_ID + ") REFERENCES "
 					+ RecipeContract.Recipes.TABLE_NAME + " (" + BaseColumns._ID + ") ON DELETE CASCADE" + ");");
+			// Insert sample data
+			db.execSQL("INSERT INTO " + RecipeContract.Recipes.TABLE_NAME + " ("
+					+ RecipeContract.Recipes.COLUMN_NAME_TITLE + ", " + RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION
+					+ ") VALUES ('Recipe 1', 'Description 1')");
+			db.execSQL("INSERT INTO " + RecipeContract.Recipes.TABLE_NAME + " ("
+					+ RecipeContract.Recipes.COLUMN_NAME_TITLE + ", " + RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION
+					+ ") VALUES ('Recipe 2', 'Description 2')");
+			db.execSQL("INSERT INTO " + RecipeContract.Recipes.TABLE_NAME + " ("
+					+ RecipeContract.Recipes.COLUMN_NAME_TITLE + ", " + RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION
+					+ ") VALUES ('Recipe 3', 'Description 3')");
 		}
 
 		/**

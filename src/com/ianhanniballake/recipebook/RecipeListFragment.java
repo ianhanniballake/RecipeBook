@@ -1,15 +1,19 @@
 package com.ianhanniballake.recipebook;
 
 import android.app.Activity;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.ianhanniballake.recipebook.dummy.DummyContent;
+import com.ianhanniballake.recipebook.provider.RecipeContract;
 
 /**
  * A list fragment representing a list of Recipes. This fragment also supports tablet devices by allowing list items to
@@ -18,7 +22,7 @@ import com.ianhanniballake.recipebook.dummy.DummyContent;
  * <p>
  * Activities containing this fragment MUST implement the {@link Callbacks} interface.
  */
-public class RecipeListFragment extends ListFragment
+public class RecipeListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>
 {
 	/**
 	 * A callback interface that all activities containing this fragment must implement. This mechanism allows
@@ -53,6 +57,10 @@ public class RecipeListFragment extends ListFragment
 	 */
 	private static final String STATE_ACTIVATED_POSITION = "activated_position";
 	/**
+	 * Adapter to display the list's data
+	 */
+	private SimpleCursorAdapter adapter;
+	/**
 	 * The current activated item position. Only used on tablets.
 	 */
 	private int mActivatedPosition = AdapterView.INVALID_POSITION;
@@ -70,6 +78,17 @@ public class RecipeListFragment extends ListFragment
 	}
 
 	@Override
+	public void onActivityCreated(final Bundle savedInstanceState)
+	{
+		super.onActivityCreated(savedInstanceState);
+		setEmptyText(getText(R.string.empty_recipe_list));
+		adapter = new SimpleCursorAdapter(getActivity(), android.R.layout.simple_list_item_activated_1, null,
+				new String[] { RecipeContract.Recipes.COLUMN_NAME_TITLE }, new int[] { android.R.id.text1 }, 0);
+		setListAdapter(adapter);
+		getLoaderManager().initLoader(0, null, this);
+	}
+
+	@Override
 	public void onAttach(final Activity activity)
 	{
 		super.onAttach(activity);
@@ -80,12 +99,9 @@ public class RecipeListFragment extends ListFragment
 	}
 
 	@Override
-	public void onCreate(final Bundle savedInstanceState)
+	public Loader<Cursor> onCreateLoader(final int id, final Bundle args)
 	{
-		super.onCreate(savedInstanceState);
-		// TODO: replace with a real list adapter.
-		setListAdapter(new ArrayAdapter<DummyContent.DummyItem>(getActivity(),
-				android.R.layout.simple_list_item_activated_1, android.R.id.text1, DummyContent.ITEMS));
+		return new CursorLoader(getActivity(), RecipeContract.Recipes.CONTENT_ID_URI_BASE, null, null, null, null);
 	}
 
 	@Override
@@ -100,9 +116,21 @@ public class RecipeListFragment extends ListFragment
 	public void onListItemClick(final ListView listView, final View view, final int position, final long id)
 	{
 		super.onListItemClick(listView, view, position, id);
-		// Notify the active callbacks interface (the activity, if the
-		// fragment is attached to one) that an item has been selected.
-		mCallbacks.onItemSelected(DummyContent.ITEMS.get(position).id);
+		// Notify the active callbacks interface (the activity, if the fragment is attached to one) that an item has
+		// been selected.
+		mCallbacks.onItemSelected(id);
+	}
+
+	@Override
+	public void onLoaderReset(final Loader<Cursor> loader)
+	{
+		adapter.swapCursor(null);
+	}
+
+	@Override
+	public void onLoadFinished(final Loader<Cursor> loader, final Cursor data)
+	{
+		adapter.swapCursor(data);
 	}
 
 	@Override
@@ -141,8 +169,7 @@ public class RecipeListFragment extends ListFragment
 	 */
 	public void setActivateOnItemClick(final boolean activateOnItemClick)
 	{
-		// When setting CHOICE_MODE_SINGLE, ListView will automatically
-		// give items the 'activated' state when touched.
+		// When setting CHOICE_MODE_SINGLE, ListView will automatically give items the 'activated' state when touched.
 		getListView()
 				.setChoiceMode(activateOnItemClick ? AbsListView.CHOICE_MODE_SINGLE : AbsListView.CHOICE_MODE_NONE);
 	}
