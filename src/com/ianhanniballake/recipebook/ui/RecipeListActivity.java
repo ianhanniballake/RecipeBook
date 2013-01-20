@@ -17,8 +17,7 @@ import com.ianhanniballake.recipebook.R;
 /**
  * Activity controlling the recipe list
  */
-public class RecipeListActivity extends FragmentActivity implements
-		OnRecipeSelectedListener
+public class RecipeListActivity extends FragmentActivity implements OnRecipeSelectedListener
 {
 	/**
 	 * Request Code associated with adding a new recipe
@@ -38,17 +37,14 @@ public class RecipeListActivity extends FragmentActivity implements
 	private long selectedId = -1;
 
 	@Override
-	protected void onActivityResult(final int requestCode,
-			final int resultCode, final Intent data)
+	protected void onActivityResult(final int requestCode, final int resultCode, final Intent data)
 	{
-		if (requestCode == RecipeListActivity.ADD_RECIPE
-				&& resultCode == Activity.RESULT_OK)
+		if (requestCode == RecipeListActivity.ADD_RECIPE && resultCode == Activity.RESULT_OK)
 		{
 			final long recipeId = ContentUris.parseId(data.getData());
 			selectedId = recipeId;
 		}
-		else if (requestCode == RecipeListActivity.VIEW_DETAILS
-				&& resultCode == RecipeDetailActivity.RESULT_DELETED)
+		else if (requestCode == RecipeListActivity.VIEW_DETAILS && resultCode == RecipeDetailActivity.RESULT_DELETED)
 			selectedId = -1;
 		else
 			super.onActivityResult(requestCode, resultCode, data);
@@ -60,8 +56,7 @@ public class RecipeListActivity extends FragmentActivity implements
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_recipe_list);
 		final View detailsFrame = findViewById(R.id.details);
-		isDualPane = detailsFrame != null
-				&& detailsFrame.getVisibility() == View.VISIBLE;
+		isDualPane = detailsFrame != null && detailsFrame.getVisibility() == View.VISIBLE;
 		if (savedInstanceState != null && isDualPane)
 			// Restore last state for checked position.
 			selectedId = savedInstanceState.getLong("selectedId", -1);
@@ -72,8 +67,7 @@ public class RecipeListActivity extends FragmentActivity implements
 	{
 		super.onCreateOptionsMenu(menu);
 		getMenuInflater().inflate(R.menu.fragment_recipe_list, menu);
-		MenuItemCompat.setShowAsAction(menu.findItem(R.id.add),
-				MenuItemCompat.SHOW_AS_ACTION_ALWAYS);
+		MenuItemCompat.setShowAsAction(menu.findItem(R.id.add), MenuItemCompat.SHOW_AS_ACTION_ALWAYS);
 		return true;
 	}
 
@@ -83,8 +77,7 @@ public class RecipeListActivity extends FragmentActivity implements
 		switch (item.getItemId())
 		{
 			case R.id.add:
-				final Intent intent = new Intent(this,
-						RecipeAddEditActivity.class);
+				final Intent intent = new Intent(this, RecipeAddEditActivity.class);
 				startActivityForResult(intent, RecipeListActivity.ADD_RECIPE);
 				return true;
 			default:
@@ -97,8 +90,8 @@ public class RecipeListActivity extends FragmentActivity implements
 	{
 		if (isDualPane)
 		{
-			RecipeDetailFragment details = (RecipeDetailFragment) getSupportFragmentManager()
-					.findFragmentById(R.id.details);
+			RecipeDetailFragment details = (RecipeDetailFragment) getSupportFragmentManager().findFragmentById(
+					R.id.details);
 			if (details == null || selectedId != recipeId)
 			{
 				selectedId = recipeId;
@@ -109,8 +102,7 @@ public class RecipeListActivity extends FragmentActivity implements
 				details.setArguments(args);
 				// Execute a transaction, replacing any existing fragment
 				// with this one inside the frame.
-				final FragmentTransaction ft = getSupportFragmentManager()
-						.beginTransaction();
+				final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 				ft.replace(R.id.details, details);
 				ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
 				ft.commit();

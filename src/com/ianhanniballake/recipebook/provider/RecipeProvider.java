@@ -21,8 +21,7 @@ import com.ianhanniballake.recipebook.BuildConfig;
 import com.ianhanniballake.recipebook.R;
 
 /**
- * Provides access to a database of recipes. Each recipe has a title and a
- * description.
+ * Provides access to a database of recipes. Each recipe has a title and a description.
  */
 public class RecipeProvider extends ContentProvider
 {
@@ -39,69 +38,47 @@ public class RecipeProvider extends ContentProvider
 		 */
 		DatabaseHelper(final Context context)
 		{
-			super(context, RecipeProvider.DATABASE_NAME, null,
-					RecipeProvider.DATABASE_VERSION);
+			super(context, RecipeProvider.DATABASE_NAME, null, RecipeProvider.DATABASE_VERSION);
 		}
 
 		/**
-		 * Creates the underlying database with table name and column names
-		 * taken from the RecipeContract class.
+		 * Creates the underlying database with table name and column names taken from the RecipeContract class.
 		 */
 		@Override
 		public void onCreate(final SQLiteDatabase db)
 		{
 			if (BuildConfig.DEBUG)
-				Log.d(RecipeProvider.TAG, "Creating the "
-						+ RecipeContract.Recipes.TABLE_NAME + " table");
-			db.execSQL("CREATE TABLE " + RecipeContract.Recipes.TABLE_NAME
-					+ " (" + BaseColumns._ID
-					+ " INTEGER PRIMARY KEY AUTOINCREMENT,"
-					+ RecipeContract.Recipes.COLUMN_NAME_TITLE + " TEXT,"
-					+ RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION + " TEXT"
-					+ ");");
+				Log.d(RecipeProvider.TAG, "Creating the " + RecipeContract.Recipes.TABLE_NAME + " table");
+			db.execSQL("CREATE TABLE " + RecipeContract.Recipes.TABLE_NAME + " (" + BaseColumns._ID
+					+ " INTEGER PRIMARY KEY AUTOINCREMENT," + RecipeContract.Recipes.COLUMN_NAME_TITLE + " TEXT,"
+					+ RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION + " TEXT" + ");");
 			if (BuildConfig.DEBUG)
-				Log.d(RecipeProvider.TAG, "Creating the "
-						+ RecipeContract.Ingredients.TABLE_NAME + " table");
-			db.execSQL("CREATE TABLE "
-					+ RecipeContract.Ingredients.TABLE_NAME
-					+ " ("
-					+ BaseColumns._ID
-					+ " INTEGER PRIMARY KEY AUTOINCREMENT,"
-					+ RecipeContract.Ingredients.COLUMN_NAME_RECIPE_ID
-					+ " INTEGER,"
-					+ RecipeContract.Ingredients.COLUMN_NAME_QUANTITY
-					+ " INTEGER,"
-					+ RecipeContract.Ingredients.COLUMN_NAME_QUANTITY_NUMERATOR
-					+ " INTEGER,"
-					+ RecipeContract.Ingredients.COLUMN_NAME_QUANTITY_DENOMINATOR
-					+ " INTEGER," + RecipeContract.Ingredients.COLUMN_NAME_UNIT
-					+ " TEXT," + RecipeContract.Ingredients.COLUMN_NAME_ITEM
-					+ " TEXT,"
-					+ RecipeContract.Ingredients.COLUMN_NAME_PREPARATION
-					+ " TEXT,"
+				Log.d(RecipeProvider.TAG, "Creating the " + RecipeContract.Ingredients.TABLE_NAME + " table");
+			db.execSQL("CREATE TABLE " + RecipeContract.Ingredients.TABLE_NAME + " (" + BaseColumns._ID
+					+ " INTEGER PRIMARY KEY AUTOINCREMENT," + RecipeContract.Ingredients.COLUMN_NAME_RECIPE_ID
+					+ " INTEGER," + RecipeContract.Ingredients.COLUMN_NAME_QUANTITY + " INTEGER,"
+					+ RecipeContract.Ingredients.COLUMN_NAME_QUANTITY_NUMERATOR + " INTEGER,"
+					+ RecipeContract.Ingredients.COLUMN_NAME_QUANTITY_DENOMINATOR + " INTEGER,"
+					+ RecipeContract.Ingredients.COLUMN_NAME_UNIT + " TEXT,"
+					+ RecipeContract.Ingredients.COLUMN_NAME_ITEM + " TEXT,"
+					+ RecipeContract.Ingredients.COLUMN_NAME_PREPARATION + " TEXT,"
 					+ " CONSTRAINT fk_recipe_ingredient FOREIGN KEY ("
-					+ RecipeContract.Ingredients.COLUMN_NAME_RECIPE_ID
-					+ ") REFERENCES " + RecipeContract.Recipes.TABLE_NAME
-					+ " (" + BaseColumns._ID + ") ON DELETE CASCADE" + ");");
+					+ RecipeContract.Ingredients.COLUMN_NAME_RECIPE_ID + ") REFERENCES "
+					+ RecipeContract.Recipes.TABLE_NAME + " (" + BaseColumns._ID + ") ON DELETE CASCADE" + ");");
 		}
 
 		/**
 		 * 
-		 * Demonstrates that the provider must consider what happens when the
-		 * underlying database is changed. Note that this currently just
-		 * destroys and recreates the database - should upgrade in place
+		 * Demonstrates that the provider must consider what happens when the underlying database is changed. Note that
+		 * this currently just destroys and recreates the database - should upgrade in place
 		 */
 		@Override
-		public void onUpgrade(final SQLiteDatabase db, final int oldVersion,
-				final int newVersion)
+		public void onUpgrade(final SQLiteDatabase db, final int oldVersion, final int newVersion)
 		{
-			Log.w(RecipeProvider.TAG, "Upgrading database from version "
-					+ oldVersion + " to " + newVersion
+			Log.w(RecipeProvider.TAG, "Upgrading database from version " + oldVersion + " to " + newVersion
 					+ ", which will destroy all old data");
-			db.execSQL("DROP TABLE IF EXISTS "
-					+ RecipeContract.Recipes.TABLE_NAME);
-			db.execSQL("DROP TABLE IF EXISTS "
-					+ RecipeContract.Ingredients.TABLE_NAME);
+			db.execSQL("DROP TABLE IF EXISTS " + RecipeContract.Recipes.TABLE_NAME);
+			db.execSQL("DROP TABLE IF EXISTS " + RecipeContract.Ingredients.TABLE_NAME);
 			onCreate(db);
 		}
 	}
@@ -137,8 +114,7 @@ public class RecipeProvider extends ContentProvider
 	/**
 	 * A UriMatcher instance
 	 */
-	private static final UriMatcher uriMatcher = RecipeProvider
-			.buildUriMatcher();
+	private static final UriMatcher uriMatcher = RecipeProvider.buildUriMatcher();
 
 	/**
 	 * Creates and initializes the URI matcher
@@ -150,20 +126,16 @@ public class RecipeProvider extends ContentProvider
 		final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
 		// Add a pattern that routes URIs terminated with "recipes" to a RECIPES
 		// operation
-		matcher.addURI(RecipeContract.AUTHORITY, "recipes",
-				RecipeProvider.RECIPES);
+		matcher.addURI(RecipeContract.AUTHORITY, "recipes", RecipeProvider.RECIPES);
 		// Add a pattern that routes URIs terminated with "recipes" plus an
 		// integer to a recipe ID operation
-		matcher.addURI(RecipeContract.AUTHORITY, "recipes/#",
-				RecipeProvider.RECIPE_ID);
+		matcher.addURI(RecipeContract.AUTHORITY, "recipes/#", RecipeProvider.RECIPE_ID);
 		// Add a pattern that routes URIs terminated with "ingredients" to a
 		// INGREDIENTS operation
-		matcher.addURI(RecipeContract.AUTHORITY, "ingredients",
-				RecipeProvider.INGREDIENTS);
+		matcher.addURI(RecipeContract.AUTHORITY, "ingredients", RecipeProvider.INGREDIENTS);
 		// Add a pattern that routes URIs terminated with "ingredients" plus an
 		// integer to a ingredient ID operation
-		matcher.addURI(RecipeContract.AUTHORITY, "ingredients/#",
-				RecipeProvider.INGREDIENT_ID);
+		matcher.addURI(RecipeContract.AUTHORITY, "ingredients/#", RecipeProvider.INGREDIENT_ID);
 		return matcher;
 	}
 
@@ -173,8 +145,7 @@ public class RecipeProvider extends ContentProvider
 	private DatabaseHelper databaseHelper;
 
 	@Override
-	public int delete(final Uri uri, final String where,
-			final String[] whereArgs)
+	public int delete(final Uri uri, final String where, final String[] whereArgs)
 	{
 		// Opens the database object in "write" mode.
 		final SQLiteDatabase db = databaseHelper.getWritableDatabase();
@@ -187,45 +158,37 @@ public class RecipeProvider extends ContentProvider
 				// If the incoming pattern matches the general pattern for
 				// recipes, does a delete based on the incoming "where" columns
 				// and arguments.
-				count = db.delete(RecipeContract.Recipes.TABLE_NAME, where,
-						whereArgs);
+				count = db.delete(RecipeContract.Recipes.TABLE_NAME, where, whereArgs);
 				break;
 			case RECIPE_ID:
 				// If the incoming URI matches a single recipe ID, does the
 				// delete based on the incoming data, but modifies the where
 				// clause to restrict it to the particular recipe ID.
-				finalWhere = BaseColumns._ID
-						+ " = "
-						+ uri.getPathSegments().get(
-								RecipeContract.Recipes.RECIPE_ID_PATH_POSITION);
+				finalWhere = BaseColumns._ID + " = "
+						+ uri.getPathSegments().get(RecipeContract.Recipes.RECIPE_ID_PATH_POSITION);
 				// If there were additional selection criteria, append them to
 				// the final WHERE clause
 				if (where != null)
 					finalWhere = finalWhere + " AND " + where;
-				count = db.delete(RecipeContract.Recipes.TABLE_NAME,
-						finalWhere, whereArgs);
+				count = db.delete(RecipeContract.Recipes.TABLE_NAME, finalWhere, whereArgs);
 				break;
 			case INGREDIENTS:
 				// If the incoming pattern matches the general pattern for
 				// ingredients, does a delete based on the incoming "where"
 				// columns and arguments.
-				count = db.delete(RecipeContract.Ingredients.TABLE_NAME, where,
-						whereArgs);
+				count = db.delete(RecipeContract.Ingredients.TABLE_NAME, where, whereArgs);
 				break;
 			case INGREDIENT_ID:
 				// If the incoming URI matches a single ingredient ID, does the
 				// delete based on the incoming data, but modifies the where
 				// clause to restrict it to the particular ingredient ID.
-				finalWhere = BaseColumns._ID
-						+ " = "
-						+ uri.getPathSegments()
-								.get(RecipeContract.Ingredients.INGREDIENT_ID_PATH_POSITION);
+				finalWhere = BaseColumns._ID + " = "
+						+ uri.getPathSegments().get(RecipeContract.Ingredients.INGREDIENT_ID_PATH_POSITION);
 				// If there were additional selection criteria, append them to
 				// the final WHERE clause
 				if (where != null)
 					finalWhere = finalWhere + " AND " + where;
-				count = db.delete(RecipeContract.Ingredients.TABLE_NAME,
-						finalWhere, whereArgs);
+				count = db.delete(RecipeContract.Ingredients.TABLE_NAME, finalWhere, whereArgs);
 				break;
 			default:
 				throw new IllegalArgumentException("Unknown URI " + uri);
@@ -282,56 +245,37 @@ public class RecipeProvider extends ContentProvider
 	 * @param uri
 	 *            The content:// URI of the insertion request.
 	 * @param initialValues
-	 *            A set of column_name/value pairs to add to the database. Must
-	 *            contain the Recipe ID associated with this ingredient
+	 *            A set of column_name/value pairs to add to the database. Must contain the Recipe ID associated with
+	 *            this ingredient
 	 * @return The URI for the newly inserted item.
 	 */
-	private Uri insertIngredient(final Uri uri,
-			final ContentValues initialValues)
+	private Uri insertIngredient(final Uri uri, final ContentValues initialValues)
 	{
 		ContentValues values;
 		if (initialValues != null)
 			values = new ContentValues(initialValues);
 		else
 			values = new ContentValues();
-		if (!values
-				.containsKey(RecipeContract.Ingredients.COLUMN_NAME_RECIPE_ID))
-			throw new IllegalArgumentException(
-					"Initial values must contain Recipe ID " + initialValues);
-		if (!values
-				.containsKey(RecipeContract.Ingredients.COLUMN_NAME_QUANTITY))
-			values.put(
-					RecipeContract.Ingredients.COLUMN_NAME_QUANTITY,
-					getContext().getResources().getInteger(
-							R.integer.default_ingredient_quantity));
-		if (!values
-				.containsKey(RecipeContract.Ingredients.COLUMN_NAME_QUANTITY_NUMERATOR))
-			values.put(
-					RecipeContract.Ingredients.COLUMN_NAME_QUANTITY_NUMERATOR,
-					getContext().getResources().getInteger(
-							R.integer.default_ingredient_quantity_numerator));
-		if (!values
-				.containsKey(RecipeContract.Ingredients.COLUMN_NAME_QUANTITY_DENOMINATOR))
-			values.put(
-					RecipeContract.Ingredients.COLUMN_NAME_QUANTITY_DENOMINATOR,
-					getContext().getResources().getInteger(
-							R.integer.default_ingredient_quantity_denominator));
+		if (!values.containsKey(RecipeContract.Ingredients.COLUMN_NAME_RECIPE_ID))
+			throw new IllegalArgumentException("Initial values must contain Recipe ID " + initialValues);
+		if (!values.containsKey(RecipeContract.Ingredients.COLUMN_NAME_QUANTITY))
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_QUANTITY,
+					getContext().getResources().getInteger(R.integer.default_ingredient_quantity));
+		if (!values.containsKey(RecipeContract.Ingredients.COLUMN_NAME_QUANTITY_NUMERATOR))
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_QUANTITY_NUMERATOR, getContext().getResources()
+					.getInteger(R.integer.default_ingredient_quantity_numerator));
+		if (!values.containsKey(RecipeContract.Ingredients.COLUMN_NAME_QUANTITY_DENOMINATOR))
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_QUANTITY_DENOMINATOR, getContext().getResources()
+					.getInteger(R.integer.default_ingredient_quantity_denominator));
 		if (!values.containsKey(RecipeContract.Ingredients.COLUMN_NAME_UNIT))
-			values.put(
-					RecipeContract.Ingredients.COLUMN_NAME_UNIT,
-					getContext().getResources().getString(
-							R.string.default_ingredient_unit));
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_UNIT,
+					getContext().getResources().getString(R.string.default_ingredient_unit));
 		if (!values.containsKey(RecipeContract.Ingredients.COLUMN_NAME_ITEM))
-			values.put(
-					RecipeContract.Ingredients.COLUMN_NAME_ITEM,
-					getContext().getResources().getString(
-							R.string.default_ingredient_item));
-		if (!values
-				.containsKey(RecipeContract.Ingredients.COLUMN_NAME_PREPARATION))
-			values.put(
-					RecipeContract.Ingredients.COLUMN_NAME_PREPARATION,
-					getContext().getResources().getString(
-							R.string.default_ingredient_preparation));
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_ITEM,
+					getContext().getResources().getString(R.string.default_ingredient_item));
+		if (!values.containsKey(RecipeContract.Ingredients.COLUMN_NAME_PREPARATION))
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_PREPARATION,
+					getContext().getResources().getString(R.string.default_ingredient_preparation));
 		final SQLiteDatabase db = databaseHelper.getWritableDatabase();
 		final long rowId = db.insert(RecipeContract.Ingredients.TABLE_NAME,
 				RecipeContract.Ingredients.COLUMN_NAME_ITEM, values);
@@ -340,8 +284,7 @@ public class RecipeProvider extends ContentProvider
 		{
 			// Creates a URI with the ingredient ID pattern and the new row ID
 			// appended to it.
-			final Uri ingredientUri = ContentUris.withAppendedId(
-					RecipeContract.Ingredients.CONTENT_ID_URI_BASE, rowId);
+			final Uri ingredientUri = ContentUris.withAppendedId(RecipeContract.Ingredients.CONTENT_ID_URI_BASE, rowId);
 			getContext().getContentResolver().notifyChange(ingredientUri, null);
 			return ingredientUri;
 		}
@@ -366,23 +309,20 @@ public class RecipeProvider extends ContentProvider
 		else
 			values = new ContentValues();
 		if (!values.containsKey(RecipeContract.Recipes.COLUMN_NAME_TITLE))
-			values.put(RecipeContract.Recipes.COLUMN_NAME_TITLE, getContext()
-					.getResources().getString(R.string.default_recipe_title));
+			values.put(RecipeContract.Recipes.COLUMN_NAME_TITLE,
+					getContext().getResources().getString(R.string.default_recipe_title));
 		if (!values.containsKey(RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION))
-			values.put(
-					RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION,
-					getContext().getResources().getString(
-							R.string.default_recipe_description));
+			values.put(RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION,
+					getContext().getResources().getString(R.string.default_recipe_description));
 		final SQLiteDatabase db = databaseHelper.getWritableDatabase();
-		final long rowId = db.insert(RecipeContract.Recipes.TABLE_NAME,
-				RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION, values);
+		final long rowId = db.insert(RecipeContract.Recipes.TABLE_NAME, RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION,
+				values);
 		// If the insert succeeded, the row ID exists.
 		if (rowId > 0)
 		{
 			// Creates a URI with the recipe ID pattern and the new row ID
 			// appended to it.
-			final Uri recipeUri = ContentUris.withAppendedId(
-					RecipeContract.Recipes.CONTENT_ID_URI_BASE, rowId);
+			final Uri recipeUri = ContentUris.withAppendedId(RecipeContract.Recipes.CONTENT_ID_URI_BASE, rowId);
 			getContext().getContentResolver().notifyChange(recipeUri, null);
 			return recipeUri;
 		}
@@ -403,18 +343,15 @@ public class RecipeProvider extends ContentProvider
 	}
 
 	@Override
-	public Cursor query(final Uri uri, final String[] projection,
-			final String selection, final String[] selectionArgs,
+	public Cursor query(final Uri uri, final String[] projection, final String selection, final String[] selectionArgs,
 			final String sortOrder)
 	{
 		if (RecipeProvider.uriMatcher.match(uri) == RecipeProvider.RECIPES
 				|| RecipeProvider.uriMatcher.match(uri) == RecipeProvider.RECIPE_ID)
-			return queryRecipe(uri, projection, selection, selectionArgs,
-					sortOrder);
+			return queryRecipe(uri, projection, selection, selectionArgs, sortOrder);
 		else if (RecipeProvider.uriMatcher.match(uri) == RecipeProvider.INGREDIENTS
 				|| RecipeProvider.uriMatcher.match(uri) == RecipeProvider.INGREDIENT_ID)
-			return queryIngredient(uri, projection, selection, selectionArgs,
-					sortOrder);
+			return queryIngredient(uri, projection, selection, selectionArgs, sortOrder);
 		else
 			throw new IllegalArgumentException("Unknown URI " + uri);
 	}
@@ -423,53 +360,42 @@ public class RecipeProvider extends ContentProvider
 	 * Queries for ingredient(s).
 	 * 
 	 * @param uri
-	 *            The URI to query. This will be the full URI sent by the
-	 *            client; if the client is requesting a specific record, the URI
-	 *            will end in a record number that the implementation should
-	 *            parse and add to a WHERE or HAVING clause, specifying that _id
-	 *            value.
+	 *            The URI to query. This will be the full URI sent by the client; if the client is requesting a specific
+	 *            record, the URI will end in a record number that the implementation should parse and add to a WHERE or
+	 *            HAVING clause, specifying that _id value.
 	 * @param projection
-	 *            The list of columns to put into the cursor. If null all
-	 *            columns are included.
+	 *            The list of columns to put into the cursor. If null all columns are included.
 	 * @param selection
-	 *            A selection criteria to apply when filtering rows. If null
-	 *            then all rows are included.
+	 *            A selection criteria to apply when filtering rows. If null then all rows are included.
 	 * @param selectionArgs
-	 *            You may include ?s in selection, which will be replaced by the
-	 *            values from selectionArgs, in order that they appear in the
-	 *            selection. The values will be bound as Strings.
+	 *            You may include ?s in selection, which will be replaced by the values from selectionArgs, in order
+	 *            that they appear in the selection. The values will be bound as Strings.
 	 * @param sortOrder
-	 *            How the rows in the cursor should be sorted. If null then the
-	 *            provider is free to define the sort order.
+	 *            How the rows in the cursor should be sorted. If null then the provider is free to define the sort
+	 *            order.
 	 * @return A Cursor or null.
 	 */
-	private Cursor queryIngredient(final Uri uri, final String[] projection,
-			final String selection, final String[] selectionArgs,
-			final String sortOrder)
+	private Cursor queryIngredient(final Uri uri, final String[] projection, final String selection,
+			final String[] selectionArgs, final String sortOrder)
 	{
 		// Constructs a new query builder and sets its table name
 		final SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
 		qb.setTables(RecipeContract.Ingredients.TABLE_NAME);
 		final HashMap<String, String> allColumnProjectionMap = new HashMap<String, String>();
 		allColumnProjectionMap.put(BaseColumns._ID, BaseColumns._ID);
-		allColumnProjectionMap.put(
-				RecipeContract.Ingredients.COLUMN_NAME_RECIPE_ID,
+		allColumnProjectionMap.put(RecipeContract.Ingredients.COLUMN_NAME_RECIPE_ID,
 				RecipeContract.Ingredients.COLUMN_NAME_RECIPE_ID);
-		allColumnProjectionMap.put(
-				RecipeContract.Ingredients.COLUMN_NAME_QUANTITY,
+		allColumnProjectionMap.put(RecipeContract.Ingredients.COLUMN_NAME_QUANTITY,
 				RecipeContract.Ingredients.COLUMN_NAME_QUANTITY);
-		allColumnProjectionMap.put(
-				RecipeContract.Ingredients.COLUMN_NAME_QUANTITY_NUMERATOR,
+		allColumnProjectionMap.put(RecipeContract.Ingredients.COLUMN_NAME_QUANTITY_NUMERATOR,
 				RecipeContract.Ingredients.COLUMN_NAME_QUANTITY_NUMERATOR);
-		allColumnProjectionMap.put(
-				RecipeContract.Ingredients.COLUMN_NAME_QUANTITY_DENOMINATOR,
+		allColumnProjectionMap.put(RecipeContract.Ingredients.COLUMN_NAME_QUANTITY_DENOMINATOR,
 				RecipeContract.Ingredients.COLUMN_NAME_QUANTITY_DENOMINATOR);
 		allColumnProjectionMap.put(RecipeContract.Ingredients.COLUMN_NAME_UNIT,
 				RecipeContract.Ingredients.COLUMN_NAME_UNIT);
 		allColumnProjectionMap.put(RecipeContract.Ingredients.COLUMN_NAME_ITEM,
 				RecipeContract.Ingredients.COLUMN_NAME_ITEM);
-		allColumnProjectionMap.put(
-				RecipeContract.Ingredients.COLUMN_NAME_PREPARATION,
+		allColumnProjectionMap.put(RecipeContract.Ingredients.COLUMN_NAME_PREPARATION,
 				RecipeContract.Ingredients.COLUMN_NAME_PREPARATION);
 		qb.setProjectionMap(allColumnProjectionMap);
 		switch (RecipeProvider.uriMatcher.match(uri))
@@ -482,10 +408,8 @@ public class RecipeProvider extends ContentProvider
 				// ID, appends "_ID = <ingredientId>" to the where clause, so
 				// that
 				// it selects that single ingredient
-				qb.appendWhere(BaseColumns._ID
-						+ "="
-						+ uri.getPathSegments()
-								.get(RecipeContract.Ingredients.INGREDIENT_ID_PATH_POSITION));
+				qb.appendWhere(BaseColumns._ID + "="
+						+ uri.getPathSegments().get(RecipeContract.Ingredients.INGREDIENT_ID_PATH_POSITION));
 				break;
 			default:
 				throw new IllegalArgumentException("Unknown URI " + uri);
@@ -496,8 +420,7 @@ public class RecipeProvider extends ContentProvider
 		else
 			orderBy = sortOrder;
 		final SQLiteDatabase db = databaseHelper.getReadableDatabase();
-		final Cursor c = qb.query(db, projection, selection, selectionArgs,
-				null, null, orderBy);
+		final Cursor c = qb.query(db, projection, selection, selectionArgs, null, null, orderBy);
 		c.setNotificationUri(getContext().getContentResolver(), uri);
 		return c;
 	}
@@ -506,39 +429,31 @@ public class RecipeProvider extends ContentProvider
 	 * Queries for recipe(s).
 	 * 
 	 * @param uri
-	 *            The URI to query. This will be the full URI sent by the
-	 *            client; if the client is requesting a specific record, the URI
-	 *            will end in a record number that the implementation should
-	 *            parse and add to a WHERE or HAVING clause, specifying that _id
-	 *            value.
+	 *            The URI to query. This will be the full URI sent by the client; if the client is requesting a specific
+	 *            record, the URI will end in a record number that the implementation should parse and add to a WHERE or
+	 *            HAVING clause, specifying that _id value.
 	 * @param projection
-	 *            The list of columns to put into the cursor. If null all
-	 *            columns are included.
+	 *            The list of columns to put into the cursor. If null all columns are included.
 	 * @param selection
-	 *            A selection criteria to apply when filtering rows. If null
-	 *            then all rows are included.
+	 *            A selection criteria to apply when filtering rows. If null then all rows are included.
 	 * @param selectionArgs
-	 *            You may include ?s in selection, which will be replaced by the
-	 *            values from selectionArgs, in order that they appear in the
-	 *            selection. The values will be bound as Strings.
+	 *            You may include ?s in selection, which will be replaced by the values from selectionArgs, in order
+	 *            that they appear in the selection. The values will be bound as Strings.
 	 * @param sortOrder
-	 *            How the rows in the cursor should be sorted. If null then the
-	 *            provider is free to define the sort order.
+	 *            How the rows in the cursor should be sorted. If null then the provider is free to define the sort
+	 *            order.
 	 * @return A Cursor or null.
 	 */
-	private Cursor queryRecipe(final Uri uri, final String[] projection,
-			final String selection, final String[] selectionArgs,
-			final String sortOrder)
+	private Cursor queryRecipe(final Uri uri, final String[] projection, final String selection,
+			final String[] selectionArgs, final String sortOrder)
 	{
 		// Constructs a new query builder and sets its table name
 		final SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
 		qb.setTables(RecipeContract.Recipes.TABLE_NAME);
 		final HashMap<String, String> allColumnProjectionMap = new HashMap<String, String>();
 		allColumnProjectionMap.put(BaseColumns._ID, BaseColumns._ID);
-		allColumnProjectionMap.put(RecipeContract.Recipes.COLUMN_NAME_TITLE,
-				RecipeContract.Recipes.COLUMN_NAME_TITLE);
-		allColumnProjectionMap.put(
-				RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION,
+		allColumnProjectionMap.put(RecipeContract.Recipes.COLUMN_NAME_TITLE, RecipeContract.Recipes.COLUMN_NAME_TITLE);
+		allColumnProjectionMap.put(RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION,
 				RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION);
 		qb.setProjectionMap(allColumnProjectionMap);
 		switch (RecipeProvider.uriMatcher.match(uri))
@@ -549,10 +464,8 @@ public class RecipeProvider extends ContentProvider
 				// If the incoming URI is for a single recipe identified by its
 				// ID, appends "_ID = <recipeID>" to the where clause, so that
 				// it selects that single recipe
-				qb.appendWhere(BaseColumns._ID
-						+ "="
-						+ uri.getPathSegments().get(
-								RecipeContract.Recipes.RECIPE_ID_PATH_POSITION));
+				qb.appendWhere(BaseColumns._ID + "="
+						+ uri.getPathSegments().get(RecipeContract.Recipes.RECIPE_ID_PATH_POSITION));
 				break;
 			default:
 				throw new IllegalArgumentException("Unknown URI " + uri);
@@ -563,15 +476,13 @@ public class RecipeProvider extends ContentProvider
 		else
 			orderBy = sortOrder;
 		final SQLiteDatabase db = databaseHelper.getReadableDatabase();
-		final Cursor c = qb.query(db, projection, selection, selectionArgs,
-				null, null, orderBy);
+		final Cursor c = qb.query(db, projection, selection, selectionArgs, null, null, orderBy);
 		c.setNotificationUri(getContext().getContentResolver(), uri);
 		return c;
 	}
 
 	@Override
-	public int update(final Uri uri, final ContentValues values,
-			final String selection, final String[] selectionArgs)
+	public int update(final Uri uri, final ContentValues values, final String selection, final String[] selectionArgs)
 	{
 		if (RecipeProvider.uriMatcher.match(uri) == RecipeProvider.RECIPES
 				|| RecipeProvider.uriMatcher.match(uri) == RecipeProvider.RECIPE_ID)
@@ -587,19 +498,18 @@ public class RecipeProvider extends ContentProvider
 	 * Update the matching ingredient(s)
 	 * 
 	 * @param uri
-	 *            The URI to query. This can potentially have a record ID if
-	 *            this is an update request for a specific record.
+	 *            The URI to query. This can potentially have a record ID if this is an update request for a specific
+	 *            record.
 	 * @param values
-	 *            A Bundle mapping from column names to new column values (NULL
-	 *            is a valid value).
+	 *            A Bundle mapping from column names to new column values (NULL is a valid value).
 	 * @param selection
 	 *            An optional filter to match rows to update.
 	 * @param selectionArgs
 	 *            Arguments to the optional filter to match rows to update
 	 * @return The number of rows affected.
 	 */
-	private int updateIngredient(final Uri uri, final ContentValues values,
-			final String selection, final String[] selectionArgs)
+	private int updateIngredient(final Uri uri, final ContentValues values, final String selection,
+			final String[] selectionArgs)
 	{
 		final SQLiteDatabase db = databaseHelper.getWritableDatabase();
 		int count = 0;
@@ -608,25 +518,20 @@ public class RecipeProvider extends ContentProvider
 			case INGREDIENTS:
 				// If the incoming URI matches the general ingredients pattern,
 				// does the update based on the incoming data.
-				count = db.update(RecipeContract.Ingredients.TABLE_NAME,
-						values, selection, selectionArgs);
+				count = db.update(RecipeContract.Ingredients.TABLE_NAME, values, selection, selectionArgs);
 				break;
 			case INGREDIENT_ID:
 				// If the incoming URI matches a single ingredients ID, does the
 				// update based on the incoming data, but modifies the where
 				// clause to restrict it to the particular recipe ID.
-				uri.getPathSegments().get(
-						RecipeContract.Ingredients.INGREDIENT_ID_PATH_POSITION);
-				String finalWhere = BaseColumns._ID
-						+ " = "
-						+ uri.getPathSegments()
-								.get(RecipeContract.Ingredients.INGREDIENT_ID_PATH_POSITION);
+				uri.getPathSegments().get(RecipeContract.Ingredients.INGREDIENT_ID_PATH_POSITION);
+				String finalWhere = BaseColumns._ID + " = "
+						+ uri.getPathSegments().get(RecipeContract.Ingredients.INGREDIENT_ID_PATH_POSITION);
 				// If there were additional selection criteria, append them to
 				// the final WHERE clause
 				if (selection != null)
 					finalWhere = finalWhere + " AND " + selection;
-				count = db.update(RecipeContract.Ingredients.TABLE_NAME,
-						values, finalWhere, selectionArgs);
+				count = db.update(RecipeContract.Ingredients.TABLE_NAME, values, finalWhere, selectionArgs);
 				break;
 			default:
 				throw new IllegalArgumentException("Unknown URI " + uri);
@@ -639,19 +544,18 @@ public class RecipeProvider extends ContentProvider
 	 * Update the matching recipe(s)
 	 * 
 	 * @param uri
-	 *            The URI to query. This can potentially have a record ID if
-	 *            this is an update request for a specific record.
+	 *            The URI to query. This can potentially have a record ID if this is an update request for a specific
+	 *            record.
 	 * @param values
-	 *            A Bundle mapping from column names to new column values (NULL
-	 *            is a valid value).
+	 *            A Bundle mapping from column names to new column values (NULL is a valid value).
 	 * @param selection
 	 *            An optional filter to match rows to update.
 	 * @param selectionArgs
 	 *            Arguments to the optional filter to match rows to update
 	 * @return The number of rows affected.
 	 */
-	private int updateRecipe(final Uri uri, final ContentValues values,
-			final String selection, final String[] selectionArgs)
+	private int updateRecipe(final Uri uri, final ContentValues values, final String selection,
+			final String[] selectionArgs)
 	{
 		final SQLiteDatabase db = databaseHelper.getWritableDatabase();
 		int count = 0;
@@ -660,25 +564,20 @@ public class RecipeProvider extends ContentProvider
 			case RECIPES:
 				// If the incoming URI matches the general recipes pattern, does
 				// the update based on the incoming data.
-				count = db.update(RecipeContract.Recipes.TABLE_NAME, values,
-						selection, selectionArgs);
+				count = db.update(RecipeContract.Recipes.TABLE_NAME, values, selection, selectionArgs);
 				break;
 			case RECIPE_ID:
 				// If the incoming URI matches a single recipe ID, does the
 				// update based on the incoming data, but modifies the where
 				// clause to restrict it to the particular recipe ID.
-				uri.getPathSegments().get(
-						RecipeContract.Recipes.RECIPE_ID_PATH_POSITION);
-				String finalWhere = BaseColumns._ID
-						+ " = "
-						+ uri.getPathSegments().get(
-								RecipeContract.Recipes.RECIPE_ID_PATH_POSITION);
+				uri.getPathSegments().get(RecipeContract.Recipes.RECIPE_ID_PATH_POSITION);
+				String finalWhere = BaseColumns._ID + " = "
+						+ uri.getPathSegments().get(RecipeContract.Recipes.RECIPE_ID_PATH_POSITION);
 				// If there were additional selection criteria, append them to
 				// the final WHERE clause
 				if (selection != null)
 					finalWhere = finalWhere + " AND " + selection;
-				count = db.update(RecipeContract.Recipes.TABLE_NAME, values,
-						finalWhere, selectionArgs);
+				count = db.update(RecipeContract.Recipes.TABLE_NAME, values, finalWhere, selectionArgs);
 				break;
 			default:
 				throw new IllegalArgumentException("Unknown URI " + uri);

@@ -19,8 +19,7 @@ import com.ianhanniballake.recipebook.provider.RecipeContract;
 /**
  * Fragment which displays the details of a single recipe
  */
-public abstract class RecipeSummaryFragment extends Fragment implements
-		LoaderManager.LoaderCallbacks<Cursor>
+public abstract class RecipeSummaryFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>
 {
 	/**
 	 * Adapter to display the detailed data
@@ -28,30 +27,25 @@ public abstract class RecipeSummaryFragment extends Fragment implements
 	private SimpleCursorAdapter adapter;
 
 	/**
-	 * Creates the appropriate adapter for this fragment. Will be used to bind
-	 * the loaded view when the CursorLoader returns.
+	 * Creates the appropriate adapter for this fragment. Will be used to bind the loaded view when the CursorLoader
+	 * returns.
 	 * 
 	 * @return CursorAdapter that will be used to bind the view
 	 */
 	protected abstract SimpleCursorAdapter createAdapter();
 
 	/**
-	 * Gets the content values associated with this detail fragment, which can
-	 * be used for update statements
+	 * Gets the content values associated with this detail fragment, which can be used for update statements
 	 * 
 	 * @return current values in this fragment
 	 */
 	public ContentValues getContentValues()
 	{
-		final TextView title = (TextView) getActivity()
-				.findViewById(R.id.title);
-		final TextView description = (TextView) getActivity().findViewById(
-				R.id.description);
+		final TextView title = (TextView) getActivity().findViewById(R.id.title);
+		final TextView description = (TextView) getActivity().findViewById(R.id.description);
 		final ContentValues values = new ContentValues();
-		values.put(RecipeContract.Recipes.COLUMN_NAME_TITLE, title.getText()
-				.toString());
-		values.put(RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION, description
-				.getText().toString());
+		values.put(RecipeContract.Recipes.COLUMN_NAME_TITLE, title.getText().toString());
+		values.put(RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION, description.getText().toString());
 		return values;
 	}
 
@@ -79,10 +73,8 @@ public abstract class RecipeSummaryFragment extends Fragment implements
 	@Override
 	public Loader<Cursor> onCreateLoader(final int id, final Bundle args)
 	{
-		final Uri recipeUri = ContentUris.withAppendedId(
-				RecipeContract.Recipes.CONTENT_ID_URI_PATTERN, getRecipeId());
-		return new CursorLoader(getActivity(), recipeUri, null, null, null,
-				null);
+		final Uri recipeUri = ContentUris.withAppendedId(RecipeContract.Recipes.CONTENT_ID_URI_PATTERN, getRecipeId());
+		return new CursorLoader(getActivity(), recipeUri, null, null, null, null);
 	}
 
 	@Override

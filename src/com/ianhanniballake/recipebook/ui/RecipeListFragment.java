@@ -15,11 +15,9 @@ import com.ianhanniballake.recipebook.R;
 import com.ianhanniballake.recipebook.provider.RecipeContract;
 
 /**
- * Fragment which displays the list of recipes and triggers recipe selection
- * events
+ * Fragment which displays the list of recipes and triggers recipe selection events
  */
-public class RecipeListFragment extends ListFragment implements
-		LoaderManager.LoaderCallbacks<Cursor>
+public class RecipeListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>
 {
 	/**
 	 * Adapter to display the list's data
@@ -36,18 +34,15 @@ public class RecipeListFragment extends ListFragment implements
 	{
 		super.onActivityCreated(savedInstanceState);
 		setEmptyText(getText(R.string.empty_recipe_list));
-		adapter = new SimpleCursorAdapter(getActivity(),
-				R.layout.item_recipe_list, null,
-				new String[] { RecipeContract.Recipes.COLUMN_NAME_TITLE },
-				new int[] { R.id.title }, 0);
+		adapter = new SimpleCursorAdapter(getActivity(), R.layout.item_recipe_list, null,
+				new String[] { RecipeContract.Recipes.COLUMN_NAME_TITLE }, new int[] { R.id.title }, 0);
 		setListAdapter(adapter);
 		getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 		getLoaderManager().initLoader(0, null, this);
 	}
 
 	/**
-	 * Attaches to the parent activity, saving a reference to it to call back
-	 * recipe selection events
+	 * Attaches to the parent activity, saving a reference to it to call back recipe selection events
 	 * 
 	 * @see android.support.v4.app.Fragment#onAttach(android.app.Activity)
 	 */
@@ -60,22 +55,18 @@ public class RecipeListFragment extends ListFragment implements
 			recipeSelectedListener = (OnRecipeSelectedListener) activity;
 		} catch (final ClassCastException e)
 		{
-			throw new ClassCastException(activity.toString()
-					+ " must implement OnRecipeSelectedListener");
+			throw new ClassCastException(activity.toString() + " must implement OnRecipeSelectedListener");
 		}
 	}
 
 	@Override
 	public Loader<Cursor> onCreateLoader(final int id, final Bundle args)
 	{
-		return new CursorLoader(getActivity(),
-				RecipeContract.Recipes.CONTENT_ID_URI_BASE, null, null, null,
-				null);
+		return new CursorLoader(getActivity(), RecipeContract.Recipes.CONTENT_ID_URI_BASE, null, null, null, null);
 	}
 
 	@Override
-	public void onListItemClick(final ListView l, final View v,
-			final int position, final long id)
+	public void onListItemClick(final ListView l, final View v, final int position, final long id)
 	{
 		recipeSelectedListener.onRecipeSelected(id);
 	}

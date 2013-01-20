@@ -10,8 +10,7 @@ import com.ianhanniballake.recipebook.R;
 import com.ianhanniballake.recipebook.provider.RecipeContract;
 
 /**
- * Class that manages the conversion to and from the string representation of
- * ingredients to individual components
+ * Class that manages the conversion to and from the string representation of ingredients to individual components
  */
 public class Ingredient
 {
@@ -48,27 +47,19 @@ public class Ingredient
 	 */
 	public Ingredient(final Cursor cursor)
 	{
-		quantity = cursor
-				.getInt(cursor
-						.getColumnIndex(RecipeContract.Ingredients.COLUMN_NAME_QUANTITY));
-		quantityNumerator = cursor
-				.getInt(cursor
-						.getColumnIndex(RecipeContract.Ingredients.COLUMN_NAME_QUANTITY_NUMERATOR));
-		quantityDenominator = cursor
-				.getInt(cursor
-						.getColumnIndex(RecipeContract.Ingredients.COLUMN_NAME_QUANTITY_DENOMINATOR));
-		unit = cursor.getString(cursor
-				.getColumnIndex(RecipeContract.Ingredients.COLUMN_NAME_UNIT));
-		item = cursor.getString(cursor
-				.getColumnIndex(RecipeContract.Ingredients.COLUMN_NAME_ITEM));
-		preparation = cursor
-				.getString(cursor
-						.getColumnIndex(RecipeContract.Ingredients.COLUMN_NAME_PREPARATION));
+		quantity = cursor.getInt(cursor.getColumnIndex(RecipeContract.Ingredients.COLUMN_NAME_QUANTITY));
+		quantityNumerator = cursor.getInt(cursor
+				.getColumnIndex(RecipeContract.Ingredients.COLUMN_NAME_QUANTITY_NUMERATOR));
+		quantityDenominator = cursor.getInt(cursor
+				.getColumnIndex(RecipeContract.Ingredients.COLUMN_NAME_QUANTITY_DENOMINATOR));
+		unit = cursor.getString(cursor.getColumnIndex(RecipeContract.Ingredients.COLUMN_NAME_UNIT));
+		item = cursor.getString(cursor.getColumnIndex(RecipeContract.Ingredients.COLUMN_NAME_ITEM));
+		preparation = cursor.getString(cursor.getColumnIndex(RecipeContract.Ingredients.COLUMN_NAME_PREPARATION));
 	}
 
 	/**
-	 * Parses an ingredient from the given rawText, using the default values
-	 * loaded from the Resources if the string does not contain all components
+	 * Parses an ingredient from the given rawText, using the default values loaded from the Resources if the string
+	 * does not contain all components
 	 * 
 	 * @param resources
 	 *            Resources for loading default values
@@ -81,14 +72,12 @@ public class Ingredient
 		int endIndex = rawText.indexOf(' ', startIndex);
 		try
 		{
-			quantity = Integer
-					.parseInt(rawText.substring(startIndex, endIndex));
+			quantity = Integer.parseInt(rawText.substring(startIndex, endIndex));
 			startIndex = endIndex + 1;
 		} catch (final NumberFormatException e)
 		{
 			// Don't change startIndex to retry that token
-			quantity = resources
-					.getInteger(R.integer.default_ingredient_quantity);
+			quantity = resources.getInteger(R.integer.default_ingredient_quantity);
 		}
 		endIndex = rawText.indexOf('/', startIndex);
 		if (endIndex != -1)
@@ -96,12 +85,10 @@ public class Ingredient
 			{
 				// Ensure both parse correctly before assigning them to our
 				// class variables
-				final int numerator = Integer.parseInt(rawText.substring(
-						startIndex, endIndex));
+				final int numerator = Integer.parseInt(rawText.substring(startIndex, endIndex));
 				final int tempStartIndex = endIndex + 1;
 				endIndex = rawText.indexOf(' ', tempStartIndex);
-				final int denominator = Integer.parseInt(rawText.substring(
-						tempStartIndex, endIndex));
+				final int denominator = Integer.parseInt(rawText.substring(tempStartIndex, endIndex));
 				startIndex = endIndex + 1;
 				// Assign to our class variables
 				quantityNumerator = numerator;
@@ -109,10 +96,8 @@ public class Ingredient
 			} catch (final NumberFormatException e)
 			{
 				// Don't change startIndex to retry that token
-				quantityNumerator = resources
-						.getInteger(R.integer.default_ingredient_quantity_numerator);
-				quantityDenominator = resources
-						.getInteger(R.integer.default_ingredient_quantity_denominator);
+				quantityNumerator = resources.getInteger(R.integer.default_ingredient_quantity_numerator);
+				quantityDenominator = resources.getInteger(R.integer.default_ingredient_quantity_denominator);
 			}
 		endIndex = rawText.indexOf(' ', startIndex);
 		String possibleUnit = rawText.substring(startIndex, endIndex);
@@ -121,16 +106,14 @@ public class Ingredient
 			possibleUnit = possibleUnit.substring(0, possibleUnit.length() - 2);
 		else if (possibleUnit.endsWith("."))
 			possibleUnit = possibleUnit.substring(0, possibleUnit.length() - 1);
-		if (Arrays.asList(resources.getStringArray(R.array.units)).contains(
-				possibleUnit))
+		if (Arrays.asList(resources.getStringArray(R.array.units)).contains(possibleUnit))
 		{
 			unit = possibleUnit;
 			startIndex = endIndex + 1;
 		}
 		else
 			unit = resources.getString(R.string.default_ingredient_unit);
-		endIndex = Math.max(rawText.indexOf(';', startIndex),
-				rawText.indexOf(',', startIndex));
+		endIndex = Math.max(rawText.indexOf(';', startIndex), rawText.indexOf(',', startIndex));
 		// Take everything until the end of the string as the item if there
 		// is no preparation
 		if (endIndex == -1)
@@ -141,13 +124,11 @@ public class Ingredient
 		if (endIndex > startIndex)
 			preparation = rawText.substring(startIndex, endIndex);
 		else
-			preparation = resources
-					.getString(R.string.default_ingredient_preparation);
+			preparation = resources.getString(R.string.default_ingredient_preparation);
 	}
 
 	/**
-	 * Converts this ingredient into appropriate ContentValues for insertion
-	 * into the RecipeProvider
+	 * Converts this ingredient into appropriate ContentValues for insertion into the RecipeProvider
 	 * 
 	 * @param recipeId
 	 *            Mandatory recipeId to be associated with this ingredient
@@ -156,20 +137,13 @@ public class Ingredient
 	public ContentValues toContentValues(final long recipeId)
 	{
 		final ContentValues contentValues = new ContentValues();
-		contentValues.put(RecipeContract.Ingredients.COLUMN_NAME_RECIPE_ID,
-				recipeId);
-		contentValues.put(RecipeContract.Ingredients.COLUMN_NAME_QUANTITY,
-				quantity);
-		contentValues.put(
-				RecipeContract.Ingredients.COLUMN_NAME_QUANTITY_NUMERATOR,
-				quantityNumerator);
-		contentValues.put(
-				RecipeContract.Ingredients.COLUMN_NAME_QUANTITY_DENOMINATOR,
-				quantityDenominator);
+		contentValues.put(RecipeContract.Ingredients.COLUMN_NAME_RECIPE_ID, recipeId);
+		contentValues.put(RecipeContract.Ingredients.COLUMN_NAME_QUANTITY, quantity);
+		contentValues.put(RecipeContract.Ingredients.COLUMN_NAME_QUANTITY_NUMERATOR, quantityNumerator);
+		contentValues.put(RecipeContract.Ingredients.COLUMN_NAME_QUANTITY_DENOMINATOR, quantityDenominator);
 		contentValues.put(RecipeContract.Ingredients.COLUMN_NAME_UNIT, unit);
 		contentValues.put(RecipeContract.Ingredients.COLUMN_NAME_ITEM, item);
-		contentValues.put(RecipeContract.Ingredients.COLUMN_NAME_PREPARATION,
-				preparation);
+		contentValues.put(RecipeContract.Ingredients.COLUMN_NAME_PREPARATION, preparation);
 		return contentValues;
 	}
 

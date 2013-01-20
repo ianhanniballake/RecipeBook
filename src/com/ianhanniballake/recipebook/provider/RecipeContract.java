@@ -4,11 +4,10 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 
 /**
- * Defines a contract between the Recipe content provider and its clients. A
- * contract defines the information that a client needs to access the provider
- * as one or more data tables. A contract is a public, non-extendable (final)
- * class that contains constants defining column names and URIs. A well-written
- * client depends only on the constants in the contract.
+ * Defines a contract between the Recipe content provider and its clients. A contract defines the information that a
+ * client needs to access the provider as one or more data tables. A contract is a public, non-extendable (final) class
+ * that contains constants defining column names and URIs. A well-written client depends only on the constants in the
+ * contract.
  */
 public final class RecipeContract
 {
@@ -75,39 +74,33 @@ public final class RecipeContract
 		 */
 		private static final String PATH_INGREDIENTS = "/ingredients";
 		/**
-		 * The content URI base for a single ingredient. Callers must append a
-		 * numeric ingredient id to this Uri to retrieve a ingredient
+		 * The content URI base for a single ingredient. Callers must append a numeric ingredient id to this Uri to
+		 * retrieve a ingredient
 		 */
-		public static final Uri CONTENT_ID_URI_BASE = Uri.parse(SCHEME
-				+ AUTHORITY + PATH_INGREDIENT_ID);
+		public static final Uri CONTENT_ID_URI_BASE = Uri.parse(SCHEME + AUTHORITY + PATH_INGREDIENT_ID);
 		/**
-		 * The content URI match pattern for a single recipe, specified by its
-		 * ID. Use this to match incoming URIs or to construct an Intent.
+		 * The content URI match pattern for a single recipe, specified by its ID. Use this to match incoming URIs or to
+		 * construct an Intent.
 		 */
-		public static final Uri CONTENT_ID_URI_PATTERN = Uri.parse(SCHEME
-				+ AUTHORITY + PATH_INGREDIENT_ID + "/#");
+		public static final Uri CONTENT_ID_URI_PATTERN = Uri.parse(SCHEME + AUTHORITY + PATH_INGREDIENT_ID + "/#");
 		/**
-		 * The MIME type of a {@link #CONTENT_URI} sub-directory of a single
-		 * ingredient.
+		 * The MIME type of a {@link #CONTENT_URI} sub-directory of a single ingredient.
 		 */
 		public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.ianhanniballake.ingredient";
 		/**
-		 * The MIME type of {@link #CONTENT_URI} providing a directory of
-		 * ingredients.
+		 * The MIME type of {@link #CONTENT_URI} providing a directory of ingredients.
 		 */
 		public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.ianhanniballake.ingredients";
 		/**
 		 * The content:// style URL for this table
 		 */
-		public static final Uri CONTENT_URI = Uri.parse(SCHEME + AUTHORITY
-				+ PATH_INGREDIENTS);
+		public static final Uri CONTENT_URI = Uri.parse(SCHEME + AUTHORITY + PATH_INGREDIENTS);
 		/**
 		 * The default sort order for this table
 		 */
 		public static final String DEFAULT_SORT_ORDER = "";
 		/**
-		 * 0-relative position of a recipe ID segment in the path part of a
-		 * recipe ID URI
+		 * 0-relative position of a recipe ID segment in the path part of a recipe ID URI
 		 */
 		public static final int INGREDIENT_ID_PATH_POSITION = 1;
 		/**
@@ -151,39 +144,33 @@ public final class RecipeContract
 		 */
 		private static final String PATH_RECIPES = "/recipes";
 		/**
-		 * The content URI base for a single recipe. Callers must append a
-		 * numeric recipe id to this Uri to retrieve a recipe
+		 * The content URI base for a single recipe. Callers must append a numeric recipe id to this Uri to retrieve a
+		 * recipe
 		 */
-		public static final Uri CONTENT_ID_URI_BASE = Uri.parse(SCHEME
-				+ AUTHORITY + PATH_RECIPE_ID);
+		public static final Uri CONTENT_ID_URI_BASE = Uri.parse(SCHEME + AUTHORITY + PATH_RECIPE_ID);
 		/**
-		 * The content URI match pattern for a single recipe, specified by its
-		 * ID. Use this to match incoming URIs or to construct an Intent.
+		 * The content URI match pattern for a single recipe, specified by its ID. Use this to match incoming URIs or to
+		 * construct an Intent.
 		 */
-		public static final Uri CONTENT_ID_URI_PATTERN = Uri.parse(SCHEME
-				+ AUTHORITY + PATH_RECIPE_ID + "/#");
+		public static final Uri CONTENT_ID_URI_PATTERN = Uri.parse(SCHEME + AUTHORITY + PATH_RECIPE_ID + "/#");
 		/**
-		 * The MIME type of a {@link #CONTENT_URI} sub-directory of a single
-		 * recipe.
+		 * The MIME type of a {@link #CONTENT_URI} sub-directory of a single recipe.
 		 */
 		public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.ianhanniballake.recipe";
 		/**
-		 * The MIME type of {@link #CONTENT_URI} providing a directory of
-		 * recipes.
+		 * The MIME type of {@link #CONTENT_URI} providing a directory of recipes.
 		 */
 		public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.ianhanniballake.recipes";
 		/**
 		 * The content:// style URL for this table
 		 */
-		public static final Uri CONTENT_URI = Uri.parse(SCHEME + AUTHORITY
-				+ PATH_RECIPES);
+		public static final Uri CONTENT_URI = Uri.parse(SCHEME + AUTHORITY + PATH_RECIPES);
 		/**
 		 * The default sort order for this table
 		 */
 		public static final String DEFAULT_SORT_ORDER = "title DESC";
 		/**
-		 * 0-relative position of a recipe ID segment in the path part of a
-		 * recipe ID URI
+		 * 0-relative position of a recipe ID segment in the path part of a recipe ID URI
 		 */
 		public static final int RECIPE_ID_PATH_POSITION = 1;
 		/**

@@ -13,8 +13,7 @@ import com.ianhanniballake.recipebook.model.Ingredient;
 /**
  * Fragment which displays an editable list of ingredients for a given recipe
  */
-public class RecipeIngredientListEditFragment extends
-		RecipeIngredientListFragment
+public class RecipeIngredientListEditFragment extends RecipeIngredientListFragment
 {
 	/**
 	 * Gets all of the current ingredient values
@@ -32,8 +31,7 @@ public class RecipeIngredientListEditFragment extends
 			final String rawText = raw.getText().toString();
 			if (rawText.equals(""))
 				continue;
-			allContentValues.add(new Ingredient(getResources(), rawText)
-					.toContentValues(getRecipeId()));
+			allContentValues.add(new Ingredient(getResources(), rawText).toContentValues(getRecipeId()));
 		}
 		return allContentValues;
 	}

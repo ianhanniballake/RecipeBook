@@ -40,11 +40,9 @@ public abstract class RecipeDetailFragment extends Fragment
 	}
 
 	@Override
-	public View onCreateView(final LayoutInflater inflater,
-			final ViewGroup container, final Bundle savedInstanceState)
+	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState)
 	{
-		final View v = inflater.inflate(R.layout.fragment_recipe_detail,
-				container, false);
+		final View v = inflater.inflate(R.layout.fragment_recipe_detail, container, false);
 		// As we cannot create a fragment pager while initiating a fragment, we
 		// create the PagerAdapter after the fact
 		v.post(new Runnable()
@@ -53,8 +51,7 @@ public abstract class RecipeDetailFragment extends Fragment
 			public void run()
 			{
 				final ViewPager pager = (ViewPager) v.findViewById(R.id.pager);
-				pager.setAdapter(getPagerAdapter(getActivity()
-						.getSupportFragmentManager()));
+				pager.setAdapter(getPagerAdapter(getActivity().getSupportFragmentManager()));
 			}
 		});
 		return v;

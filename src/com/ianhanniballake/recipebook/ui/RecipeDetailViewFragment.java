@@ -94,8 +94,7 @@ public class RecipeDetailViewFragment extends RecipeDetailFragment
 	}
 
 	/**
-	 * Attaches to the parent activity, saving a reference to it to call back
-	 * recipe delete events
+	 * Attaches to the parent activity, saving a reference to it to call back recipe delete events
 	 * 
 	 * @see android.support.v4.app.Fragment#onAttach(android.app.Activity)
 	 */
@@ -112,15 +111,12 @@ public class RecipeDetailViewFragment extends RecipeDetailFragment
 	{
 		super.onCreate(savedInstanceState);
 		setHasOptionsMenu(true);
-		recipeQueryHandler = new AsyncQueryHandler(getActivity()
-				.getContentResolver())
+		recipeQueryHandler = new AsyncQueryHandler(getActivity().getContentResolver())
 		{
 			@Override
-			protected void onDeleteComplete(final int token,
-					final Object cookie, final int result)
+			protected void onDeleteComplete(final int token, final Object cookie, final int result)
 			{
-				Toast.makeText(getActivity(), getText(R.string.deleted),
-						Toast.LENGTH_SHORT).show();
+				Toast.makeText(getActivity(), getText(R.string.deleted), Toast.LENGTH_SHORT).show();
 				if (recipeDeleteListener != null)
 					recipeDeleteListener.onRecipeDeleted();
 			}
@@ -130,18 +126,15 @@ public class RecipeDetailViewFragment extends RecipeDetailFragment
 	/**
 	 * Adds Edit option to the menu
 	 * 
-	 * @see android.support.v4.app.Fragment#onCreateOptionsMenu(android.view.Menu,
-	 *      android.view.MenuInflater)
+	 * @see android.support.v4.app.Fragment#onCreateOptionsMenu(android.view.Menu, android.view.MenuInflater)
 	 */
 	@Override
 	public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater)
 	{
 		super.onCreateOptionsMenu(menu, inflater);
 		inflater.inflate(R.menu.fragment_recipe_summary, menu);
-		MenuItemCompat.setShowAsAction(menu.findItem(R.id.edit),
-				MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
-		MenuItemCompat.setShowAsAction(menu.findItem(R.id.delete),
-				MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
+		MenuItemCompat.setShowAsAction(menu.findItem(R.id.edit), MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
+		MenuItemCompat.setShowAsAction(menu.findItem(R.id.delete), MenuItemCompat.SHOW_AS_ACTION_IF_ROOM);
 	}
 
 	@Override
@@ -161,8 +154,7 @@ public class RecipeDetailViewFragment extends RecipeDetailFragment
 	}
 
 	/**
-	 * Hides the edit and delete items if this is not currently showing a valid
-	 * recipe
+	 * Hides the edit and delete items if this is not currently showing a valid recipe
 	 * 
 	 * @see android.support.v4.app.Fragment#onPrepareOptionsMenu(android.view.Menu)
 	 */
@@ -177,8 +169,7 @@ public class RecipeDetailViewFragment extends RecipeDetailFragment
 	 */
 	public void onRecipeDeleted()
 	{
-		final Uri deleteUri = ContentUris.withAppendedId(
-				RecipeContract.Recipes.CONTENT_ID_URI_PATTERN, recipeId);
+		final Uri deleteUri = ContentUris.withAppendedId(RecipeContract.Recipes.CONTENT_ID_URI_PATTERN, recipeId);
 		recipeQueryHandler.startDelete(0, null, deleteUri, null, null);
 	}
 
@@ -187,8 +178,7 @@ public class RecipeDetailViewFragment extends RecipeDetailFragment
 	 */
 	public void onRecipeEditStarted()
 	{
-		final Intent intent = new Intent(getActivity(),
-				RecipeAddEditActivity.class);
+		final Intent intent = new Intent(getActivity(), RecipeAddEditActivity.class);
 		intent.putExtra(BaseColumns._ID, recipeId);
 		startActivityForResult(intent, RecipeDetailViewFragment.EDIT_RECIPE);
 	}

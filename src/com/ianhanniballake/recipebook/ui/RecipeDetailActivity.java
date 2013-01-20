@@ -10,8 +10,7 @@ import com.ianhanniballake.recipebook.R;
 /**
  * Activity which displays only the Recipe details
  */
-public class RecipeDetailActivity extends FragmentActivity implements
-		OnRecipeDeleteListener
+public class RecipeDetailActivity extends FragmentActivity implements OnRecipeDeleteListener
 {
 	/**
 	 * Result indicating a recipe deletion
@@ -38,8 +37,7 @@ public class RecipeDetailActivity extends FragmentActivity implements
 		details.setArguments(args);
 		// Execute a transaction, replacing any existing fragment
 		// with this one inside the frame.
-		final FragmentTransaction ft = getSupportFragmentManager()
-				.beginTransaction();
+		final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 		ft.replace(R.id.details, details);
 		ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
 		ft.commit();

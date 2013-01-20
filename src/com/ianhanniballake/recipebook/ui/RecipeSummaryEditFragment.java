@@ -17,18 +17,14 @@ public class RecipeSummaryEditFragment extends RecipeSummaryFragment
 	@Override
 	protected SimpleCursorAdapter createAdapter()
 	{
-		return new SimpleCursorAdapter(getActivity(),
-				R.layout.fragment_recipe_summary, null, new String[] {
-						RecipeContract.Recipes.COLUMN_NAME_TITLE,
-						RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION },
-				new int[] { R.id.title, R.id.description }, 0);
+		return new SimpleCursorAdapter(getActivity(), R.layout.fragment_recipe_summary, null, new String[] {
+				RecipeContract.Recipes.COLUMN_NAME_TITLE, RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION }, new int[] {
+				R.id.title, R.id.description }, 0);
 	}
 
 	@Override
-	public View onCreateView(final LayoutInflater inflater,
-			final ViewGroup container, final Bundle savedInstanceState)
+	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState)
 	{
-		return inflater
-				.inflate(R.layout.fragment_recipe_edit, container, false);
+		return inflater.inflate(R.layout.fragment_recipe_edit, container, false);
 	}
 }

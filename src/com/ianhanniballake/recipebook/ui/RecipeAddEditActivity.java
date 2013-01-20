@@ -14,8 +14,7 @@ import com.ianhanniballake.recipebook.provider.RecipeContract;
 /**
  * Activity responsible for creating new Recipes
  */
-public class RecipeAddEditActivity extends FragmentActivity implements
-		OnRecipeEditFinishListener
+public class RecipeAddEditActivity extends FragmentActivity implements OnRecipeEditFinishListener
 {
 	@Override
 	protected void onCreate(final Bundle savedInstanceState)
@@ -31,8 +30,7 @@ public class RecipeAddEditActivity extends FragmentActivity implements
 		edit.setArguments(args);
 		// Execute a transaction, replacing any existing fragment
 		// with this one inside the frame.
-		final FragmentTransaction ft = getSupportFragmentManager()
-				.beginTransaction();
+		final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 		ft.replace(R.id.edit, edit);
 		ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
 		ft.commit();
@@ -48,8 +46,7 @@ public class RecipeAddEditActivity extends FragmentActivity implements
 	@Override
 	public void onRecipeEditSave(final long recipeId)
 	{
-		final Uri uri = ContentUris.withAppendedId(
-				RecipeContract.Recipes.CONTENT_ID_URI_BASE, recipeId);
+		final Uri uri = ContentUris.withAppendedId(RecipeContract.Recipes.CONTENT_ID_URI_BASE, recipeId);
 		setResult(RESULT_OK, new Intent(Intent.ACTION_PICK, uri));
 		finish();
 	}
