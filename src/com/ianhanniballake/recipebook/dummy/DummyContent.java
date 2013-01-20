@@ -13,36 +13,28 @@ import java.util.Map;
 public class DummyContent
 {
 	/**
-	 * An array of sample (dummy) items.
-	 */
-	public static List<DummyItem> ITEMS = new ArrayList<DummyItem>();
-	/**
-	 * A map of sample (dummy) items, by ID.
-	 */
-	public static Map<String, DummyItem> ITEM_MAP = new HashMap<String, DummyItem>();
-	static
-	{
-		// Add 3 sample items.
-		addItem(new DummyItem("1", "Item 1"));
-		addItem(new DummyItem("2", "Item 2"));
-		addItem(new DummyItem("3", "Item 3"));
-	}
-
-	private static void addItem(DummyItem item)
-	{
-		ITEMS.add(item);
-		ITEM_MAP.put(item.id, item);
-	}
-
-	/**
 	 * A dummy item representing a piece of content.
 	 */
 	public static class DummyItem
 	{
-		public String id;
+		/**
+		 * Dummy content
+		 */
 		public String content;
+		/**
+		 * ID of this item
+		 */
+		public long id;
 
-		public DummyItem(String id, String content)
+		/**
+		 * Creates a new DummyItem
+		 * 
+		 * @param id
+		 *            Unique ID of the item
+		 * @param content
+		 *            Dummy content
+		 */
+		public DummyItem(final long id, final String content)
 		{
 			this.id = id;
 			this.content = content;
@@ -53,5 +45,27 @@ public class DummyContent
 		{
 			return content;
 		}
+	}
+
+	/**
+	 * A map of sample (dummy) items, by ID.
+	 */
+	public static Map<Long, DummyItem> ITEM_MAP = new HashMap<Long, DummyItem>();
+	/**
+	 * An array of sample (dummy) items.
+	 */
+	public static List<DummyItem> ITEMS = new ArrayList<DummyItem>();
+	static
+	{
+		// Add 3 sample items.
+		addItem(new DummyItem(1L, "Item 1"));
+		addItem(new DummyItem(2L, "Item 2"));
+		addItem(new DummyItem(3L, "Item 3"));
+	}
+
+	private static void addItem(final DummyItem item)
+	{
+		ITEMS.add(item);
+		ITEM_MAP.put(item.id, item);
 	}
 }

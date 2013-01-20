@@ -28,8 +28,11 @@ public class RecipeListFragment extends ListFragment
 	{
 		/**
 		 * Callback for when an item has been selected.
+		 * 
+		 * @param id
+		 *            ID of the item selected
 		 */
-		public void onItemSelected(String id);
+		public void onItemSelected(long id);
 	}
 
 	/**
@@ -39,8 +42,9 @@ public class RecipeListFragment extends ListFragment
 	private static Callbacks sDummyCallbacks = new Callbacks()
 	{
 		@Override
-		public void onItemSelected(final String id)
+		public void onItemSelected(final long id)
 		{
+			// Nothing to do
 		}
 	};
 	/**
@@ -131,6 +135,9 @@ public class RecipeListFragment extends ListFragment
 	/**
 	 * Turns on activate-on-click mode. When this mode is on, list items will be given the 'activated' state when
 	 * touched.
+	 * 
+	 * @param activateOnItemClick
+	 *            Whether items should show as activated
 	 */
 	public void setActivateOnItemClick(final boolean activateOnItemClick)
 	{

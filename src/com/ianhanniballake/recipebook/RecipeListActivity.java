@@ -2,6 +2,7 @@ package com.ianhanniballake.recipebook;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.BaseColumns;
 import android.support.v4.app.FragmentActivity;
 
 /**
@@ -45,14 +46,14 @@ public class RecipeListActivity extends FragmentActivity implements RecipeListFr
 	 * selected.
 	 */
 	@Override
-	public void onItemSelected(final String id)
+	public void onItemSelected(final long id)
 	{
 		if (mTwoPane)
 		{
 			// In two-pane mode, show the detail view in this activity by adding or replacing the detail fragment using
 			// a fragment transaction.
 			final Bundle arguments = new Bundle();
-			arguments.putString(RecipeDetailFragment.ARG_ITEM_ID, id);
+			arguments.putLong(BaseColumns._ID, id);
 			final RecipeDetailFragment fragment = new RecipeDetailFragment();
 			fragment.setArguments(arguments);
 			getSupportFragmentManager().beginTransaction().replace(R.id.recipe_detail_container, fragment).commit();
@@ -61,7 +62,7 @@ public class RecipeListActivity extends FragmentActivity implements RecipeListFr
 		{
 			// In single-pane mode, simply start the detail activity for the selected item ID.
 			final Intent detailIntent = new Intent(this, RecipeDetailActivity.class);
-			detailIntent.putExtra(RecipeDetailFragment.ARG_ITEM_ID, id);
+			detailIntent.putExtra(BaseColumns._ID, id);
 			startActivity(detailIntent);
 		}
 	}
