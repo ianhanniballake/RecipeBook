@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.provider.BaseColumns;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 import android.widget.AdapterView;
@@ -33,7 +34,10 @@ public class RecipeDetailActivity extends FragmentActivity
 			arguments.putLong(BaseColumns._ID, getIntent().getLongExtra(BaseColumns._ID, AdapterView.INVALID_ROW_ID));
 			final RecipeDetailFragment fragment = new RecipeDetailFragment();
 			fragment.setArguments(arguments);
-			getSupportFragmentManager().beginTransaction().add(R.id.recipe_detail_container, fragment).commit();
+			final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+			ft.add(R.id.recipe_detail_container, fragment);
+			ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+			ft.commit();
 		}
 	}
 

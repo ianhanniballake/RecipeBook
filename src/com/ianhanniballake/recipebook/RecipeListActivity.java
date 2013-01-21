@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.provider.BaseColumns;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 
 /**
  * An activity representing a list of Recipes. This activity has different presentations for handset and tablet-size
@@ -56,7 +57,10 @@ public class RecipeListActivity extends FragmentActivity implements RecipeListFr
 			arguments.putLong(BaseColumns._ID, id);
 			final RecipeDetailFragment fragment = new RecipeDetailFragment();
 			fragment.setArguments(arguments);
-			getSupportFragmentManager().beginTransaction().replace(R.id.recipe_detail_container, fragment).commit();
+			final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+			ft.replace(R.id.recipe_detail_container, fragment);
+			ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+			ft.commit();
 		}
 		else
 		{
