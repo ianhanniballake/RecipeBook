@@ -39,6 +39,6 @@ public class RecipeIngredientListEditFragment extends RecipeIngredientListFragme
 	@Override
 	protected int getListItemLayout()
 	{
-		return R.layout.item_ingredient_list_edit;
+		return R.layout.list_item_ingredient_edit;
 	}
 }
