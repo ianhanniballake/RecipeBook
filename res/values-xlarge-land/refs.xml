@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+    Go back to the full detail Recipe list items when using extra large devices in landscape
+    -->
+    <item name="list_item_recipe" type="layout">@layout/list_item_recipe_full</item>
+</resources>

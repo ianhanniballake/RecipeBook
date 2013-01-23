@@ -34,7 +34,7 @@ public class RecipeListFragment extends ListFragment implements LoaderManager.Lo
 	{
 		super.onActivityCreated(savedInstanceState);
 		setEmptyText(getText(R.string.empty_recipe_list));
-		adapter = new SimpleCursorAdapter(getActivity(), R.layout.list_item_recipe, null,
+		adapter = new SimpleCursorAdapter(getActivity(), R.layout.list_item_recipe_full, null,
 				new String[] { RecipeContract.Recipes.COLUMN_NAME_TITLE }, new int[] { R.id.title }, 0);
 		setListAdapter(adapter);
 		getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
