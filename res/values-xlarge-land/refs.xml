@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--
+    Use two pane Recipe list style when using extra large devices in landscape
+    -->
+    <item name="activity_recipe_list" type="layout">@layout/activity_recipe_twopane</item>
+    <!--
     Go back to the full detail Recipe list items when using extra large devices in landscape
     -->
     <item name="list_item_recipe" type="layout">@layout/list_item_recipe_full</item>

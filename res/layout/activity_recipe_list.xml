@@ -1,10 +1,22 @@
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/recipe_list"
-    android:name="com.ianhanniballake.recipebook.RecipeListFragment"
+    android:id="@+id/recipe_list_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
-    tools:context=".RecipeListActivity"
-    tools:layout="@android:layout/list_content" />
+    tools:context=".RecipeListActivity" >
+
+    <ListView
+        android:id="@android:id/list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:listitem="@layout/list_item_recipe" />
+
+    <ViewStub
+        android:id="@android:id/empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout="@layout/list_recipe_empty" />
+
+</FrameLayout>
