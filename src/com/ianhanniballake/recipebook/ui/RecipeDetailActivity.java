@@ -22,7 +22,7 @@ public class RecipeDetailActivity extends FragmentActivity implements OnRecipeDe
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_recipe_detail);
-		if (findViewById(R.id.details) == null)
+		if (findViewById(R.id.recipe_detail_summary) == null)
 		{
 			// A null details view means we no longer need this activity
 			finish();
@@ -38,7 +38,7 @@ public class RecipeDetailActivity extends FragmentActivity implements OnRecipeDe
 		// Execute a transaction, replacing any existing fragment
 		// with this one inside the frame.
 		final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-		ft.replace(R.id.details, details);
+		ft.replace(R.id.recipe_detail_summary, details);
 		ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
 		ft.commit();
 	}

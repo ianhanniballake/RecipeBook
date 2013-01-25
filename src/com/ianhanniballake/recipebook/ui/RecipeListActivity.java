@@ -55,7 +55,7 @@ public class RecipeListActivity extends FragmentActivity implements OnRecipeSele
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_recipe_list);
-		final View detailsFrame = findViewById(R.id.details);
+		final View detailsFrame = findViewById(R.id.recipe_detail_summary);
 		isDualPane = detailsFrame != null && detailsFrame.getVisibility() == View.VISIBLE;
 		if (savedInstanceState != null && isDualPane)
 			// Restore last state for checked position.
@@ -91,7 +91,7 @@ public class RecipeListActivity extends FragmentActivity implements OnRecipeSele
 		if (isDualPane)
 		{
 			RecipeDetailFragment details = (RecipeDetailFragment) getSupportFragmentManager().findFragmentById(
-					R.id.details);
+					R.id.recipe_detail_summary);
 			if (details == null || selectedId != recipeId)
 			{
 				selectedId = recipeId;
@@ -103,7 +103,7 @@ public class RecipeListActivity extends FragmentActivity implements OnRecipeSele
 				// Execute a transaction, replacing any existing fragment
 				// with this one inside the frame.
 				final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-				ft.replace(R.id.details, details);
+				ft.replace(R.id.recipe_detail_summary, details);
 				ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
 				ft.commit();
 			}
