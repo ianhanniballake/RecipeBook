@@ -1,21 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="92dp"
-    android:layout_height="92dp" >
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
 
     <ImageView
         android:id="@+id/picture"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
         android:contentDescription="@string/picture"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:src="@drawable/icon" />
+        android:src="@drawable/placeholder" />
 
     <TextView
         android:id="@+id/title"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="bottom" />
+        android:layout_height="wrap_content"
+        android:gravity="bottom"
+        android:textIsSelectable="false" />
 
 </FrameLayout>
