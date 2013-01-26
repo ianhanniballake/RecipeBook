@@ -7,5 +7,5 @@
     <!--
     Use carousel Recipe list item style when width is 600dp
     -->
-    <item name="list_item_recipe" type="layout">@layout/list_item_recipe_carousel</item>
+    <item name="list_item_recipe" type="layout">@layout/list_item_recipe_picture</item>
 </resources>
