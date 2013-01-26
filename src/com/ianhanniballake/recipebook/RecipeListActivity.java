@@ -22,12 +22,6 @@ import com.ianhanniballake.recipebook.provider.RecipeContract;
  * devices. On handsets, the activity presents a list of items, which when touched, lead to a
  * {@link RecipeDetailActivity} representing item details. On tablets, the activity presents the list of items and item
  * details side-by-side using two vertical panes.
- * <p>
- * The activity makes heavy use of fragments. The list of items is a {@link RecipeListFragment} and the item details (if
- * present) is a {@link RecipeDetailFragment}.
- * <p>
- * This activity also implements the required {@link RecipeListFragment.Callbacks} interface to listen for item
- * selections.
  */
 public class RecipeListActivity extends FragmentActivity implements LoaderManager.LoaderCallbacks<Cursor>
 {
