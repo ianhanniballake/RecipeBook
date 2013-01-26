@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--
-    Use stacked Recipe list style when using extra large devices in portrait
-    -->
-    <item name="activity_recipe_list" type="layout">@layout/activity_recipe_stacked</item>
-    <!--
-    Use title only Recipe list item style when using extra large devices in portrait
-    -->
+
+    <!-- Re-use the stacked layout, but use the extra space to show titles -->
     <item name="list_item_recipe" type="layout">@layout/list_item_recipe_title</item>
+
 </resources>

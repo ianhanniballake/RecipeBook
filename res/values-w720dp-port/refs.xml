@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <!--
-    Use stacked Recipe list style when width is 720dp and in portrait
-    -->
-    <item name="activity_recipe_list" type="layout">@layout/activity_recipe_stacked</item>
-</resources>

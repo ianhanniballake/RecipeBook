@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <!--
-    Use two pane Recipe list style when width is 720dp and in landscape mode
-    -->
-    <item name="activity_recipe_list" type="layout">@layout/activity_recipe_twopane</item>
-</resources>

@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--
-    Use carousel Recipe list style when width is 600dp
-    -->
+
+    <!-- Little horizontal space means a stacked layout and a picture focused list -->
     <item name="activity_recipe_list" type="layout">@layout/activity_recipe_stacked</item>
-    <!--
-    Use carousel Recipe list item style when width is 600dp
-    -->
     <item name="list_item_recipe" type="layout">@layout/list_item_recipe_picture</item>
+
 </resources>
