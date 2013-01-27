@@ -4,38 +4,50 @@
     android:layout_height="match_parent"
     android:padding="16dp" >
 
+    <ImageView
+        android:id="@+id/picture"
+        android:layout_width="144dp"
+        android:layout_height="144dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:contentDescription="@string/picture"
+        android:paddingRight="24dp"
+        android:src="@drawable/placeholder" />
+
     <TextView
         android:id="@+id/titleLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
+        android:layout_toRightOf="@id/picture"
+        android:labelFor="@id/title"
         android:text="@string/title" />
 
     <TextView
         android:id="@+id/title"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
         android:layout_below="@id/titleLabel"
         android:layout_marginLeft="30dp"
+        android:layout_toRightOf="@id/picture"
         android:textIsSelectable="true" />
 
     <TextView
         android:id="@+id/descriptionLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
         android:layout_below="@id/title"
+        android:layout_toRightOf="@id/picture"
+        android:labelFor="@id/description"
         android:text="@string/description" />
 
     <TextView
         android:id="@+id/description"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
         android:layout_below="@id/descriptionLabel"
         android:layout_marginLeft="30dp"
+        android:layout_toRightOf="@id/picture"
         android:gravity="top|left"
         android:lines="3"
         android:scrollHorizontally="false"
