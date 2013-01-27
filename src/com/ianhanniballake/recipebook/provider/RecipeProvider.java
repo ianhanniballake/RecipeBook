@@ -66,19 +66,20 @@ public class RecipeProvider extends ContentProvider
 					+ RecipeContract.Ingredients.COLUMN_NAME_RECIPE_ID + ") REFERENCES "
 					+ RecipeContract.Recipes.TABLE_NAME + " (" + BaseColumns._ID + ") ON DELETE CASCADE" + ");");
 			// Insert sample data
-			db.execSQL("INSERT INTO "
-					+ RecipeContract.Recipes.TABLE_NAME
-					+ " ("
-					+ RecipeContract.Recipes.COLUMN_NAME_TITLE
-					+ ", "
-					+ RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION
-					+ ") VALUES ('Chicken Marsala', 'While this French inspired dish is usually prepared with Marsala wine, you can substitute for any red wine you might have or even simply chicken stock.')");
-			db.execSQL("INSERT INTO " + RecipeContract.Recipes.TABLE_NAME + " ("
-					+ RecipeContract.Recipes.COLUMN_NAME_TITLE + ", " + RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION
-					+ ") VALUES ('Cheese and Garlic Biscuits', 'As served at Red Lobster')");
-			db.execSQL("INSERT INTO " + RecipeContract.Recipes.TABLE_NAME + " ("
-					+ RecipeContract.Recipes.COLUMN_NAME_TITLE + ", " + RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION
-					+ ") VALUES ('Paleo Chocolate Chip Cookies', 'Paleo friendly treat')");
+			final ContentValues values = new ContentValues();
+			values.put(RecipeContract.Recipes.COLUMN_NAME_TITLE, "Chicken Marsala");
+			values.put(
+					RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION,
+					"While this French inspired dish is usually prepared with Marsala wine, you can substitute for any red wine you might have or even simply chicken stock.");
+			db.insert(RecipeContract.Recipes.TABLE_NAME, null, values);
+			values.clear();
+			values.put(RecipeContract.Recipes.COLUMN_NAME_TITLE, "Cheese and Garlic Biscuits");
+			values.put(RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION, "As served at Red Lobster");
+			db.insert(RecipeContract.Recipes.TABLE_NAME, null, values);
+			values.clear();
+			values.put(RecipeContract.Recipes.COLUMN_NAME_TITLE, "Paleo Chocolate Chip Cookies");
+			values.put(RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION, "Paleo friendly treat");
+			db.insert(RecipeContract.Recipes.TABLE_NAME, null, values);
 		}
 
 		/**
