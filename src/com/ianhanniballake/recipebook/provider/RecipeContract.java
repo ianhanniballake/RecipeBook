@@ -115,6 +115,75 @@ public final class RecipeContract
 		{
 		}
 	}
+	/**
+	 * Instructions table contract
+	 */
+	public static final class Instructions implements BaseColumns
+	{
+		/**
+		 * Column name of the instruction
+		 * <P>
+		 * Type: TEXT
+		 * </P>
+		 */
+		public static final String COLUMN_NAME_INSTRUCTION = "instruction";
+		/**
+		 * Column name of the recipe of this instruction
+		 * <P>
+		 * Type: INTEGER
+		 * </P>
+		 */
+		public static final String COLUMN_NAME_RECIPE_ID = "recipe_id";
+		/**
+		 * Path part for the Recipe ID URI
+		 */
+		private static final String PATH_INSTRUCTION_ID = "/instructions/";
+		/**
+		 * Path part for the Recipes URI
+		 */
+		private static final String PATH_INSTRUCTIONS = "/instructions";
+		/**
+		 * The content URI base for a single instruction. Callers must append a numeric instruction id to this Uri to
+		 * retrieve a instruction
+		 */
+		public static final Uri CONTENT_ID_URI_BASE = Uri.parse(SCHEME + AUTHORITY + PATH_INSTRUCTION_ID);
+		/**
+		 * The content URI match pattern for a single instruction, specified by its ID. Use this to match incoming URIs or to
+		 * construct an Intent.
+		 */
+		public static final Uri CONTENT_ID_URI_PATTERN = Uri.parse(SCHEME + AUTHORITY + PATH_INSTRUCTION_ID + "/#");
+		/**
+		 * The MIME type of a {@link #CONTENT_URI} sub-directory of a single instruction.
+		 */
+		public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.ianhanniballake.instruction";
+		/**
+		 * The MIME type of {@link #CONTENT_URI} providing a directory of instructions.
+		 */
+		public static final String CONTENT_TYPE = "vnd.android.cursor.dir/vnd.ianhanniballake.instructions";
+		/**
+		 * The content:// style URL for this table
+		 */
+		public static final Uri CONTENT_URI = Uri.parse(SCHEME + AUTHORITY + PATH_INSTRUCTIONS);
+		/**
+		 * The default sort order for this table
+		 */
+		public static final String DEFAULT_SORT_ORDER = "";
+		/**
+		 * 0-relative position of a recipe ID segment in the path part of a recipe ID URI
+		 */
+		public static final int INSTRUCTION_ID_PATH_POSITION = 1;
+		/**
+		 * The table name offered by this provider
+		 */
+		public static final String TABLE_NAME = "instructions";
+
+		/**
+		 * This class cannot be instantiated
+		 */
+		private Instructions()
+		{
+		}
+	}
 
 	/**
 	 * Recipes table contract
