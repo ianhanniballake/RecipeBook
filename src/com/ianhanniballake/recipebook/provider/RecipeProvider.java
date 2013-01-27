@@ -66,15 +66,19 @@ public class RecipeProvider extends ContentProvider
 					+ RecipeContract.Ingredients.COLUMN_NAME_RECIPE_ID + ") REFERENCES "
 					+ RecipeContract.Recipes.TABLE_NAME + " (" + BaseColumns._ID + ") ON DELETE CASCADE" + ");");
 			// Insert sample data
+			db.execSQL("INSERT INTO "
+					+ RecipeContract.Recipes.TABLE_NAME
+					+ " ("
+					+ RecipeContract.Recipes.COLUMN_NAME_TITLE
+					+ ", "
+					+ RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION
+					+ ") VALUES ('Chicken Marsala', 'While this French inspired dish is usually prepared with Marsala wine, you can substitute for any red wine you might have or even simply chicken stock.')");
 			db.execSQL("INSERT INTO " + RecipeContract.Recipes.TABLE_NAME + " ("
 					+ RecipeContract.Recipes.COLUMN_NAME_TITLE + ", " + RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION
-					+ ") VALUES ('Recipe 1', 'Description 1')");
+					+ ") VALUES ('Cheese and Garlic Biscuits', 'As served at Red Lobster')");
 			db.execSQL("INSERT INTO " + RecipeContract.Recipes.TABLE_NAME + " ("
 					+ RecipeContract.Recipes.COLUMN_NAME_TITLE + ", " + RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION
-					+ ") VALUES ('Recipe 2', 'Description 2')");
-			db.execSQL("INSERT INTO " + RecipeContract.Recipes.TABLE_NAME + " ("
-					+ RecipeContract.Recipes.COLUMN_NAME_TITLE + ", " + RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION
-					+ ") VALUES ('Recipe 3', 'Description 3')");
+					+ ") VALUES ('Paleo Chocolate Chip Cookies', 'Paleo friendly treat')");
 		}
 
 		/**
