@@ -18,7 +18,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@id/titleLabel"
-        android:layout_marginLeft="30dp" />
+        android:layout_marginLeft="30dp"
+        android:textIsSelectable="true" />
 
     <TextView
         android:id="@+id/descriptionLabel"
@@ -37,6 +38,7 @@
         android:layout_marginLeft="30dp"
         android:gravity="top|left"
         android:lines="3"
-        android:scrollHorizontally="false" />
+        android:scrollHorizontally="false"
+        android:textIsSelectable="true" />
 
 </RelativeLayout>
