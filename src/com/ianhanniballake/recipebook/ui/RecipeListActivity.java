@@ -76,7 +76,7 @@ public class RecipeListActivity extends FragmentActivity implements LoaderManage
 					// fragment using a fragment transaction.
 					final Bundle arguments = new Bundle();
 					arguments.putLong(BaseColumns._ID, id);
-					final RecipeDetailFragment fragment = new RecipeDetailFragment();
+					final RecipeDetailSummaryFragment fragment = new RecipeDetailSummaryFragment();
 					fragment.setArguments(arguments);
 					final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 					ft.replace(R.id.recipe_detail_summary, fragment);

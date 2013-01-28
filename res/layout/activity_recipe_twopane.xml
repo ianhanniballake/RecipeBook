@@ -8,7 +8,7 @@
     android:divider="?android:attr/dividerHorizontal"
     android:orientation="horizontal"
     android:showDividers="middle"
-    tools:context=".RecipeListActivity" >
+    tools:context=".ui.RecipeListActivity" >
 
     <FrameLayout
         android:id="@+id/recipe_list_container"

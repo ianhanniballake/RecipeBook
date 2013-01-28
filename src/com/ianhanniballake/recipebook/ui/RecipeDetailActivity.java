@@ -15,7 +15,7 @@ import com.ianhanniballake.recipebook.R;
  * An activity representing a single Recipe detail screen. This activity is only used on handset devices. On tablet-size
  * devices, item details are presented side-by-side with a list of items in a {@link RecipeListActivity}.
  * <p>
- * This activity is mostly just a 'shell' activity containing nothing more than a {@link RecipeDetailFragment}.
+ * This activity is mostly just a 'shell' activity containing nothing more than a {@link RecipeDetailSummaryFragment}.
  */
 public class RecipeDetailActivity extends FragmentActivity
 {
@@ -34,7 +34,7 @@ public class RecipeDetailActivity extends FragmentActivity
 			// Create the detail fragment and add it to the activity using a fragment transaction.
 			final Bundle arguments = new Bundle();
 			arguments.putLong(BaseColumns._ID, getIntent().getLongExtra(BaseColumns._ID, AdapterView.INVALID_ROW_ID));
-			final RecipeDetailFragment fragment = new RecipeDetailFragment();
+			final RecipeDetailSummaryFragment fragment = new RecipeDetailSummaryFragment();
 			fragment.setArguments(arguments);
 			final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 			ft.add(R.id.recipe_detail_container, fragment);
