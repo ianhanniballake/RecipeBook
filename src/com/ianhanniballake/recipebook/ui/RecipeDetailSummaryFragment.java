@@ -23,7 +23,7 @@ import com.ianhanniballake.recipebook.provider.RecipeContract;
  * A fragment representing a single Recipe detail screen. This fragment is either contained in a
  * {@link RecipeListActivity} in two-pane mode (on tablets) or a {@link RecipeDetailActivity} on handsets.
  */
-public class RecipeDetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>
+public class RecipeDetailSummaryFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>
 {
 	/**
 	 * Adapter to display the detailed data
@@ -35,7 +35,7 @@ public class RecipeDetailFragment extends Fragment implements LoaderManager.Load
 	 * Mandatory empty constructor for the fragment manager to instantiate the fragment (e.g. upon screen orientation
 	 * changes).
 	 */
-	public RecipeDetailFragment()
+	public RecipeDetailSummaryFragment()
 	{
 	}
 
