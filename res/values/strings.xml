@@ -9,8 +9,6 @@
     <string name="default_ingredient_preparation"></string>
     <string name="default_instruction_instruction"></string>
     <string name="empty_recipe_list">No recipes found</string>
-    <string name="title">Title</string>
-    <string name="description">Description</string>
     <string name="picture">Picture</string>
     <string name="edit">Edit</string>
     <string name="add">Add</string>
