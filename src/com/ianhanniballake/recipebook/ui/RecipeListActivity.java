@@ -1,4 +1,4 @@
-package com.ianhanniballake.recipebook;
+package com.ianhanniballake.recipebook.ui;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -18,6 +18,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Toast;
 
+import com.ianhanniballake.recipebook.R;
 import com.ianhanniballake.recipebook.provider.RecipeContract;
 
 /**

@@ -23,16 +23,6 @@
         <activity
             android:name="com.ianhanniballake.recipebook.ui.RecipeListActivity"
             android:label="@string/app_name" >
-        </activity>
-        <activity
-            android:name="com.ianhanniballake.recipebook.ui.RecipeDetailActivity"
-            android:label="@string/app_name" />
-        <activity
-            android:name="com.ianhanniballake.recipebook.ui.RecipeAddEditActivity"
-            android:label="@string/app_name" />
-        <activity
-            android:name="com.ianhanniballake.recipebook.RecipeListActivity"
-            android:label="@string/title_recipe_list" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -40,12 +30,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.ianhanniballake.recipebook.RecipeDetailActivity"
+            android:name="com.ianhanniballake.recipebook.ui.RecipeDetailActivity"
             android:label="@string/title_recipe_detail"
-            android:parentActivityName=".RecipeListActivity" >
+            android:parentActivityName="com.ianhanniballake.recipebook.ui.RecipeListActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".RecipeListActivity" />
+                android:value=".ui.RecipeListActivity" />
         </activity>
     </application>
 

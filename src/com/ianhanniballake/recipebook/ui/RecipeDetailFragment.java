@@ -1,4 +1,4 @@
-package com.ianhanniballake.recipebook;
+package com.ianhanniballake.recipebook.ui;
 
 import android.content.ContentUris;
 import android.content.Context;
@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.ianhanniballake.recipebook.R;
 import com.ianhanniballake.recipebook.provider.RecipeContract;
 
 /**

@@ -1,4 +1,4 @@
-package com.ianhanniballake.recipebook;
+package com.ianhanniballake.recipebook.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +8,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 import android.widget.AdapterView;
+
+import com.ianhanniballake.recipebook.R;
 
 /**
  * An activity representing a single Recipe detail screen. This activity is only used on handset devices. On tablet-size
