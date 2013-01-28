@@ -10,10 +10,13 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Toast;
 
 import com.ianhanniballake.recipebook.provider.RecipeContract;
 
@@ -108,6 +111,14 @@ public class RecipeListActivity extends FragmentActivity implements LoaderManage
 	}
 
 	@Override
+	public boolean onCreateOptionsMenu(final Menu menu)
+	{
+		super.onCreateOptionsMenu(menu);
+		getMenuInflater().inflate(R.menu.fragment_recipe_list, menu);
+		return true;
+	}
+
+	@Override
 	public void onLoaderReset(final Loader<Cursor> loader)
 	{
 		adapter.swapCursor(null);
@@ -117,6 +128,20 @@ public class RecipeListActivity extends FragmentActivity implements LoaderManage
 	public void onLoadFinished(final Loader<Cursor> loader, final Cursor data)
 	{
 		adapter.swapCursor(data);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(final MenuItem item)
+	{
+		switch (item.getItemId())
+		{
+			case R.id.add:
+				// TODO: Launch Add Activity
+				Toast.makeText(this, R.string.add, Toast.LENGTH_SHORT).show();
+				return true;
+			default:
+				return super.onOptionsItemSelected(item);
+		}
 	}
 
 	@Override
