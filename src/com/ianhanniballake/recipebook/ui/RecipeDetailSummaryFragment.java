@@ -26,6 +26,22 @@ import com.ianhanniballake.recipebook.provider.RecipeContract;
 public class RecipeDetailSummaryFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>
 {
 	/**
+	 * Create a new instance of this fragment for the given recipe id
+	 * 
+	 * @param recipeId
+	 *            Recipe ID to display ingredients for
+	 * @return A valid instance of this fragment
+	 */
+	public static RecipeDetailSummaryFragment newInstance(final long recipeId)
+	{
+		final Bundle arguments = new Bundle();
+		arguments.putLong(BaseColumns._ID, recipeId);
+		final RecipeDetailSummaryFragment summaryFragment = new RecipeDetailSummaryFragment();
+		summaryFragment.setArguments(arguments);
+		return summaryFragment;
+	}
+
+	/**
 	 * Adapter to display the detailed data
 	 */
 	private CursorAdapter adapter;

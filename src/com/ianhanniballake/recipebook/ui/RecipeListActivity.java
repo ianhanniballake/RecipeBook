@@ -74,12 +74,9 @@ public class RecipeListActivity extends FragmentActivity implements LoaderManage
 				{
 					// In two-pane mode, show the detail view in this activity by adding or replacing the detail
 					// fragment using a fragment transaction.
-					final Bundle arguments = new Bundle();
-					arguments.putLong(BaseColumns._ID, id);
-					final RecipeDetailSummaryFragment summaryFragment = new RecipeDetailSummaryFragment();
-					summaryFragment.setArguments(arguments);
-					final RecipeDetailIngredientFragment ingredientFragment = new RecipeDetailIngredientFragment();
-					ingredientFragment.setArguments(arguments);
+					final RecipeDetailSummaryFragment summaryFragment = RecipeDetailSummaryFragment.newInstance(id);
+					final RecipeDetailIngredientFragment ingredientFragment = RecipeDetailIngredientFragment
+							.newInstance(id);
 					final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 					ft.replace(R.id.recipe_detail_summary, summaryFragment);
 					ft.replace(R.id.recipe_detail_ingredient, ingredientFragment);

@@ -57,6 +57,22 @@ public class RecipeDetailIngredientFragment extends ListFragment implements Load
 	}
 
 	/**
+	 * Create a new instance of this fragment for the given recipe id
+	 * 
+	 * @param recipeId
+	 *            Recipe ID to display ingredients for
+	 * @return A valid instance of this fragment
+	 */
+	public static RecipeDetailIngredientFragment newInstance(final long recipeId)
+	{
+		final Bundle arguments = new Bundle();
+		arguments.putLong(BaseColumns._ID, recipeId);
+		final RecipeDetailIngredientFragment ingredientFragment = new RecipeDetailIngredientFragment();
+		ingredientFragment.setArguments(arguments);
+		return ingredientFragment;
+	}
+
+	/**
 	 * Adapter to display the list's data
 	 */
 	private IngredientCursorAdapter adapter;
