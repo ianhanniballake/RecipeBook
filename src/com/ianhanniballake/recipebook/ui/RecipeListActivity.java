@@ -77,9 +77,12 @@ public class RecipeListActivity extends FragmentActivity implements LoaderManage
 					final RecipeDetailSummaryFragment summaryFragment = RecipeDetailSummaryFragment.newInstance(id);
 					final RecipeDetailIngredientFragment ingredientFragment = RecipeDetailIngredientFragment
 							.newInstance(id);
+					final RecipeDetailInstructionFragment instructionFragment = RecipeDetailInstructionFragment
+							.newInstance(id);
 					final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 					ft.replace(R.id.recipe_detail_summary, summaryFragment);
 					ft.replace(R.id.recipe_detail_ingredient, ingredientFragment);
+					ft.replace(R.id.recipe_detail_instruction, instructionFragment);
 					ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
 					ft.commit();
 				}
