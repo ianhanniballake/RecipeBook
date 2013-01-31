@@ -19,10 +19,4 @@
         android:text="@string/empty_ingredient_list"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="right"
-        android:text="@string/add_ingredient" />
-
 </LinearLayout>
