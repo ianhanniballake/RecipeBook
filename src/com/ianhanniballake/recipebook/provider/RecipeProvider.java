@@ -70,8 +70,8 @@ public class RecipeProvider extends ContentProvider
 			db.execSQL("CREATE TABLE " + RecipeContract.Instructions.TABLE_NAME + " (" + BaseColumns._ID
 					+ " INTEGER PRIMARY KEY AUTOINCREMENT," + RecipeContract.Instructions.COLUMN_NAME_RECIPE_ID
 					+ " INTEGER," + RecipeContract.Instructions.COLUMN_NAME_INSTRUCTION + " TEXT,"
-					+ " CONSTRAINT fk_recipe_ingredient FOREIGN KEY ("
-					+ RecipeContract.Ingredients.COLUMN_NAME_RECIPE_ID + ") REFERENCES "
+					+ " CONSTRAINT fk_recipe_instruction FOREIGN KEY ("
+					+ RecipeContract.Instructions.COLUMN_NAME_RECIPE_ID + ") REFERENCES "
 					+ RecipeContract.Recipes.TABLE_NAME + " (" + BaseColumns._ID + ") ON DELETE CASCADE" + ");");
 			// Insert sample data
 			final ContentValues values = new ContentValues();
@@ -377,6 +377,7 @@ public class RecipeProvider extends ContentProvider
 					+ ", which will destroy all old data");
 			db.execSQL("DROP TABLE IF EXISTS " + RecipeContract.Recipes.TABLE_NAME);
 			db.execSQL("DROP TABLE IF EXISTS " + RecipeContract.Ingredients.TABLE_NAME);
+			db.execSQL("DROP TABLE IF EXISTS " + RecipeContract.Instructions.TABLE_NAME);
 			onCreate(db);
 		}
 	}
@@ -388,7 +389,7 @@ public class RecipeProvider extends ContentProvider
 	/**
 	 * The database version
 	 */
-	private static final int DATABASE_VERSION = 2;
+	private static final int DATABASE_VERSION = 3;
 	/**
 	 * The incoming URI matches the Ingredient ID URI pattern
 	 */
