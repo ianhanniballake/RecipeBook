@@ -10,7 +10,9 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.CursorAdapter;
 import android.support.v4.widget.ResourceCursorAdapter;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.TextView;
@@ -93,7 +95,6 @@ public class RecipeDetailIngredientFragment extends ListFragment implements Load
 	public void onActivityCreated(final Bundle savedInstanceState)
 	{
 		super.onActivityCreated(savedInstanceState);
-		setEmptyText(getText(R.string.empty_ingredient_list));
 		adapter = new IngredientCursorAdapter(getActivity(), R.layout.list_item_ingredient, null, 0);
 		setListAdapter(adapter);
 		getListView().setChoiceMode(AbsListView.CHOICE_MODE_NONE);
@@ -107,6 +108,12 @@ public class RecipeDetailIngredientFragment extends ListFragment implements Load
 		return new CursorLoader(getActivity(), RecipeContract.Ingredients.CONTENT_URI, null,
 				RecipeContract.Ingredients.COLUMN_NAME_RECIPE_ID + "=?", new String[] { Long.toString(getRecipeId()) },
 				null);
+	}
+
+	@Override
+	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState)
+	{
+		return inflater.inflate(R.layout.fragment_ingredient_list, container, false);
 	}
 
 	@Override

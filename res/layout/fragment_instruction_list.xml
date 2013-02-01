@@ -5,16 +5,16 @@
     android:orientation="vertical" >
 
     <TextView
-        android:id="@+id/ingredient_list_label"
+        android:id="@+id/instruction_list_label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="8dp"
-        android:text="@string/title_ingredient_list"
+        android:text="@string/title_instruction_list"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textIsSelectable="false" />
 
     <FrameLayout
-        android:id="@+id/ingredient_list_container"
+        android:id="@+id/instruction_list_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" >
@@ -29,7 +29,7 @@
             android:id="@id/android:empty"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/empty_ingredient_list"
+            android:text="@string/empty_instruction_list"
             android:textAppearance="?android:attr/textAppearanceMedium" />
     </FrameLayout>
 
