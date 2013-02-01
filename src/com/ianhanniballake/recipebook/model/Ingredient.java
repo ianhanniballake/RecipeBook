@@ -161,7 +161,7 @@ public class Ingredient
 			sb.append('/');
 			sb.append(quantityDenominator);
 		}
-		if (!unit.equals(""))
+		if (unit != null && !unit.equals(""))
 		{
 			if (sb.length() > 0)
 				sb.append(' ');
@@ -170,7 +170,7 @@ public class Ingredient
 		if (sb.length() > 0)
 			sb.append(' ');
 		sb.append(item);
-		if (!preparation.equals(""))
+		if (preparation != null && !preparation.equals(""))
 		{
 			if (sb.length() > 0)
 				sb.append("; ");
