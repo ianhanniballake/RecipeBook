@@ -33,7 +33,7 @@
     <RelativeLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="2" >
+        android:layout_weight="3" >
 
         <FrameLayout
             android:id="@+id/recipe_detail_summary"
@@ -54,13 +54,13 @@
                 android:id="@+id/recipe_detail_ingredient"
                 android:layout_width="0dip"
                 android:layout_height="match_parent"
-                android:layout_weight="1" />
+                android:layout_weight="2" />
 
             <FrameLayout
                 android:id="@+id/recipe_detail_instruction"
                 android:layout_width="0dip"
                 android:layout_height="match_parent"
-                android:layout_weight="1" />
+                android:layout_weight="3" />
         </LinearLayout>
     </RelativeLayout>
 
