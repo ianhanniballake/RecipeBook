@@ -3,9 +3,13 @@
 
     <item
         android:id="@+id/edit"
+        android:icon="@android:drawable/ic_menu_edit"
+        android:showAsAction="ifRoom|withText"
         android:title="@string/edit"/>
     <item
         android:id="@+id/delete"
+        android:icon="@android:drawable/ic_menu_delete"
+        android:showAsAction="ifRoom|withText"
         android:title="@string/delete"/>
 
 </menu>

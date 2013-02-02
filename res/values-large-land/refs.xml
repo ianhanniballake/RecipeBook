@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Landscape gives us enough room to use the two pane, but not both the two pane and full detail list -->
-    <item name="activity_recipe_list" type="layout">@layout/activity_recipe_twopane</item>
-    <item name="list_item_recipe" type="layout">@layout/list_item_recipe_title</item>
+    <item name="activity_recipe_list" type="layout" tools:ignore="UnusedIds">@layout/activity_recipe_twopane</item>
+    <item name="list_item_recipe" type="layout" tools:ignore="UnusedIds">@layout/list_item_recipe_title</item>
 
 </resources>

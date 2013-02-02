@@ -5,7 +5,6 @@
     android:orientation="vertical" >
 
     <TextView
-        android:id="@+id/instruction_list_label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="8dp"
@@ -14,7 +13,6 @@
         android:textIsSelectable="false" />
 
     <FrameLayout
-        android:id="@+id/instruction_list_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" >
