@@ -30,7 +30,6 @@
         android:layout_below="@id/title"
         android:layout_toRightOf="@id/picture"
         android:gravity="top|left"
-        android:lines="3"
         android:scrollHorizontally="false"
         android:textIsSelectable="true" />
 
