@@ -1,11 +1,17 @@
 package com.ianhanniballake.recipebook.ui;
 
+import java.util.Locale;
+
+import android.app.ActionBar;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.BaseColumns;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.NavUtils;
+import android.support.v4.view.ViewPager;
 import android.view.MenuItem;
 import android.widget.AdapterView;
 
@@ -14,11 +20,98 @@ import com.ianhanniballake.recipebook.R;
 /**
  * An activity representing a single Recipe detail screen. This activity is only used on handset devices. On tablet-size
  * devices, item details are presented side-by-side with a list of items in a {@link RecipeListActivity}.
- * <p>
- * This activity is mostly just a 'shell' activity containing nothing more than a {@link RecipeDetailSummaryFragment}.
  */
 public class RecipeDetailActivity extends FragmentActivity
 {
+	/**
+	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to one of the sections/tabs/pages. We use a
+	 * {@link android.support.v4.app.FragmentPagerAdapter} derivative, which will keep every loaded fragment in memory.
+	 * If this becomes too memory intensive, it may be best to switch to a
+	 * {@link android.support.v4.app.FragmentStatePagerAdapter}.
+	 */
+	public static class RecipeDetailTabsAdapter extends FragmentPagerAdapter implements ActionBar.TabListener
+	{
+		private final FragmentActivity context;
+		private final ViewPager pager;
+		private final long recipeId;
+
+		/**
+		 * Manages the set of static tabs
+		 * 
+		 * @param activity
+		 *            Activity showing these swipeable tabs
+		 * @param pager
+		 *            Pager displaying the tabs
+		 */
+		public RecipeDetailTabsAdapter(final FragmentActivity activity, final ViewPager pager)
+		{
+			super(activity.getSupportFragmentManager());
+			context = activity;
+			recipeId = activity.getIntent().getLongExtra(BaseColumns._ID, AdapterView.INVALID_ROW_ID);
+			this.pager = pager;
+			pager.setAdapter(this);
+		}
+
+		@Override
+		public int getCount()
+		{
+			// Show 3 total pages.
+			return 3;
+		}
+
+		@Override
+		public Fragment getItem(final int position)
+		{
+			switch (position)
+			{
+				case 0:
+					return RecipeDetailSummaryFragment.newInstance(recipeId);
+				case 1:
+					return RecipeDetailIngredientFragment.newInstance(recipeId);
+				case 2:
+					return RecipeDetailInstructionFragment.newInstance(recipeId);
+				default:
+					return null;
+			}
+		}
+
+		@Override
+		public CharSequence getPageTitle(final int position)
+		{
+			final Locale l = Locale.getDefault();
+			switch (position)
+			{
+				case 0:
+					return context.getString(R.string.title_summary).toUpperCase(l);
+				case 1:
+					return context.getString(R.string.title_ingredient_list).toUpperCase(l);
+				case 2:
+					return context.getString(R.string.title_instruction_list).toUpperCase(l);
+				default:
+					return null;
+			}
+		}
+
+		@Override
+		public void onTabReselected(final ActionBar.Tab tab, final FragmentTransaction fragmentTransaction)
+		{
+			// Nothing to do
+		}
+
+		@Override
+		public void onTabSelected(final ActionBar.Tab tab, final FragmentTransaction fragmentTransaction)
+		{
+			// When the given tab is selected, switch to the corresponding page in the ViewPager.
+			pager.setCurrentItem(tab.getPosition());
+		}
+
+		@Override
+		public void onTabUnselected(final ActionBar.Tab tab, final FragmentTransaction fragmentTransaction)
+		{
+			// Nothing to do
+		}
+	}
+
 	@Override
 	protected void onCreate(final Bundle savedInstanceState)
 	{
@@ -26,21 +119,26 @@ public class RecipeDetailActivity extends FragmentActivity
 		setContentView(R.layout.activity_recipe_detail);
 		// Show the Up button in the action bar.
 		getActionBar().setDisplayHomeAsUpEnabled(true);
-		// savedInstanceState is non-null when there is fragment state saved from previous configurations of this
-		// activity (e.g. when rotating the screen from portrait to landscape). In this case, the fragment will
-		// automatically be re-added to its container so we don't need to manually add it.
-		if (savedInstanceState == null)
+		// Set up the action bar.
+		final ActionBar actionBar = getActionBar();
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+		final ViewPager pager = (ViewPager) findViewById(R.id.pager);
+		// Create the adapter that will return a fragment for each of the three tabs
+		final RecipeDetailTabsAdapter tabsAdapter = new RecipeDetailTabsAdapter(this, pager);
+		// Ensure the tabs stay in sync with the pager
+		pager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener()
 		{
-			// Create the detail fragment and add it to the activity using a fragment transaction.
-			final Bundle arguments = new Bundle();
-			arguments.putLong(BaseColumns._ID, getIntent().getLongExtra(BaseColumns._ID, AdapterView.INVALID_ROW_ID));
-			final RecipeDetailSummaryFragment fragment = new RecipeDetailSummaryFragment();
-			fragment.setArguments(arguments);
-			final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-			ft.add(R.id.recipe_detail_container, fragment);
-			ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-			ft.commit();
-		}
+			@Override
+			public void onPageSelected(final int position)
+			{
+				actionBar.setSelectedNavigationItem(position);
+			}
+		});
+		// For each of the sections in the app, add a tab to the action bar.
+		for (int i = 0; i < tabsAdapter.getCount(); i++)
+			// Create a tab with text corresponding to the page title defined by the adapter. Ensure that each tab sends
+			// callbacks to the TabsAdapter
+			actionBar.addTab(actionBar.newTab().setText(tabsAdapter.getPageTitle(i)).setTabListener(tabsAdapter));
 	}
 
 	@Override

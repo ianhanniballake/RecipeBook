@@ -21,8 +21,10 @@
     <string name="empty_ingredient_list">No ingredients found</string>
     <string name="empty_instruction_list">No instructions found</string>
     <string name="add_ingredient">Add Ingredient</string>
-    <string name="title_recipe_detail">Recipe Detail</string>
+    <string name="title_recipe_detail">Recipe Details</string>
+    <string name="title_summary">summary</string>
     <string name="title_ingredient_list">Ingredients</string>
     <string name="title_instruction_list">Instructions</string>
+    <string name="menu_settings">Settings</string>
 
 </resources>
