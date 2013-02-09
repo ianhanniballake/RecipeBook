@@ -42,7 +42,7 @@ public class RecipeListActivity extends FragmentActivity implements LoaderManage
 	/**
 	 * The current activated item position. Only used on tablets.
 	 */
-	private int mActivatedPosition = AdapterView.INVALID_POSITION;
+	int mActivatedPosition = AdapterView.INVALID_POSITION;
 	/**
 	 * Whether or not the activity is in two-pane mode, i.e. running on a tablet device.
 	 */
@@ -74,6 +74,7 @@ public class RecipeListActivity extends FragmentActivity implements LoaderManage
 			{
 				if (mTwoPane)
 				{
+					mActivatedPosition = position;
 					// In two-pane mode, show the detail view in this activity by adding or replacing the detail
 					// fragment using a fragment transaction.
 					final RecipeDetailSummaryFragment summaryFragment = RecipeDetailSummaryFragment.newInstance(id);
