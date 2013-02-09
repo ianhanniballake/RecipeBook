@@ -61,8 +61,9 @@ public class RecipeListActivity extends FragmentActivity implements LoaderManage
 			// In two-pane mode, list items should be given the 'activated' state when touched.
 			listView.setChoiceMode(AbsListView.CHOICE_MODE_SINGLE);
 		}
-		adapter = new SimpleCursorAdapter(this, R.layout.list_item_recipe, null,
-				new String[] { RecipeContract.Recipes.COLUMN_NAME_TITLE }, new int[] { R.id.title }, 0);
+		adapter = new SimpleCursorAdapter(this, R.layout.list_item_recipe, null, new String[] {
+				RecipeContract.Recipes.COLUMN_NAME_TITLE, RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION }, new int[] {
+				R.id.title, R.id.description }, 0);
 		listView.setAdapter(adapter);
 		listView.setEmptyView(findViewById(android.R.id.empty));
 		listView.setOnItemClickListener(new OnItemClickListener()
