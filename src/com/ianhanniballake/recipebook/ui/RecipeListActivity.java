@@ -87,6 +87,7 @@ public class RecipeListActivity extends FragmentActivity implements LoaderManage
 					ft.replace(R.id.recipe_detail_instruction, instructionFragment);
 					ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
 					ft.commit();
+					invalidateOptionsMenu();
 				}
 				else
 				{
@@ -123,6 +124,7 @@ public class RecipeListActivity extends FragmentActivity implements LoaderManage
 	{
 		super.onCreateOptionsMenu(menu);
 		getMenuInflater().inflate(R.menu.fragment_recipe_list, menu);
+		getMenuInflater().inflate(R.menu.fragment_recipe_summary, menu);
 		return true;
 	}
 
@@ -147,9 +149,28 @@ public class RecipeListActivity extends FragmentActivity implements LoaderManage
 				// TODO: Launch Add Activity
 				Toast.makeText(this, R.string.add, Toast.LENGTH_SHORT).show();
 				return true;
+			case R.id.edit:
+				Toast.makeText(this, R.string.edit, Toast.LENGTH_SHORT).show();
+				return true;
+			case R.id.delete:
+				Toast.makeText(this, R.string.delete, Toast.LENGTH_SHORT).show();
+				return true;
 			default:
 				return super.onOptionsItemSelected(item);
 		}
+	}
+
+	@Override
+	public boolean onPrepareOptionsMenu(final Menu menu)
+	{
+		super.onPrepareOptionsMenu(menu);
+		final AbsListView listView = (AbsListView) findViewById(android.R.id.list);
+		final boolean isItemSelected = listView.getCheckedItemCount() > 0;
+		final MenuItem editMenuItem = menu.findItem(R.id.edit);
+		editMenuItem.setVisible(isItemSelected);
+		final MenuItem deleteMenuItem = menu.findItem(R.id.delete);
+		deleteMenuItem.setVisible(isItemSelected);
+		return true;
 	}
 
 	@Override

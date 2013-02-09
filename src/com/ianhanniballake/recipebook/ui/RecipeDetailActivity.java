@@ -12,8 +12,10 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
+import android.widget.Toast;
 
 import com.ianhanniballake.recipebook.R;
 import com.ianhanniballake.recipebook.provider.RecipeContract;
@@ -145,6 +147,14 @@ public class RecipeDetailActivity extends FragmentActivity
 	}
 
 	@Override
+	public boolean onCreateOptionsMenu(final Menu menu)
+	{
+		super.onCreateOptionsMenu(menu);
+		getMenuInflater().inflate(R.menu.fragment_recipe_summary, menu);
+		return true;
+	}
+
+	@Override
 	public boolean onOptionsItemSelected(final MenuItem item)
 	{
 		switch (item.getItemId())
@@ -153,6 +163,12 @@ public class RecipeDetailActivity extends FragmentActivity
 				// This ID represents the Home or Up button. In the case of this activity, the Up button is shown. Use
 				// NavUtils to allow users to navigate up one level in the application structure.
 				NavUtils.navigateUpTo(this, new Intent(this, RecipeListActivity.class));
+				return true;
+			case R.id.edit:
+				Toast.makeText(this, R.string.edit, Toast.LENGTH_SHORT).show();
+				return true;
+			case R.id.delete:
+				Toast.makeText(this, R.string.delete, Toast.LENGTH_SHORT).show();
 				return true;
 			default:
 				return super.onOptionsItemSelected(item);
