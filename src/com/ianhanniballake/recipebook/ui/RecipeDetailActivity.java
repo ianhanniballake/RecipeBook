@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.widget.AdapterView;
 
 import com.ianhanniballake.recipebook.R;
+import com.ianhanniballake.recipebook.provider.RecipeContract;
 
 /**
  * An activity representing a single Recipe detail screen. This activity is only used on handset devices. On tablet-size
@@ -117,6 +118,8 @@ public class RecipeDetailActivity extends FragmentActivity
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_recipe_detail);
+		// Show the recipe's title
+		setTitle(getIntent().getCharSequenceExtra(RecipeContract.Recipes.COLUMN_NAME_TITLE));
 		// Show the Up button in the action bar.
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		// Set up the action bar.

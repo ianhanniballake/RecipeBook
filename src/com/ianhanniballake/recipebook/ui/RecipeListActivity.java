@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ianhanniballake.recipebook.R;
@@ -89,9 +90,11 @@ public class RecipeListActivity extends FragmentActivity implements LoaderManage
 				}
 				else
 				{
+					final TextView titleView = (TextView) view.findViewById(R.id.title);
 					// In single-pane mode, simply start the detail activity for the selected item ID.
 					final Intent detailIntent = new Intent(RecipeListActivity.this, RecipeDetailActivity.class);
 					detailIntent.putExtra(BaseColumns._ID, id);
+					detailIntent.putExtra(RecipeContract.Recipes.COLUMN_NAME_TITLE, titleView.getText());
 					startActivity(detailIntent);
 				}
 			}
