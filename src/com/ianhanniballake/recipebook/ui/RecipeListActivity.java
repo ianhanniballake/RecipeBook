@@ -124,8 +124,8 @@ public class RecipeListActivity extends FragmentActivity implements LoaderManage
 	public boolean onCreateOptionsMenu(final Menu menu)
 	{
 		super.onCreateOptionsMenu(menu);
-		getMenuInflater().inflate(R.menu.fragment_recipe_list, menu);
-		getMenuInflater().inflate(R.menu.fragment_recipe_summary, menu);
+		getMenuInflater().inflate(R.menu.recipe_list, menu);
+		getMenuInflater().inflate(R.menu.recipe_detail, menu);
 		return true;
 	}
 

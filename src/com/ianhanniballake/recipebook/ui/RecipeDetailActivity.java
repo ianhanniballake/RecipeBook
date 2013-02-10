@@ -168,7 +168,7 @@ public class RecipeDetailActivity extends FragmentActivity
 	public boolean onCreateOptionsMenu(final Menu menu)
 	{
 		super.onCreateOptionsMenu(menu);
-		getMenuInflater().inflate(R.menu.fragment_recipe_summary, menu);
+		getMenuInflater().inflate(R.menu.recipe_detail, menu);
 		return true;
 	}
 
