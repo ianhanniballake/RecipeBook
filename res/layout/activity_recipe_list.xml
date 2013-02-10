@@ -6,17 +6,9 @@
     android:layout_margin="@dimen/outer_margin"
     tools:context=".RecipeListActivity" >
 
-    <ListView
-        android:id="@android:id/list"
+    <include
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/list_item_recipe" />
-
-    <ViewStub
-        android:id="@android:id/empty"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:layout="@layout/list_recipe_empty" />
+        layout="@layout/recipe_list" />
 
 </merge>

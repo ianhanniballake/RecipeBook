@@ -9,24 +9,11 @@
     android:showDividers="middle"
     tools:context=".ui.RecipeListActivity" >
 
-    <FrameLayout
+    <include
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="1" >
-
-        <ListView
-            android:id="@android:id/list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:listitem="@layout/list_item_recipe" />
-
-        <ViewStub
-            android:id="@android:id/empty"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout="@layout/list_recipe_empty" />
-    </FrameLayout>
+        android:layout_weight="1"
+        layout="@layout/recipe_list" />
 
     <include
         android:layout_width="0dp"
