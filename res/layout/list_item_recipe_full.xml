@@ -2,8 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:background="?android:attr/activatedBackgroundIndicator"
-    android:padding="8dp" >
+    android:layout_margin="@dimen/outer_margin"
+    android:background="?android:attr/activatedBackgroundIndicator" >
 
     <ImageView
         android:id="@+id/picture"
@@ -12,7 +12,6 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:contentDescription="@string/picture"
-        android:paddingLeft="10dp"
         android:src="@drawable/placeholder" />
 
     <TextView
@@ -21,8 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@id/picture"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
+        android:padding="@dimen/inner_padding"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textIsSelectable="false" />
 
@@ -34,8 +32,7 @@
         android:layout_below="@id/title"
         android:layout_toRightOf="@id/picture"
         android:ellipsize="marquee"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
+        android:padding="@dimen/inner_padding"
         android:singleLine="true"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textIsSelectable="false" />

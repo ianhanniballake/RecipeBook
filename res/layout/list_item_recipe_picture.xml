@@ -2,8 +2,9 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_margin="@dimen/outer_margin"
     android:background="?android:attr/activatedBackgroundIndicator"
-    android:padding="8dp" >
+    android:paddingRight="@dimen/inner_padding" >
 
     <ImageView
         android:id="@+id/picture"
@@ -16,6 +17,7 @@
         android:id="@+id/title"
         android:layout_width="96dp"
         android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
         android:textIsSelectable="false" />
 
 </FrameLayout>

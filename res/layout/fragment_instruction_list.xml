@@ -2,12 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:padding="@dimen/inner_padding" >
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="8dp"
+        android:padding="@dimen/inner_padding"
         android:text="@string/title_instruction_list"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textIsSelectable="false" />
@@ -21,7 +22,7 @@
             android:id="@id/android:list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:drawSelectorOnTop="true" />
+            android:scrollbarStyle="outsideInset" />
 
         <TextView
             android:id="@id/android:empty"
