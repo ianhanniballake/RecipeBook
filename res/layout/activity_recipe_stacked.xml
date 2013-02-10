@@ -29,30 +29,10 @@
             android:layout="@layout/list_recipe_empty" />
     </FrameLayout>
 
-    <LinearLayout
+    <include
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="4"
-        android:divider="?android:attr/dividerVertical"
-        android:orientation="vertical"
-        android:showDividers="middle" >
-
-        <FrameLayout
-            android:id="@+id/recipe_detail_summary"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <FrameLayout
-            android:id="@+id/recipe_detail_ingredient"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="2" />
-
-        <FrameLayout
-            android:id="@+id/recipe_detail_instruction"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="3" />
-    </LinearLayout>
+        layout="@layout/recipe_detail" />
 
 </LinearLayout>

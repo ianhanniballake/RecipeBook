@@ -29,38 +29,9 @@
             android:layout="@layout/list_recipe_empty" />
     </FrameLayout>
 
-    <RelativeLayout
+    <include
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="3" >
-
-        <FrameLayout
-            android:id="@+id/recipe_detail_summary"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@id/recipe_detail_summary"
-            android:baselineAligned="false"
-            android:divider="?android:attr/dividerHorizontal"
-            android:orientation="horizontal"
-            android:showDividers="middle" >
-
-            <FrameLayout
-                android:id="@+id/recipe_detail_ingredient"
-                android:layout_width="0dip"
-                android:layout_height="match_parent"
-                android:layout_weight="2" />
-
-            <FrameLayout
-                android:id="@+id/recipe_detail_instruction"
-                android:layout_width="0dip"
-                android:layout_height="match_parent"
-                android:layout_weight="3" />
-        </LinearLayout>
-    </RelativeLayout>
-
-</LinearLayout>
+        android:layout_weight="3"
+        layout="@layout/recipe_detail" />
+</LinearLayout>
