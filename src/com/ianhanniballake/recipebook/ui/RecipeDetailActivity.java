@@ -4,6 +4,7 @@ import java.util.Locale;
 
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.BaseColumns;
@@ -32,9 +33,11 @@ public class RecipeDetailActivity extends FragmentActivity
 	 * If this becomes too memory intensive, it may be best to switch to a
 	 * {@link android.support.v4.app.FragmentStatePagerAdapter}.
 	 */
-	public static class RecipeDetailTabsAdapter extends FragmentPagerAdapter implements ActionBar.TabListener
+	public static class RecipeDetailTabsAdapter extends FragmentPagerAdapter implements ActionBar.TabListener,
+			ViewPager.OnPageChangeListener
 	{
-		private final FragmentActivity context;
+		private final ActionBar actionBar;
+		private final Context context;
 		private final ViewPager pager;
 		private final long recipeId;
 
@@ -50,9 +53,9 @@ public class RecipeDetailActivity extends FragmentActivity
 		{
 			super(activity.getSupportFragmentManager());
 			context = activity;
+			actionBar = activity.getActionBar();
 			recipeId = activity.getIntent().getLongExtra(BaseColumns._ID, AdapterView.INVALID_ROW_ID);
 			this.pager = pager;
-			pager.setAdapter(this);
 		}
 
 		@Override
@@ -96,6 +99,24 @@ public class RecipeDetailActivity extends FragmentActivity
 		}
 
 		@Override
+		public void onPageScrolled(final int position, final float positionOffset, final int positionOffsetPixels)
+		{
+			// Nothing to do
+		}
+
+		@Override
+		public void onPageScrollStateChanged(final int state)
+		{
+			// Nothing to do
+		}
+
+		@Override
+		public void onPageSelected(final int position)
+		{
+			actionBar.setSelectedNavigationItem(position);
+		}
+
+		@Override
 		public void onTabReselected(final ActionBar.Tab tab, final FragmentTransaction fragmentTransaction)
 		{
 			// Nothing to do
@@ -113,6 +134,19 @@ public class RecipeDetailActivity extends FragmentActivity
 		{
 			// Nothing to do
 		}
+
+		/**
+		 * Ties the pager and tabs together
+		 */
+		public void setup()
+		{
+			pager.setAdapter(this);
+			pager.setOnPageChangeListener(this);
+			actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+			// For each of the sections in the app, add a tab to the action bar.
+			for (int i = 0; i < getCount(); i++)
+				actionBar.addTab(actionBar.newTab().setText(getPageTitle(i)).setTabListener(this));
+		}
 	}
 
 	@Override
@@ -124,26 +158,10 @@ public class RecipeDetailActivity extends FragmentActivity
 		setTitle(getIntent().getCharSequenceExtra(RecipeContract.Recipes.COLUMN_NAME_TITLE));
 		// Show the Up button in the action bar.
 		getActionBar().setDisplayHomeAsUpEnabled(true);
-		// Set up the action bar.
-		final ActionBar actionBar = getActionBar();
-		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 		final ViewPager pager = (ViewPager) findViewById(R.id.pager);
 		// Create the adapter that will return a fragment for each of the three tabs
 		final RecipeDetailTabsAdapter tabsAdapter = new RecipeDetailTabsAdapter(this, pager);
-		// Ensure the tabs stay in sync with the pager
-		pager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener()
-		{
-			@Override
-			public void onPageSelected(final int position)
-			{
-				actionBar.setSelectedNavigationItem(position);
-			}
-		});
-		// For each of the sections in the app, add a tab to the action bar.
-		for (int i = 0; i < tabsAdapter.getCount(); i++)
-			// Create a tab with text corresponding to the page title defined by the adapter. Ensure that each tab sends
-			// callbacks to the TabsAdapter
-			actionBar.addTab(actionBar.newTab().setText(tabsAdapter.getPageTitle(i)).setTabListener(tabsAdapter));
+		tabsAdapter.setup();
 	}
 
 	@Override
