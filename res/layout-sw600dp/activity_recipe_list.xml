@@ -18,7 +18,7 @@
     <include
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="3"
+        android:layout_weight="@integer/recipe_detail_weight"
         layout="@layout/recipe_detail" />
 
 </LinearLayout>
