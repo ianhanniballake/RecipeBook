@@ -4,5 +4,7 @@
     <!-- Landscape gives us enough room to use the two pane, but not both the two pane and full detail list -->
     <item name="activity_recipe_list" type="layout">@layout/activity_recipe_twopane</item>
     <item name="list_item_recipe" type="layout">@layout/list_item_recipe_title</item>
+    <!-- Use a three pane view for recipe details -->
+    <item name="recipe_detail" type="layout">@layout/recipe_detail_threepane</item>
 
 </resources>

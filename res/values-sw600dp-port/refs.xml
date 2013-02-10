@@ -4,5 +4,7 @@
     <!-- Little horizontal space means a stacked layout and a picture focused list -->
     <item name="activity_recipe_list" type="layout">@layout/activity_recipe_stacked</item>
     <item name="list_item_recipe" type="layout">@layout/list_item_recipe_picture</item>
+    <!-- Use a stacked view for recipe details -->
+    <item name="recipe_detail" type="layout">@layout/recipe_detail_stacked</item>
 
 </resources>

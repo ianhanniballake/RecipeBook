@@ -3,5 +3,7 @@
 
     <!-- Small display dedicate all their screen space to the list, so we can show full details -->
     <item name="list_item_recipe" type="layout">@layout/list_item_recipe_full</item>
+    <!-- Use a ViewPager for recipe details -->
+    <item name="recipe_detail" type="layout">@layout/recipe_detail_pager</item>
 
 </resources>
