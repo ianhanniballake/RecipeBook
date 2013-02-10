@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Can't use merge tag as this is used in a weighted LinearLayout and the children need to be grouped together -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" >
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MergeRootFrame" >
 
     <ListView
         android:id="@android:id/list"
