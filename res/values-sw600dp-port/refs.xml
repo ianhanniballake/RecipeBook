@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- Little horizontal space means a stacked layout and a picture focused list -->
+    <!-- Little horizontal space means a picture focused list -->
     <item name="list_item_recipe" type="layout">@layout/list_item_recipe_picture</item>
-    <item name="recipe_detail" type="layout">@layout/recipe_detail_stacked</item>
 
 </resources>
