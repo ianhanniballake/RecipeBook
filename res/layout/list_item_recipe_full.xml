@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="?android:attr/listPreferredItemHeight"
     android:layout_margin="@dimen/outer_margin"
     android:background="?android:attr/activatedBackgroundIndicator" >
 
@@ -9,6 +9,7 @@
         android:id="@+id/picture"
         android:layout_width="?android:attr/listPreferredItemHeight"
         android:layout_height="?android:attr/listPreferredItemHeight"
+        android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:contentDescription="@string/picture"
@@ -20,7 +21,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@id/picture"
-        android:padding="@dimen/inner_padding"
+        android:paddingLeft="@dimen/inner_padding"
+        android:paddingRight="@dimen/inner_padding"
+        android:paddingTop="@dimen/inner_padding"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textIsSelectable="false" />
 
@@ -32,7 +35,10 @@
         android:layout_below="@id/title"
         android:layout_toRightOf="@id/picture"
         android:ellipsize="marquee"
-        android:padding="@dimen/inner_padding"
+        android:gravity="bottom"
+        android:paddingBottom="@dimen/inner_padding"
+        android:paddingLeft="@dimen/inner_padding"
+        android:paddingRight="@dimen/inner_padding"
         android:singleLine="true"
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:textIsSelectable="false" />
