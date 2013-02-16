@@ -4,14 +4,11 @@ import java.util.Locale;
 
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.provider.BaseColumns;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,43 +16,37 @@ import android.widget.AdapterView;
 import android.widget.Toast;
 
 import com.ianhanniballake.recipebook.R;
-import com.ianhanniballake.recipebook.provider.RecipeContract;
 
 /**
- * An activity representing a single Recipe detail screen. This activity is only used on handset devices. On tablet-size
- * devices, item details are presented side-by-side with a list of items in a {@link RecipeListActivity}.
+ * An activity for editing recipes
  */
-public class RecipeDetailActivity extends FragmentActivity
+public class RecipeEditActivity extends FragmentActivity
 {
 	/**
-	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to one of the sections/tabs/pages. We use a
-	 * {@link android.support.v4.app.FragmentPagerAdapter} derivative, which will keep every loaded fragment in memory.
-	 * If this becomes too memory intensive, it may be best to switch to a
-	 * {@link android.support.v4.app.FragmentStatePagerAdapter}.
+	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to one of the sections/tabs/pages. Supports
+	 * using a ViewPager if R.id.pager is found or a three pane detail setup
 	 */
-	public static class RecipeDetailTabsAdapter extends FragmentPagerAdapter implements ActionBar.TabListener,
+	public static class RecipeEditTabsAdapter extends FragmentPagerAdapter implements ActionBar.TabListener,
 			ViewPager.OnPageChangeListener
 	{
 		private final ActionBar actionBar;
-		private final Context context;
+		private final FragmentActivity activity;
 		private final ViewPager pager;
 		private final long recipeId;
 
 		/**
-		 * Manages the set of static tabs
+		 * Manages the set of static fragments. Make sure you call setup()!
 		 * 
 		 * @param activity
-		 *            Activity showing these swipeable tabs
-		 * @param pager
-		 *            Pager displaying the tabs
+		 *            Activity to show the summary/ingredient/instruction fragments
 		 */
-		public RecipeDetailTabsAdapter(final FragmentActivity activity, final ViewPager pager)
+		public RecipeEditTabsAdapter(final FragmentActivity activity)
 		{
 			super(activity.getSupportFragmentManager());
-			context = activity;
+			this.activity = activity;
 			actionBar = activity.getActionBar();
 			recipeId = activity.getIntent().getLongExtra(BaseColumns._ID, AdapterView.INVALID_ROW_ID);
-			this.pager = pager;
+			pager = (ViewPager) activity.findViewById(R.id.pager);
 		}
 
 		@Override
@@ -88,11 +79,11 @@ public class RecipeDetailActivity extends FragmentActivity
 			switch (position)
 			{
 				case 0:
-					return context.getString(R.string.title_summary).toUpperCase(l);
+					return activity.getString(R.string.title_summary).toUpperCase(l);
 				case 1:
-					return context.getString(R.string.title_ingredient_list).toUpperCase(l);
+					return activity.getString(R.string.title_ingredient_list).toUpperCase(l);
 				case 2:
-					return context.getString(R.string.title_instruction_list).toUpperCase(l);
+					return activity.getString(R.string.title_instruction_list).toUpperCase(l);
 				default:
 					return null;
 			}
@@ -140,35 +131,47 @@ public class RecipeDetailActivity extends FragmentActivity
 		 */
 		public void setup()
 		{
-			pager.setAdapter(this);
-			pager.setOnPageChangeListener(this);
-			actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-			// For each of the sections in the app, add a tab to the action bar.
-			for (int i = 0; i < getCount(); i++)
-				actionBar.addTab(actionBar.newTab().setText(getPageTitle(i)).setTabListener(this));
+			if (pager == null)
+			{
+				final android.support.v4.app.FragmentTransaction ft = activity.getSupportFragmentManager()
+						.beginTransaction();
+				ft.replace(R.id.recipe_detail_summary, getItem(0));
+				ft.replace(R.id.recipe_detail_ingredient, getItem(1));
+				ft.replace(R.id.recipe_detail_instruction, getItem(2));
+				ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+				ft.commit();
+			}
+			else
+			{
+				pager.setAdapter(this);
+				pager.setOnPageChangeListener(this);
+				actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+				// For each of the sections in the app, add a tab to the action bar.
+				for (int i = 0; i < getCount(); i++)
+					actionBar.addTab(actionBar.newTab().setText(getPageTitle(i)).setTabListener(this));
+			}
 		}
 	}
+
+	private RecipeEditTabsAdapter fragmentAdapter;
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_recipe_detail);
-		// Show the recipe's title
-		setTitle(getIntent().getCharSequenceExtra(RecipeContract.Recipes.COLUMN_NAME_TITLE));
 		// Show the Up button in the action bar.
 		getActionBar().setDisplayHomeAsUpEnabled(true);
-		final ViewPager pager = (ViewPager) findViewById(R.id.pager);
 		// Create the adapter that will return a fragment for each of the three tabs
-		final RecipeDetailTabsAdapter tabsAdapter = new RecipeDetailTabsAdapter(this, pager);
-		tabsAdapter.setup();
+		fragmentAdapter = new RecipeEditTabsAdapter(this);
+		fragmentAdapter.setup();
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(final Menu menu)
 	{
 		super.onCreateOptionsMenu(menu);
-		getMenuInflater().inflate(R.menu.recipe_detail, menu);
+		getMenuInflater().inflate(R.menu.recipe_edit, menu);
 		return true;
 	}
 
@@ -178,18 +181,15 @@ public class RecipeDetailActivity extends FragmentActivity
 		switch (item.getItemId())
 		{
 			case android.R.id.home:
-				// This ID represents the Home or Up button. In the case of this activity, the Up button is shown. Use
-				// NavUtils to allow users to navigate up one level in the application structure.
-				NavUtils.navigateUpTo(this, new Intent(this, RecipeListActivity.class));
+				// This ID represents the Home or Up button. In the case of this activity, the Up button is shown.
+				// In our case, we always get launched from the parent, so it is okay to just finish();
+				finish();
 				return true;
-			case R.id.edit:
-				final Intent editIntent = new Intent(this, RecipeEditActivity.class);
-				final long id = getIntent().getLongExtra(BaseColumns._ID, AdapterView.INVALID_ROW_ID);
-				editIntent.putExtra(BaseColumns._ID, id);
-				startActivity(editIntent);
+			case R.id.save:
+				Toast.makeText(this, R.string.save, Toast.LENGTH_SHORT).show();
 				return true;
-			case R.id.delete:
-				Toast.makeText(this, R.string.delete, Toast.LENGTH_SHORT).show();
+			case R.id.cancel:
+				finish();
 				return true;
 			default:
 				return super.onOptionsItemSelected(item);

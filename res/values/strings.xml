@@ -25,6 +25,7 @@
     <string name="title_summary">Summary</string>
     <string name="title_ingredient_list">Ingredients</string>
     <string name="title_instruction_list">Instructions</string>
+    <string name="title_recipe_edit">Edit Recipe</string>
     <string name="menu_settings">Settings</string>
 
 </resources>

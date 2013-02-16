@@ -37,6 +37,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.RecipeListActivity" />
         </activity>
+        <activity
+            android:name="com.ianhanniballake.recipebook.ui.RecipeEditActivity"
+            android:label="@string/title_recipe_edit" >
+        </activity>
     </application>
 
 </manifest>

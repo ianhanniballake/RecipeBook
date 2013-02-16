@@ -151,7 +151,11 @@ public class RecipeListActivity extends FragmentActivity implements LoaderManage
 				Toast.makeText(this, R.string.add, Toast.LENGTH_SHORT).show();
 				return true;
 			case R.id.edit:
-				Toast.makeText(this, R.string.edit, Toast.LENGTH_SHORT).show();
+				final Intent editIntent = new Intent(this, RecipeEditActivity.class);
+				final AbsListView listView = (AbsListView) findViewById(android.R.id.list);
+				final long id = listView.getItemIdAtPosition(mActivatedPosition);
+				editIntent.putExtra(BaseColumns._ID, id);
+				startActivity(editIntent);
 				return true;
 			case R.id.delete:
 				Toast.makeText(this, R.string.delete, Toast.LENGTH_SHORT).show();
