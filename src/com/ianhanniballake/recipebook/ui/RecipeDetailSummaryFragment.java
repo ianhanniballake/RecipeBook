@@ -99,7 +99,7 @@ public class RecipeDetailSummaryFragment extends Fragment implements LoaderManag
 	@Override
 	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState)
 	{
-		return inflater.inflate(R.layout.fragment_recipe_summary, container, false);
+		return inflater.inflate(R.layout.fragment_summary_detail, container, false);
 	}
 
 	@Override

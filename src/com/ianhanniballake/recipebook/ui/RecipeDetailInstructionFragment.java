@@ -115,7 +115,7 @@ public class RecipeDetailInstructionFragment extends ListFragment implements Loa
 	@Override
 	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState)
 	{
-		return inflater.inflate(R.layout.fragment_instruction_list, container, false);
+		return inflater.inflate(R.layout.fragment_instruction_detail, container, false);
 	}
 
 	@Override
