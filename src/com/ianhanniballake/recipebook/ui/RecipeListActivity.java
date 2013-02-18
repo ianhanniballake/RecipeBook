@@ -53,6 +53,7 @@ public class RecipeListActivity extends FragmentActivity implements LoaderManage
 	protected void onCreate(final Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
+		getIntent().setAction(Intent.ACTION_VIEW);
 		setContentView(R.layout.activity_recipe_list);
 		final AbsListView listView = (AbsListView) findViewById(android.R.id.list);
 		if (findViewById(R.id.recipe_detail_summary) != null)

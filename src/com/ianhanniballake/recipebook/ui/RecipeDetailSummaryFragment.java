@@ -1,6 +1,7 @@
 package com.ianhanniballake.recipebook.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -26,6 +27,14 @@ public class RecipeDetailSummaryFragment extends Fragment implements LoaderManag
 	 * Adapter to display the detailed data
 	 */
 	private CursorAdapter adapter;
+	/**
+	 * Current description for the recipe
+	 */
+	String description;
+	/**
+	 * Current title for the recipe
+	 */
+	String title;
 
 	/**
 	 * Mandatory empty constructor for the fragment manager to instantiate the fragment (e.g. upon screen orientation
@@ -33,6 +42,12 @@ public class RecipeDetailSummaryFragment extends Fragment implements LoaderManag
 	 */
 	public RecipeDetailSummaryFragment()
 	{
+	}
+
+	private void clear()
+	{
+		title = "";
+		description = "";
 	}
 
 	@Override
@@ -44,15 +59,11 @@ public class RecipeDetailSummaryFragment extends Fragment implements LoaderManag
 			@Override
 			public void bindView(final View view, final Context context, final Cursor cursor)
 			{
-				final TextView titleView = (TextView) view.findViewById(R.id.title);
 				final int titleColumnIndex = cursor.getColumnIndex(RecipeContract.Recipes.COLUMN_NAME_TITLE);
-				final String title = cursor.getString(titleColumnIndex);
-				titleView.setText(title);
-				final TextView descriptionView = (TextView) view.findViewById(R.id.description);
+				title = cursor.getString(titleColumnIndex);
 				final int descriptionColumnIndex = cursor
 						.getColumnIndex(RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION);
-				final String description = cursor.getString(descriptionColumnIndex);
-				descriptionView.setText(description);
+				description = cursor.getString(descriptionColumnIndex);
 			}
 
 			@Override
@@ -62,7 +73,21 @@ public class RecipeDetailSummaryFragment extends Fragment implements LoaderManag
 				return null;
 			}
 		};
-		getLoaderManager().initLoader(0, null, this);
+		if (savedInstanceState != null)
+		{
+			title = savedInstanceState.getString(RecipeContract.Recipes.COLUMN_NAME_TITLE);
+			description = savedInstanceState.getString(RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION);
+			// No longer need the loader as we have valid local copies (which may have changes) from now on
+			getLoaderManager().destroyLoader(0);
+			updateViews();
+		}
+		else if (!Intent.ACTION_INSERT.equals(getActivity().getIntent().getAction()))
+			getLoaderManager().initLoader(0, null, this);
+		else
+		{
+			clear();
+			updateViews();
+		}
 	}
 
 	@Override
@@ -74,7 +99,9 @@ public class RecipeDetailSummaryFragment extends Fragment implements LoaderManag
 	@Override
 	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState)
 	{
-		return inflater.inflate(R.layout.fragment_summary_detail, container, false);
+		if (Intent.ACTION_VIEW.equals(getActivity().getIntent().getAction()))
+			return inflater.inflate(R.layout.fragment_summary_detail, container, false);
+		return inflater.inflate(R.layout.fragment_summary_edit, container, false);
 	}
 
 	@Override
@@ -86,9 +113,28 @@ public class RecipeDetailSummaryFragment extends Fragment implements LoaderManag
 	@Override
 	public void onLoadFinished(final Loader<Cursor> loader, final Cursor data)
 	{
-		if (!data.moveToFirst() || getView() == null)
-			return;
 		adapter.swapCursor(data);
-		adapter.bindView(getView(), getActivity(), data);
+		if (data.moveToFirst())
+			adapter.bindView(getView(), getActivity(), data);
+		else
+			clear();
+		updateViews();
+	}
+
+	@Override
+	public void onSaveInstanceState(final Bundle outState)
+	{
+		super.onSaveInstanceState(outState);
+		outState.putString(RecipeContract.Recipes.COLUMN_NAME_TITLE, title);
+		outState.putString(RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION, description);
+	}
+
+	private void updateViews()
+	{
+		final View view = getView();
+		final TextView titleView = (TextView) view.findViewById(R.id.title);
+		titleView.setText(title);
+		final TextView descriptionView = (TextView) view.findViewById(R.id.description);
+		descriptionView.setText(description);
 	}
 }

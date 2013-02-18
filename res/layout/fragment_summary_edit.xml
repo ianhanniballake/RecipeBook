@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/inner_padding" >
+
+    <ImageView
+        android:id="@+id/picture"
+        android:layout_width="144dp"
+        android:layout_height="144dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:contentDescription="@string/picture"
+        android:paddingRight="24dp"
+        android:src="@drawable/placeholder" />
+
+    <EditText
+        android:id="@+id/title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@id/picture"
+        android:inputType="textCapWords"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:hint="@string/hint_title" />
+
+    <EditText
+        android:id="@+id/description"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title"
+        android:layout_toRightOf="@id/picture"
+        android:gravity="top|left"
+        android:inputType="textCapSentences|textMultiLine"
+        android:hint="@string/hint_description"
+        android:scrollHorizontally="false" />
+
+</RelativeLayout>
