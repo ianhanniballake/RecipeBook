@@ -1,11 +1,8 @@
 package com.ianhanniballake.recipebook.ui;
 
-import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.BaseColumns;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -26,26 +23,9 @@ import com.ianhanniballake.recipebook.provider.RecipeContract;
 public class RecipeDetailSummaryFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>
 {
 	/**
-	 * Create a new instance of this fragment for the given recipe id
-	 * 
-	 * @param recipeId
-	 *            Recipe ID to display ingredients for
-	 * @return A valid instance of this fragment
-	 */
-	public static RecipeDetailSummaryFragment newInstance(final long recipeId)
-	{
-		final Bundle arguments = new Bundle();
-		arguments.putLong(BaseColumns._ID, recipeId);
-		final RecipeDetailSummaryFragment summaryFragment = new RecipeDetailSummaryFragment();
-		summaryFragment.setArguments(arguments);
-		return summaryFragment;
-	}
-
-	/**
 	 * Adapter to display the detailed data
 	 */
 	private CursorAdapter adapter;
-	private long recipeId;
 
 	/**
 	 * Mandatory empty constructor for the fragment manager to instantiate the fragment (e.g. upon screen orientation
@@ -82,18 +62,13 @@ public class RecipeDetailSummaryFragment extends Fragment implements LoaderManag
 				return null;
 			}
 		};
-		if (getArguments().containsKey(BaseColumns._ID))
-		{
-			recipeId = getArguments().getLong(BaseColumns._ID, 0);
-			getLoaderManager().initLoader(0, null, this);
-		}
+		getLoaderManager().initLoader(0, null, this);
 	}
 
 	@Override
 	public Loader<Cursor> onCreateLoader(final int id, final Bundle args)
 	{
-		final Uri recipeUri = ContentUris.withAppendedId(RecipeContract.Recipes.CONTENT_ID_URI_PATTERN, recipeId);
-		return new CursorLoader(getActivity(), recipeUri, null, null, null, null);
+		return new CursorLoader(getActivity(), getActivity().getIntent().getData(), null, null, null, null);
 	}
 
 	@Override

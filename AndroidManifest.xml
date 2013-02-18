@@ -32,14 +32,31 @@
         <activity
             android:name="com.ianhanniballake.recipebook.ui.RecipeDetailActivity"
             android:label="@string/title_recipe_detail"
+            android:launchMode="singleTop"
             android:parentActivityName="com.ianhanniballake.recipebook.ui.RecipeListActivity" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="vnd.android.cursor.item/vnd.ianhanniballake.recipe" />
+            </intent-filter>
+
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.RecipeListActivity" />
         </activity>
         <activity
             android:name="com.ianhanniballake.recipebook.ui.RecipeEditActivity"
-            android:label="@string/title_recipe_edit" >
+            android:label="@string/title_recipe_edit"
+            android:launchMode="singleTop" >
+            <intent-filter>
+                <action android:name="android.intent.action.EDIT" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="vnd.android.cursor.item/vnd.ianhanniballake.recipe" />
+            </intent-filter>
         </activity>
     </application>
 

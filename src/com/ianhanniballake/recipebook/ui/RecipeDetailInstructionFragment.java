@@ -1,9 +1,9 @@
 package com.ianhanniballake.recipebook.ui;
 
+import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.provider.BaseColumns;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -14,7 +14,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.TextView;
 
 import com.ianhanniballake.recipebook.R;
@@ -61,37 +60,9 @@ public class RecipeDetailInstructionFragment extends ListFragment implements Loa
 	}
 
 	/**
-	 * Create a new instance of this fragment for the given recipe id
-	 * 
-	 * @param recipeId
-	 *            Recipe ID to display instructions for
-	 * @return A valid instance of this fragment
-	 */
-	public static RecipeDetailInstructionFragment newInstance(final long recipeId)
-	{
-		final Bundle arguments = new Bundle();
-		arguments.putLong(BaseColumns._ID, recipeId);
-		final RecipeDetailInstructionFragment instructionFragment = new RecipeDetailInstructionFragment();
-		instructionFragment.setArguments(arguments);
-		return instructionFragment;
-	}
-
-	/**
 	 * Adapter to display the list data
 	 */
 	private InstructionCursorAdapter adapter;
-
-	/**
-	 * Getter for the ID associated with the currently displayed recipe
-	 * 
-	 * @return ID for the currently displayed recipe
-	 */
-	protected long getRecipeId()
-	{
-		if (getArguments() == null)
-			return AdapterView.INVALID_ROW_ID;
-		return getArguments().getLong(BaseColumns._ID, AdapterView.INVALID_ROW_ID);
-	}
 
 	@Override
 	public void onActivityCreated(final Bundle savedInstanceState)
@@ -100,16 +71,16 @@ public class RecipeDetailInstructionFragment extends ListFragment implements Loa
 		adapter = new InstructionCursorAdapter(getActivity(), R.layout.list_item_instruction, null, 0);
 		setListAdapter(adapter);
 		getListView().setChoiceMode(AbsListView.CHOICE_MODE_NONE);
-		if (getRecipeId() != AdapterView.INVALID_ROW_ID)
-			getLoaderManager().initLoader(0, null, this);
+		getLoaderManager().initLoader(0, null, this);
 	}
 
 	@Override
 	public Loader<Cursor> onCreateLoader(final int id, final Bundle args)
 	{
+		final long recipeId = ContentUris.parseId(getActivity().getIntent().getData());
 		return new CursorLoader(getActivity(), RecipeContract.Instructions.CONTENT_URI, null,
-				RecipeContract.Instructions.COLUMN_NAME_RECIPE_ID + "=?",
-				new String[] { Long.toString(getRecipeId()) }, null);
+				RecipeContract.Instructions.COLUMN_NAME_RECIPE_ID + "=?", new String[] { Long.toString(recipeId) },
+				null);
 	}
 
 	@Override

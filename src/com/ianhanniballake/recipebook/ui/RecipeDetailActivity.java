@@ -7,7 +7,6 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.BaseColumns;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -15,7 +14,6 @@ import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.AdapterView;
 import android.widget.Toast;
 
 import com.ianhanniballake.recipebook.R;
@@ -39,7 +37,6 @@ public class RecipeDetailActivity extends FragmentActivity
 		private final ActionBar actionBar;
 		private final Context context;
 		private final ViewPager pager;
-		private final long recipeId;
 
 		/**
 		 * Manages the set of static tabs
@@ -54,7 +51,6 @@ public class RecipeDetailActivity extends FragmentActivity
 			super(activity.getSupportFragmentManager());
 			context = activity;
 			actionBar = activity.getActionBar();
-			recipeId = activity.getIntent().getLongExtra(BaseColumns._ID, AdapterView.INVALID_ROW_ID);
 			this.pager = pager;
 		}
 
@@ -71,11 +67,11 @@ public class RecipeDetailActivity extends FragmentActivity
 			switch (position)
 			{
 				case 0:
-					return RecipeDetailSummaryFragment.newInstance(recipeId);
+					return new RecipeDetailSummaryFragment();
 				case 1:
-					return RecipeDetailIngredientFragment.newInstance(recipeId);
+					return new RecipeDetailIngredientFragment();
 				case 2:
-					return RecipeDetailInstructionFragment.newInstance(recipeId);
+					return new RecipeDetailInstructionFragment();
 				default:
 					return null;
 			}
@@ -183,9 +179,7 @@ public class RecipeDetailActivity extends FragmentActivity
 				NavUtils.navigateUpTo(this, new Intent(this, RecipeListActivity.class));
 				return true;
 			case R.id.edit:
-				final Intent editIntent = new Intent(this, RecipeEditActivity.class);
-				final long id = getIntent().getLongExtra(BaseColumns._ID, AdapterView.INVALID_ROW_ID);
-				editIntent.putExtra(BaseColumns._ID, id);
+				final Intent editIntent = new Intent(Intent.ACTION_EDIT, getIntent().getData());
 				startActivity(editIntent);
 				return true;
 			case R.id.delete:

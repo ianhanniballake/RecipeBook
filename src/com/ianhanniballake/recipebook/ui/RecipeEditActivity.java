@@ -5,14 +5,12 @@ import java.util.Locale;
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
-import android.provider.BaseColumns;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.AdapterView;
 import android.widget.Toast;
 
 import com.ianhanniballake.recipebook.R;
@@ -32,7 +30,6 @@ public class RecipeEditActivity extends FragmentActivity
 		private final ActionBar actionBar;
 		private final FragmentActivity activity;
 		private final ViewPager pager;
-		private final long recipeId;
 
 		/**
 		 * Manages the set of static fragments. Make sure you call setup()!
@@ -45,7 +42,6 @@ public class RecipeEditActivity extends FragmentActivity
 			super(activity.getSupportFragmentManager());
 			this.activity = activity;
 			actionBar = activity.getActionBar();
-			recipeId = activity.getIntent().getLongExtra(BaseColumns._ID, AdapterView.INVALID_ROW_ID);
 			pager = (ViewPager) activity.findViewById(R.id.pager);
 		}
 
@@ -62,11 +58,11 @@ public class RecipeEditActivity extends FragmentActivity
 			switch (position)
 			{
 				case 0:
-					return RecipeDetailSummaryFragment.newInstance(recipeId);
+					return new RecipeDetailSummaryFragment();
 				case 1:
-					return RecipeDetailIngredientFragment.newInstance(recipeId);
+					return new RecipeDetailIngredientFragment();
 				case 2:
-					return RecipeDetailInstructionFragment.newInstance(recipeId);
+					return new RecipeDetailInstructionFragment();
 				default:
 					return null;
 			}

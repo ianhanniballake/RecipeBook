@@ -1,9 +1,10 @@
 package com.ianhanniballake.recipebook.ui;
 
+import android.content.ContentUris;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
-import android.provider.BaseColumns;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager;
@@ -77,11 +78,10 @@ public class RecipeListActivity extends FragmentActivity implements LoaderManage
 					mActivatedPosition = position;
 					// In two-pane mode, show the detail view in this activity by adding or replacing the detail
 					// fragment using a fragment transaction.
-					final RecipeDetailSummaryFragment summaryFragment = RecipeDetailSummaryFragment.newInstance(id);
-					final RecipeDetailIngredientFragment ingredientFragment = RecipeDetailIngredientFragment
-							.newInstance(id);
-					final RecipeDetailInstructionFragment instructionFragment = RecipeDetailInstructionFragment
-							.newInstance(id);
+					getIntent().setData(ContentUris.withAppendedId(RecipeContract.Recipes.CONTENT_ID_URI_BASE, id));
+					final RecipeDetailSummaryFragment summaryFragment = new RecipeDetailSummaryFragment();
+					final RecipeDetailIngredientFragment ingredientFragment = new RecipeDetailIngredientFragment();
+					final RecipeDetailInstructionFragment instructionFragment = new RecipeDetailInstructionFragment();
 					final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 					ft.replace(R.id.recipe_detail_summary, summaryFragment);
 					ft.replace(R.id.recipe_detail_ingredient, ingredientFragment);
@@ -94,10 +94,10 @@ public class RecipeListActivity extends FragmentActivity implements LoaderManage
 				{
 					final TextView titleView = (TextView) view.findViewById(R.id.title);
 					// In single-pane mode, simply start the detail activity for the selected item ID.
-					final Intent detailIntent = new Intent(RecipeListActivity.this, RecipeDetailActivity.class);
-					detailIntent.putExtra(BaseColumns._ID, id);
-					detailIntent.putExtra(RecipeContract.Recipes.COLUMN_NAME_TITLE, titleView.getText());
-					startActivity(detailIntent);
+					final Uri recipeUri = ContentUris.withAppendedId(RecipeContract.Recipes.CONTENT_ID_URI_BASE, id);
+					final Intent intent = new Intent(Intent.ACTION_VIEW, recipeUri);
+					intent.putExtra(RecipeContract.Recipes.COLUMN_NAME_TITLE, titleView.getText());
+					startActivity(intent);
 				}
 			}
 		});
@@ -151,10 +151,10 @@ public class RecipeListActivity extends FragmentActivity implements LoaderManage
 				Toast.makeText(this, R.string.add, Toast.LENGTH_SHORT).show();
 				return true;
 			case R.id.edit:
-				final Intent editIntent = new Intent(this, RecipeEditActivity.class);
 				final AbsListView listView = (AbsListView) findViewById(android.R.id.list);
 				final long id = listView.getItemIdAtPosition(mActivatedPosition);
-				editIntent.putExtra(BaseColumns._ID, id);
+				final Uri recipeUri = ContentUris.withAppendedId(RecipeContract.Recipes.CONTENT_ID_URI_BASE, id);
+				final Intent editIntent = new Intent(Intent.ACTION_EDIT, recipeUri);
 				startActivity(editIntent);
 				return true;
 			case R.id.delete:
