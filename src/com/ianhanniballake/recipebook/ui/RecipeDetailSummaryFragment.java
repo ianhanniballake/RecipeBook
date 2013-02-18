@@ -1,5 +1,6 @@
 package com.ianhanniballake.recipebook.ui;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -48,6 +49,21 @@ public class RecipeDetailSummaryFragment extends Fragment implements LoaderManag
 	{
 		title = "";
 		description = "";
+	}
+
+	/**
+	 * Gets the current values shown in this fragment
+	 * 
+	 * @return The current values
+	 */
+	public ContentValues getContentValues()
+	{
+		final ContentValues contentValues = new ContentValues();
+		title = ((TextView) getView().findViewById(R.id.title)).getText().toString();
+		contentValues.put(RecipeContract.Recipes.COLUMN_NAME_TITLE, title);
+		description = ((TextView) getView().findViewById(R.id.description)).getText().toString();
+		contentValues.put(RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION, description);
+		return contentValues;
 	}
 
 	@Override
@@ -125,7 +141,9 @@ public class RecipeDetailSummaryFragment extends Fragment implements LoaderManag
 	public void onSaveInstanceState(final Bundle outState)
 	{
 		super.onSaveInstanceState(outState);
+		title = ((TextView) getView().findViewById(R.id.title)).getText().toString();
 		outState.putString(RecipeContract.Recipes.COLUMN_NAME_TITLE, title);
+		description = ((TextView) getView().findViewById(R.id.description)).getText().toString();
 		outState.putString(RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION, description);
 	}
 

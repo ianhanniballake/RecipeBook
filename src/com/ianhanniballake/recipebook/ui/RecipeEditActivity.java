@@ -4,6 +4,10 @@ import java.util.Locale;
 
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
+import android.content.AsyncQueryHandler;
+import android.content.ContentValues;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -14,6 +18,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.ianhanniballake.recipebook.R;
+import com.ianhanniballake.recipebook.provider.RecipeContract;
 
 /**
  * An activity for editing recipes
@@ -85,6 +90,20 @@ public class RecipeEditActivity extends FragmentActivity
 			}
 		}
 
+		/**
+		 * Returns the current recipe summary fragment
+		 * 
+		 * @return The current recipe summary fragment
+		 */
+		public RecipeDetailSummaryFragment getSummaryFragment()
+		{
+			if (pager == null)
+				return (RecipeDetailSummaryFragment) activity.getSupportFragmentManager().findFragmentById(
+						R.id.recipe_detail_summary);
+			return (RecipeDetailSummaryFragment) activity.getSupportFragmentManager().findFragmentByTag(
+					"android:switcher:" + pager.getId() + ":0");
+		}
+
 		@Override
 		public void onPageScrolled(final int position, final float positionOffset, final int positionOffsetPixels)
 		{
@@ -150,6 +169,7 @@ public class RecipeEditActivity extends FragmentActivity
 	}
 
 	private RecipeEditTabsAdapter fragmentAdapter;
+	private AsyncQueryHandler recipeQueryHandler;
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState)
@@ -161,6 +181,22 @@ public class RecipeEditActivity extends FragmentActivity
 		// Create the adapter that will return a fragment for each of the three tabs
 		fragmentAdapter = new RecipeEditTabsAdapter(this);
 		fragmentAdapter.setup();
+		recipeQueryHandler = new AsyncQueryHandler(getContentResolver())
+		{
+			@Override
+			protected void onInsertComplete(final int token, final Object cookie, final Uri uri)
+			{
+				Toast.makeText(RecipeEditActivity.this, R.string.saved, Toast.LENGTH_SHORT).show();
+				finish();
+			}
+
+			@Override
+			protected void onUpdateComplete(final int token, final Object cookie, final int result)
+			{
+				Toast.makeText(RecipeEditActivity.this, R.string.saved, Toast.LENGTH_SHORT).show();
+				finish();
+			}
+		};
 	}
 
 	@Override
@@ -182,7 +218,11 @@ public class RecipeEditActivity extends FragmentActivity
 				finish();
 				return true;
 			case R.id.save:
-				Toast.makeText(this, R.string.save, Toast.LENGTH_SHORT).show();
+				final ContentValues recipeValues = fragmentAdapter.getSummaryFragment().getContentValues();
+				if (Intent.ACTION_INSERT.equals(getIntent().getAction()))
+					recipeQueryHandler.startInsert(0, null, RecipeContract.Recipes.CONTENT_ID_URI_BASE, recipeValues);
+				else
+					recipeQueryHandler.startUpdate(0, null, getIntent().getData(), recipeValues, null, null);
 				return true;
 			case R.id.cancel:
 				finish();
