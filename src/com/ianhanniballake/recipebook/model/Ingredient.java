@@ -94,6 +94,16 @@ public class Ingredient
 		}
 		int startIndex = 0;
 		int endIndex = rawText.indexOf(' ', startIndex);
+		if (rawText.isEmpty() || endIndex == -1)
+		{
+			quantity = resources.getInteger(R.integer.default_ingredient_quantity);
+			quantityNumerator = resources.getInteger(R.integer.default_ingredient_quantity_numerator);
+			quantityDenominator = resources.getInteger(R.integer.default_ingredient_quantity_denominator);
+			unit = resources.getString(R.string.default_ingredient_unit);
+			item = rawText;
+			preparation = resources.getString(R.string.default_ingredient_preparation);
+			return;
+		}
 		try
 		{
 			quantity = Integer.parseInt(rawText.substring(startIndex, endIndex));
