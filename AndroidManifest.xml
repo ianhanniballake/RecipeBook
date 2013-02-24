@@ -50,7 +50,7 @@
             android:name="com.ianhanniballake.recipebook.ui.RecipeEditActivity"
             android:label="@string/title_recipe_edit"
             android:launchMode="singleTop"
-            android:windowSoftInputMode="stateHidden" >
+            android:windowSoftInputMode="stateHidden|adjustPan" >
             <intent-filter>
                 <action android:name="android.intent.action.EDIT" />
 

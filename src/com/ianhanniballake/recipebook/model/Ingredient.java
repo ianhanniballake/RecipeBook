@@ -17,11 +17,11 @@ public class Ingredient
 	/**
 	 * Actual item that makes up this ingredient
 	 */
-	private final String item;
+	private String item;
 	/**
 	 * Optional ingredient preparation
 	 */
-	private final String preparation;
+	private String preparation;
 	/**
 	 * Whole number quantity
 	 */
@@ -37,7 +37,7 @@ public class Ingredient
 	/**
 	 * Unit of quantity
 	 */
-	private final String unit;
+	private String unit;
 
 	/**
 	 * Creates a new Ingredient from a cursor representation
@@ -68,6 +68,30 @@ public class Ingredient
 	 */
 	public Ingredient(final Resources resources, final String rawText)
 	{
+		setFromRaw(resources, rawText);
+	}
+
+	/**
+	 * Parses an ingredient from the given rawText, using the default values loaded from the Resources if the string
+	 * does not contain all components
+	 * 
+	 * @param resources
+	 *            Resources for loading default values
+	 * @param rawText
+	 *            Raw text to parse
+	 */
+	public void setFromRaw(final Resources resources, final String rawText)
+	{
+		if (rawText.isEmpty())
+		{
+			quantity = resources.getInteger(R.integer.default_ingredient_quantity);
+			quantityNumerator = resources.getInteger(R.integer.default_ingredient_quantity_numerator);
+			quantityDenominator = resources.getInteger(R.integer.default_ingredient_quantity_denominator);
+			unit = resources.getString(R.string.default_ingredient_unit);
+			item = "";
+			preparation = resources.getString(R.string.default_ingredient_preparation);
+			return;
+		}
 		int startIndex = 0;
 		int endIndex = rawText.indexOf(' ', startIndex);
 		try
@@ -100,19 +124,24 @@ public class Ingredient
 				quantityDenominator = resources.getInteger(R.integer.default_ingredient_quantity_denominator);
 			}
 		endIndex = rawText.indexOf(' ', startIndex);
-		String possibleUnit = rawText.substring(startIndex, endIndex);
-		// Strip off periods or final S's (lbs. -> lb, etc)
-		if (possibleUnit.endsWith("s."))
-			possibleUnit = possibleUnit.substring(0, possibleUnit.length() - 2);
-		else if (possibleUnit.endsWith("."))
-			possibleUnit = possibleUnit.substring(0, possibleUnit.length() - 1);
-		if (Arrays.asList(resources.getStringArray(R.array.units)).contains(possibleUnit))
-		{
-			unit = possibleUnit;
-			startIndex = endIndex + 1;
-		}
-		else
+		if (endIndex == -1)
 			unit = resources.getString(R.string.default_ingredient_unit);
+		else
+		{
+			String possibleUnit = rawText.substring(startIndex, endIndex);
+			// Strip off periods or final S's (lbs. -> lb, etc)
+			if (possibleUnit.endsWith("s."))
+				possibleUnit = possibleUnit.substring(0, possibleUnit.length() - 2);
+			else if (possibleUnit.endsWith("."))
+				possibleUnit = possibleUnit.substring(0, possibleUnit.length() - 1);
+			if (Arrays.asList(resources.getStringArray(R.array.units)).contains(possibleUnit))
+			{
+				unit = possibleUnit;
+				startIndex = endIndex + 1;
+			}
+			else
+				unit = resources.getString(R.string.default_ingredient_unit);
+		}
 		endIndex = Math.max(rawText.indexOf(';', startIndex), rawText.indexOf(',', startIndex));
 		// Take everything until the end of the string as the item if there
 		// is no preparation
@@ -150,6 +179,8 @@ public class Ingredient
 	@Override
 	public String toString()
 	{
+		if (item.isEmpty())
+			return "";
 		final StringBuilder sb = new StringBuilder();
 		if (quantity > 0)
 			sb.append(quantity);

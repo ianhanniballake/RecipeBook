@@ -28,6 +28,7 @@
     <string name="title_recipe_edit">Edit Recipe</string>
     <string name="hint_title">Title</string>
     <string name="hint_description">Description (optional)</string>
+    <string name="hint_ingredient">QTY unit ITEM; preparation</string>
     <string name="menu_settings">Settings</string>
 
 </resources>

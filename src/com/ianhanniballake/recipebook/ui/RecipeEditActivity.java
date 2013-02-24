@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
@@ -148,13 +149,16 @@ public class RecipeEditActivity extends FragmentActivity
 		{
 			if (pager == null)
 			{
-				final android.support.v4.app.FragmentTransaction ft = activity.getSupportFragmentManager()
-						.beginTransaction();
-				ft.replace(R.id.recipe_detail_summary, getItem(0));
-				ft.replace(R.id.recipe_detail_ingredient, getItem(1));
-				ft.replace(R.id.recipe_detail_instruction, getItem(2));
-				ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-				ft.commit();
+				final FragmentManager fragmentManager = activity.getSupportFragmentManager();
+				if (fragmentManager.findFragmentByTag("summary") == null)
+				{
+					final android.support.v4.app.FragmentTransaction ft = fragmentManager.beginTransaction();
+					ft.replace(R.id.recipe_detail_summary, getItem(0), "summary");
+					ft.replace(R.id.recipe_detail_ingredient, getItem(1), "ingredient");
+					ft.replace(R.id.recipe_detail_instruction, getItem(2), "instruction");
+					ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+					ft.commit();
+				}
 			}
 			else
 			{
