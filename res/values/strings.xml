@@ -29,6 +29,7 @@
     <string name="hint_title">Title</string>
     <string name="hint_description">Description (optional)</string>
     <string name="hint_ingredient">QTY unit ITEM; preparation</string>
+    <string name="hint_instruction">Instruction</string>
     <string name="menu_settings">Settings</string>
 
 </resources>
