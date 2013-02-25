@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -94,6 +95,21 @@ public class RecipeDetailIngredientFragment extends ListFragment implements Load
 	 * Current list of ingredients
 	 */
 	List<Ingredient> ingredients = new ArrayList<Ingredient>();
+
+	/**
+	 * Gets a ContentValues object for each ingredient
+	 * 
+	 * @return ContentValues for each ingredient
+	 */
+	public ContentValues[] getContentValuesArray()
+	{
+		final long recipeId = ContentUris.parseId(getActivity().getIntent().getData());
+		final int ingredientCount = adapter.getCount();
+		final ContentValues[] ingredientContentValuesList = new ContentValues[ingredientCount];
+		for (int position = 0; position < ingredientCount; position++)
+			ingredientContentValuesList[position] = adapter.getItem(position).toContentValues(recipeId);
+		return ingredientContentValuesList;
+	}
 
 	@Override
 	public void onActivityCreated(final Bundle savedInstanceState)

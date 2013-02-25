@@ -5,6 +5,7 @@ import java.util.Locale;
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
 import android.content.AsyncQueryHandler;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
@@ -56,6 +57,20 @@ public class RecipeEditActivity extends FragmentActivity
 		{
 			// Show 3 total pages.
 			return 3;
+		}
+
+		/**
+		 * Returns the current recipe ingredient fragment
+		 * 
+		 * @return The current recipe ingredient fragment
+		 */
+		public RecipeDetailIngredientFragment getIngredientFragment()
+		{
+			if (pager == null)
+				return (RecipeDetailIngredientFragment) activity.getSupportFragmentManager().findFragmentById(
+						R.id.recipe_detail_ingredient);
+			return (RecipeDetailIngredientFragment) activity.getSupportFragmentManager().findFragmentByTag(
+					"android:switcher:" + pager.getId() + ":1");
 		}
 
 		@Override
@@ -172,7 +187,14 @@ public class RecipeEditActivity extends FragmentActivity
 		}
 	}
 
-	private RecipeEditTabsAdapter fragmentAdapter;
+	/**
+	 * Manages the fragments associated with this activity
+	 */
+	RecipeEditTabsAdapter fragmentAdapter;
+	/**
+	 * Handles deleting and entering ingredients
+	 */
+	AsyncQueryHandler ingredientQueryHandler;
 	private AsyncQueryHandler recipeQueryHandler;
 
 	@Override
@@ -190,15 +212,51 @@ public class RecipeEditActivity extends FragmentActivity
 			@Override
 			protected void onInsertComplete(final int token, final Object cookie, final Uri uri)
 			{
-				Toast.makeText(RecipeEditActivity.this, R.string.saved, Toast.LENGTH_SHORT).show();
-				finish();
+				startIngredientDelete();
 			}
 
 			@Override
 			protected void onUpdateComplete(final int token, final Object cookie, final int result)
 			{
-				Toast.makeText(RecipeEditActivity.this, R.string.saved, Toast.LENGTH_SHORT).show();
-				finish();
+				startIngredientDelete();
+			}
+
+			private void startIngredientDelete()
+			{
+				final long recipeId = ContentUris.parseId(getIntent().getData());
+				final String selection = RecipeContract.Ingredients.COLUMN_NAME_RECIPE_ID + "=?";
+				final String[] selectionArgs = { Long.toString(recipeId) };
+				ingredientQueryHandler.startDelete(0, null, RecipeContract.Ingredients.CONTENT_ID_URI_BASE, selection,
+						selectionArgs);
+			}
+		};
+		ingredientQueryHandler = new AsyncQueryHandler(getContentResolver())
+		{
+			private int insertsToGo;
+
+			@Override
+			protected void onDeleteComplete(final int token, final Object cookie, final int result)
+			{
+				final ContentValues[] ingredientValuesArray = fragmentAdapter.getIngredientFragment()
+						.getContentValuesArray();
+				insertsToGo = ingredientValuesArray.length;
+				for (int position = 0; position < ingredientValuesArray.length; position++)
+					startInsert(position, null, RecipeContract.Ingredients.CONTENT_ID_URI_BASE,
+							ingredientValuesArray[position]);
+			}
+
+			@Override
+			protected void onInsertComplete(final int token, final Object cookie, final Uri uri)
+			{
+				synchronized (this)
+				{
+					insertsToGo--;
+					if (insertsToGo == 0)
+					{
+						Toast.makeText(RecipeEditActivity.this, R.string.saved, Toast.LENGTH_SHORT).show();
+						finish();
+					}
+				}
 			}
 		};
 	}
