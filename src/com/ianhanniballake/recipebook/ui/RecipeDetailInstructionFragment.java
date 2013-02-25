@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -41,6 +42,14 @@ public class RecipeDetailInstructionFragment extends ListFragment implements Loa
 		public void setInstruction(final String instruction)
 		{
 			this.instruction = instruction;
+		}
+
+		public ContentValues toContentValues(final long recipeId)
+		{
+			final ContentValues contentValues = new ContentValues();
+			contentValues.put(RecipeContract.Instructions.COLUMN_NAME_RECIPE_ID, recipeId);
+			contentValues.put(RecipeContract.Instructions.COLUMN_NAME_INSTRUCTION, instruction);
+			return contentValues;
 		}
 
 		@Override
@@ -114,6 +123,21 @@ public class RecipeDetailInstructionFragment extends ListFragment implements Loa
 	 * Current list of instructions
 	 */
 	List<Instruction> instructions = new ArrayList<Instruction>();
+
+	/**
+	 * Gets a ContentValues object for each instruction
+	 * 
+	 * @return ContentValues for each instruction
+	 */
+	public ContentValues[] getContentValuesArray()
+	{
+		final long recipeId = ContentUris.parseId(getActivity().getIntent().getData());
+		final int instructionCount = adapter.getCount();
+		final ContentValues[] instructionContentValuesList = new ContentValues[instructionCount];
+		for (int position = 0; position < instructionCount; position++)
+			instructionContentValuesList[position] = adapter.getItem(position).toContentValues(recipeId);
+		return instructionContentValuesList;
+	}
 
 	@Override
 	public void onActivityCreated(final Bundle savedInstanceState)

@@ -73,6 +73,20 @@ public class RecipeEditActivity extends FragmentActivity
 					"android:switcher:" + pager.getId() + ":1");
 		}
 
+		/**
+		 * Returns the current recipe instruction fragment
+		 * 
+		 * @return The current recipe instruction fragment
+		 */
+		public RecipeDetailInstructionFragment getInstructionFragment()
+		{
+			if (pager == null)
+				return (RecipeDetailInstructionFragment) activity.getSupportFragmentManager().findFragmentById(
+						R.id.recipe_detail_instruction);
+			return (RecipeDetailInstructionFragment) activity.getSupportFragmentManager().findFragmentByTag(
+					"android:switcher:" + pager.getId() + ":2");
+		}
+
 		@Override
 		public Fragment getItem(final int position)
 		{
@@ -195,6 +209,10 @@ public class RecipeEditActivity extends FragmentActivity
 	 * Handles deleting and entering ingredients
 	 */
 	AsyncQueryHandler ingredientQueryHandler;
+	/**
+	 * Handles deleting and entering instructions
+	 */
+	AsyncQueryHandler instructionQueryHandler;
 	private AsyncQueryHandler recipeQueryHandler;
 
 	@Override
@@ -243,6 +261,38 @@ public class RecipeEditActivity extends FragmentActivity
 				for (int position = 0; position < ingredientValuesArray.length; position++)
 					startInsert(position, null, RecipeContract.Ingredients.CONTENT_ID_URI_BASE,
 							ingredientValuesArray[position]);
+			}
+
+			@Override
+			protected void onInsertComplete(final int token, final Object cookie, final Uri uri)
+			{
+				synchronized (this)
+				{
+					insertsToGo--;
+					if (insertsToGo == 0)
+					{
+						final long recipeId = ContentUris.parseId(getIntent().getData());
+						final String selection = RecipeContract.Instructions.COLUMN_NAME_RECIPE_ID + "=?";
+						final String[] selectionArgs = { Long.toString(recipeId) };
+						instructionQueryHandler.startDelete(0, null, RecipeContract.Instructions.CONTENT_ID_URI_BASE,
+								selection, selectionArgs);
+					}
+				}
+			}
+		};
+		instructionQueryHandler = new AsyncQueryHandler(getContentResolver())
+		{
+			private int insertsToGo;
+
+			@Override
+			protected void onDeleteComplete(final int token, final Object cookie, final int result)
+			{
+				final ContentValues[] instructionValuesArray = fragmentAdapter.getInstructionFragment()
+						.getContentValuesArray();
+				insertsToGo = instructionValuesArray.length;
+				for (int position = 0; position < instructionValuesArray.length; position++)
+					startInsert(position, null, RecipeContract.Instructions.CONTENT_ID_URI_BASE,
+							instructionValuesArray[position]);
 			}
 
 			@Override
