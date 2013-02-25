@@ -23,6 +23,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 
 import com.ianhanniballake.recipebook.R;
+import com.ianhanniballake.recipebook.model.Instruction;
 import com.ianhanniballake.recipebook.provider.RecipeContract;
 
 /**
@@ -30,35 +31,6 @@ import com.ianhanniballake.recipebook.provider.RecipeContract;
  */
 public class RecipeDetailInstructionFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>
 {
-	private class Instruction
-	{
-		private String instruction;
-
-		public Instruction(final String instruction)
-		{
-			this.instruction = instruction;
-		}
-
-		public void setInstruction(final String instruction)
-		{
-			this.instruction = instruction;
-		}
-
-		public ContentValues toContentValues(final long recipeId)
-		{
-			final ContentValues contentValues = new ContentValues();
-			contentValues.put(RecipeContract.Instructions.COLUMN_NAME_RECIPE_ID, recipeId);
-			contentValues.put(RecipeContract.Instructions.COLUMN_NAME_INSTRUCTION, instruction);
-			return contentValues;
-		}
-
-		@Override
-		public String toString()
-		{
-			return instruction;
-		}
-	}
-
 	/**
 	 * Manages the list of ingredients as an Array backed list
 	 */
