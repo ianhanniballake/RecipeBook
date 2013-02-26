@@ -157,11 +157,11 @@ public class Ingredient
 		// is no preparation
 		if (endIndex == -1)
 			endIndex = rawText.length();
-		item = rawText.substring(startIndex, endIndex);
+		item = rawText.substring(startIndex, endIndex).trim();
 		startIndex = endIndex + 1;
 		endIndex = rawText.length();
 		if (endIndex > startIndex)
-			preparation = rawText.substring(startIndex, endIndex);
+			preparation = rawText.substring(startIndex, endIndex).trim();
 		else
 			preparation = resources.getString(R.string.default_ingredient_preparation);
 	}
