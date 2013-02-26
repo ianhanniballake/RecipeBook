@@ -20,7 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
-import android.widget.TextView;
+import android.widget.EditText;
 
 import com.ianhanniballake.recipebook.R;
 import com.ianhanniballake.recipebook.model.Ingredient;
@@ -36,7 +36,6 @@ public class RecipeDetailIngredientFragment extends ListFragment implements Load
 	 */
 	public class IngredientArrayAdapter extends ArrayAdapter<Ingredient>
 	{
-		private final int resource;
 		private final int textViewResourceId;
 
 		/**
@@ -52,44 +51,43 @@ public class RecipeDetailIngredientFragment extends ListFragment implements Load
 		public IngredientArrayAdapter(final Context context, final int resource, final int textViewResourceId)
 		{
 			super(context, resource, textViewResourceId);
-			this.resource = resource;
 			this.textViewResourceId = textViewResourceId;
 		}
 
 		@Override
 		public View getView(final int position, final View convertView, final ViewGroup parent)
 		{
-			final View view;
-			TextView text;
-			if (convertView == null)
-				view = getActivity().getLayoutInflater().inflate(resource, parent, false);
-			else
-				view = convertView;
-			text = (TextView) view.findViewById(textViewResourceId);
-			text.addTextChangedListener(new TextWatcher()
+			// Need to ensure the correct position is set before super.getView sets the text
+			if (convertView != null)
+				convertView.setTag(position);
+			final View view = super.getView(position, convertView, parent);
+			if (!Intent.ACTION_VIEW.equals(getActivity().getIntent().getAction()))
 			{
-				@Override
-				public void afterTextChanged(final Editable s)
+				final EditText editText = (EditText) view.findViewById(textViewResourceId);
+				editText.addTextChangedListener(new TextWatcher()
 				{
-					// Nothing to do
-				}
+					@Override
+					public void afterTextChanged(final Editable s)
+					{
+						// Nothing to do
+					}
 
-				@Override
-				public void beforeTextChanged(final CharSequence s, final int start, final int count, final int after)
-				{
-					// Nothing to do
-				}
+					@Override
+					public void beforeTextChanged(final CharSequence s, final int start, final int count,
+							final int after)
+					{
+						// Nothing to do
+					}
 
-				@Override
-				public void onTextChanged(final CharSequence s, final int start, final int before, final int count)
-				{
-					final int savedPosition = (Integer) view.getTag();
-					getItem(savedPosition).setFromRaw(view.getResources(), s.toString());
-				}
-			});
-			view.setTag(position);
-			text.setText(getItem(position).toString());
-			text.clearFocus();
+					@Override
+					public void onTextChanged(final CharSequence s, final int start, final int before, final int count)
+					{
+						final int savedPosition = view.getTag() == null ? position : (Integer) view.getTag();
+						getItem(savedPosition).setFromRaw(view.getResources(), s.toString());
+					}
+				});
+				editText.clearFocus();
+			}
 			return view;
 		}
 	}
