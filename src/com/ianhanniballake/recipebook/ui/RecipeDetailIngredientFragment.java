@@ -36,35 +36,6 @@ public class RecipeDetailIngredientFragment extends ListFragment implements Load
 	 */
 	public class IngredientArrayAdapter extends ArrayAdapter<Ingredient>
 	{
-		private class IngredientTextWatcher implements TextWatcher
-		{
-			private final View view;
-
-			IngredientTextWatcher(final View view)
-			{
-				this.view = view;
-			}
-
-			@Override
-			public void afterTextChanged(final Editable s)
-			{
-				// Nothing to do
-			}
-
-			@Override
-			public void beforeTextChanged(final CharSequence s, final int start, final int count, final int after)
-			{
-				// Nothing to do
-			}
-
-			@Override
-			public void onTextChanged(final CharSequence s, final int start, final int before, final int count)
-			{
-				final int position = (Integer) view.getTag();
-				getItem(position).setFromRaw(view.getResources(), s.toString());
-			}
-		}
-
 		private final int resource;
 		private final int textViewResourceId;
 
@@ -88,14 +59,34 @@ public class RecipeDetailIngredientFragment extends ListFragment implements Load
 		@Override
 		public View getView(final int position, final View convertView, final ViewGroup parent)
 		{
-			View view;
+			final View view;
 			TextView text;
 			if (convertView == null)
 				view = getActivity().getLayoutInflater().inflate(resource, parent, false);
 			else
 				view = convertView;
 			text = (TextView) view.findViewById(textViewResourceId);
-			text.addTextChangedListener(new IngredientTextWatcher(view));
+			text.addTextChangedListener(new TextWatcher()
+			{
+				@Override
+				public void afterTextChanged(final Editable s)
+				{
+					// Nothing to do
+				}
+
+				@Override
+				public void beforeTextChanged(final CharSequence s, final int start, final int count, final int after)
+				{
+					// Nothing to do
+				}
+
+				@Override
+				public void onTextChanged(final CharSequence s, final int start, final int before, final int count)
+				{
+					final int savedPosition = (Integer) view.getTag();
+					getItem(savedPosition).setFromRaw(view.getResources(), s.toString());
+				}
+			});
 			view.setTag(position);
 			text.setText(getItem(position).toString());
 			text.clearFocus();
