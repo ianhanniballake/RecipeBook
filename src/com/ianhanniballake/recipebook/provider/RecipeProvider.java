@@ -89,6 +89,14 @@ public class RecipeProvider extends ContentProvider
 			values.put(RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION, "Paleo friendly treat");
 			final long recipeId3 = db.insert(RecipeContract.Recipes.TABLE_NAME, null, values);
 			values.clear();
+			values.put(RecipeContract.Recipes.COLUMN_NAME_TITLE, "Black Pepper and Parmesan Ricotta Gnocchi");
+			values.put(RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION, "Dinner in 15");
+			final long recipeId4 = db.insert(RecipeContract.Recipes.TABLE_NAME, null, values);
+			values.clear();
+			values.put(RecipeContract.Recipes.COLUMN_NAME_TITLE, "Salmon Baked with Herbed Butter");
+			values.put(RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION, "");
+			final long recipeId5 = db.insert(RecipeContract.Recipes.TABLE_NAME, null, values);
+			values.clear();
 			values.put(RecipeContract.Ingredients.COLUMN_NAME_RECIPE_ID, recipeId1);
 			values.put(RecipeContract.Ingredients.COLUMN_NAME_QUANTITY, 5);
 			values.put(RecipeContract.Ingredients.COLUMN_NAME_ITEM, "Boneless Chicken Breast");
@@ -247,6 +255,92 @@ public class RecipeProvider extends ContentProvider
 			values.put(RecipeContract.Ingredients.COLUMN_NAME_PREPARATION, "sub regular chocolate chips");
 			db.insert(RecipeContract.Ingredients.TABLE_NAME, null, values);
 			values.clear();
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_RECIPE_ID, recipeId4);
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_QUANTITY, 2);
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_UNIT, "cup");
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_ITEM, "Ricotta");
+			db.insert(RecipeContract.Ingredients.TABLE_NAME, null, values);
+			values.clear();
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_RECIPE_ID, recipeId4);
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_QUANTITY_NUMERATOR, 1);
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_QUANTITY_DENOMINATOR, 2);
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_UNIT, "cup");
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_ITEM, "Parmesan Cheese");
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_PREPARATION, "finely grated");
+			db.insert(RecipeContract.Ingredients.TABLE_NAME, null, values);
+			values.clear();
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_RECIPE_ID, recipeId4);
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_QUANTITY, 2);
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_UNIT, "tsp");
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_ITEM, "Black Pepper");
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_PREPARATION, "freshly grated");
+			db.insert(RecipeContract.Ingredients.TABLE_NAME, null, values);
+			values.clear();
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_RECIPE_ID, recipeId4);
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_QUANTITY, 2);
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_ITEM, "Eggs");
+			db.insert(RecipeContract.Ingredients.TABLE_NAME, null, values);
+			values.clear();
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_RECIPE_ID, recipeId4);
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_QUANTITY, 1);
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_QUANTITY_NUMERATOR, 1);
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_QUANTITY_DENOMINATOR, 4);
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_ITEM, "Flour");
+			db.insert(RecipeContract.Ingredients.TABLE_NAME, null, values);
+			values.clear();
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_RECIPE_ID, recipeId4);
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_QUANTITY_NUMERATOR, 1);
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_QUANTITY_DENOMINATOR, 2);
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_UNIT, "tbsp");
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_ITEM, "Salt");
+			db.insert(RecipeContract.Ingredients.TABLE_NAME, null, values);
+			values.clear();
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_RECIPE_ID, recipeId4);
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_QUANTITY, 1);
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_UNIT, "tbsp");
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_ITEM, "Butter");
+			db.insert(RecipeContract.Ingredients.TABLE_NAME, null, values);
+			values.clear();
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_RECIPE_ID, recipeId5);
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_QUANTITY, 4);
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_UNIT, "tbsp");
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_ITEM, "Butter");
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_PREPARATION, "softened");
+			db.insert(RecipeContract.Ingredients.TABLE_NAME, null, values);
+			values.clear();
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_RECIPE_ID, recipeId5);
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_QUANTITY, 1);
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_UNIT, "cup");
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_ITEM, "Parsley");
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_PREPARATION, "chopped");
+			db.insert(RecipeContract.Ingredients.TABLE_NAME, null, values);
+			values.clear();
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_RECIPE_ID, recipeId5);
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_QUANTITY, 2);
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_ITEM, "Garlic Cloves");
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_PREPARATION, "minced");
+			db.insert(RecipeContract.Ingredients.TABLE_NAME, null, values);
+			values.clear();
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_RECIPE_ID, recipeId5);
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_QUANTITY, 1);
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_UNIT, "tbsp");
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_ITEM, "Capers");
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_PREPARATION, "chopped");
+			db.insert(RecipeContract.Ingredients.TABLE_NAME, null, values);
+			values.clear();
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_RECIPE_ID, recipeId5);
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_QUANTITY, 1);
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_UNIT, "lb");
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_ITEM, "Salmon");
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_PREPARATION, "in 4 fillets");
+			db.insert(RecipeContract.Ingredients.TABLE_NAME, null, values);
+			values.clear();
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_RECIPE_ID, recipeId5);
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_QUANTITY, 1);
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_ITEM, "Lemon");
+			values.put(RecipeContract.Ingredients.COLUMN_NAME_PREPARATION, "thinly sliced");
+			db.insert(RecipeContract.Ingredients.TABLE_NAME, null, values);
+			values.clear();
 			values.put(RecipeContract.Instructions.COLUMN_NAME_RECIPE_ID, recipeId1);
 			values.put(RecipeContract.Instructions.COLUMN_NAME_INSTRUCTION,
 					"Preheat your oven to 200F and place a large plate inside to keep the chicken warm later on");
@@ -362,6 +456,79 @@ public class RecipeProvider extends ContentProvider
 			values.put(RecipeContract.Instructions.COLUMN_NAME_RECIPE_ID, recipeId3);
 			values.put(RecipeContract.Instructions.COLUMN_NAME_INSTRUCTION,
 					"Bake for 12 to 15 minutes or until golden brown");
+			db.insert(RecipeContract.Instructions.TABLE_NAME, null, values);
+			values.clear();
+			values.put(RecipeContract.Instructions.COLUMN_NAME_RECIPE_ID, recipeId4);
+			values.put(
+					RecipeContract.Instructions.COLUMN_NAME_INSTRUCTION,
+					"Combine all of the ingredients, except the butter, in a medium bowl and mix well with a wooden spoon. You should have a very think, soft and somewhat sticky dough.");
+			db.insert(RecipeContract.Instructions.TABLE_NAME, null, values);
+			values.clear();
+			values.put(RecipeContract.Instructions.COLUMN_NAME_RECIPE_ID, recipeId4);
+			values.put(
+					RecipeContract.Instructions.COLUMN_NAME_INSTRUCTION,
+					"Generously flour a large cutting board. Dust your dough with a bit of flour and break off about a third of it with your hands. Roll the dough into a 1 inch thick log, adding more flour, as needed, to keep it from sticking.");
+			db.insert(RecipeContract.Instructions.TABLE_NAME, null, values);
+			values.clear();
+			values.put(RecipeContract.Instructions.COLUMN_NAME_RECIPE_ID, recipeId4);
+			values.put(
+					RecipeContract.Instructions.COLUMN_NAME_INSTRUCTION,
+					"Use a bench scraper or a sharp knife to cut the log into 1 inch thick pieces and place them on a lined baking sheet. Repeat until you have used up the rest of the dough.");
+			db.insert(RecipeContract.Instructions.TABLE_NAME, null, values);
+			values.clear();
+			values.put(RecipeContract.Instructions.COLUMN_NAME_RECIPE_ID, recipeId4);
+			values.put(
+					RecipeContract.Instructions.COLUMN_NAME_INSTRUCTION,
+					"Bring a large pot of salted water to a boil and cook the gnocchi: drop the gnocchi into the water in batches, cooking until they float to the top (about 3 minutes). Gently stir the water with a wooden spoon to nudge any gnocchi that stick to the bottom to float to the top. Meanwhile, melt the butter over medium-high heat in a large cast iron skillet.");
+			db.insert(RecipeContract.Instructions.TABLE_NAME, null, values);
+			values.clear();
+			values.put(RecipeContract.Instructions.COLUMN_NAME_RECIPE_ID, recipeId4);
+			values.put(
+					RecipeContract.Instructions.COLUMN_NAME_INSTRUCTION,
+					"As the gnocchi finish cooking, remove them from the water with a slotted spoon and add them to the skillet to brown them, tossing occassionally and adjusting the heat to ensure that you don’t burn them. Ideally, you’ll want to let the pieces crisp up on one side before turning them over.");
+			db.insert(RecipeContract.Instructions.TABLE_NAME, null, values);
+			values.clear();
+			values.put(RecipeContract.Instructions.COLUMN_NAME_RECIPE_ID, recipeId4);
+			values.put(RecipeContract.Instructions.COLUMN_NAME_INSTRUCTION,
+					"Serve the gnocchi with additional Parmesan cheese and freshly grated black pepper.");
+			db.insert(RecipeContract.Instructions.TABLE_NAME, null, values);
+			values.clear();
+			values.put(RecipeContract.Instructions.COLUMN_NAME_RECIPE_ID, recipeId5);
+			values.put(RecipeContract.Instructions.COLUMN_NAME_INSTRUCTION, "Preheat oven to 375 F");
+			db.insert(RecipeContract.Instructions.TABLE_NAME, null, values);
+			values.clear();
+			values.put(RecipeContract.Instructions.COLUMN_NAME_RECIPE_ID, recipeId5);
+			values.put(RecipeContract.Instructions.COLUMN_NAME_INSTRUCTION,
+					"Mix the butter, parsley, garlic and capers.");
+			db.insert(RecipeContract.Instructions.TABLE_NAME, null, values);
+			values.clear();
+			values.put(RecipeContract.Instructions.COLUMN_NAME_RECIPE_ID, recipeId5);
+			values.put(RecipeContract.Instructions.COLUMN_NAME_INSTRUCTION,
+					"Place each piece of salmon in the center of a square of foil and season with salt and pepper.");
+			db.insert(RecipeContract.Instructions.TABLE_NAME, null, values);
+			values.clear();
+			values.put(RecipeContract.Instructions.COLUMN_NAME_RECIPE_ID, recipeId5);
+			values.put(RecipeContract.Instructions.COLUMN_NAME_INSTRUCTION,
+					"Cut deep slashes into each piece of fish and spread the herbed butter into the cuts.");
+			db.insert(RecipeContract.Instructions.TABLE_NAME, null, values);
+			values.clear();
+			values.put(RecipeContract.Instructions.COLUMN_NAME_RECIPE_ID, recipeId5);
+			values.put(RecipeContract.Instructions.COLUMN_NAME_INSTRUCTION,
+					"Cut the lemon slices in half and push halves into each slash in the fish.");
+			db.insert(RecipeContract.Instructions.TABLE_NAME, null, values);
+			values.clear();
+			values.put(RecipeContract.Instructions.COLUMN_NAME_RECIPE_ID, recipeId5);
+			values.put(RecipeContract.Instructions.COLUMN_NAME_INSTRUCTION,
+					"Seal the foil around the salmon and place them on a baking sheet.");
+			db.insert(RecipeContract.Instructions.TABLE_NAME, null, values);
+			values.clear();
+			values.put(RecipeContract.Instructions.COLUMN_NAME_RECIPE_ID, recipeId5);
+			values.put(RecipeContract.Instructions.COLUMN_NAME_INSTRUCTION,
+					"Bake for 10 to 15 minutes or until the salmon is cooked through.");
+			db.insert(RecipeContract.Instructions.TABLE_NAME, null, values);
+			values.clear();
+			values.put(RecipeContract.Instructions.COLUMN_NAME_RECIPE_ID, recipeId5);
+			values.put(RecipeContract.Instructions.COLUMN_NAME_INSTRUCTION, "Remove lemon slices before serving.");
 			db.insert(RecipeContract.Instructions.TABLE_NAME, null, values);
 		}
 
