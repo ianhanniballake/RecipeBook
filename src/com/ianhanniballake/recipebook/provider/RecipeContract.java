@@ -237,7 +237,7 @@ public final class RecipeContract
 		/**
 		 * The default sort order for this table
 		 */
-		public static final String DEFAULT_SORT_ORDER = "title DESC";
+		public static final String DEFAULT_SORT_ORDER = "title ASC";
 		/**
 		 * 0-relative position of a recipe ID segment in the path part of a recipe ID URI
 		 */
