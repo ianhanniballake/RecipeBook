@@ -223,9 +223,9 @@ public class RecipeEditActivity extends FragmentActivity
 			final ContentResolver resolver = activity.getContentResolver();
 			final RecipeDetailSummaryFragment summaryFragment = (RecipeDetailSummaryFragment) params[0];
 			final ContentValues recipeValues = summaryFragment.getContentValues();
-			final Uri recipeUri = activity.getIntent().getData();
-			long recipeId = recipeUri == null ? -1 : ContentUris.parseId(recipeUri);
-			if (Intent.ACTION_INSERT.equals(activity.getIntent().getAction()))
+			final boolean isInsert = Intent.ACTION_INSERT.equals(activity.getIntent().getAction());
+			long recipeId;
+			if (isInsert)
 			{
 				final Uri newRow = resolver.insert(RecipeContract.Recipes.CONTENT_ID_URI_BASE, recipeValues);
 				if (newRow == null)
@@ -234,7 +234,11 @@ public class RecipeEditActivity extends FragmentActivity
 				activity.getIntent().setData(newRow);
 			}
 			else
+			{
+				final Uri recipeUri = activity.getIntent().getData();
+				recipeId = ContentUris.parseId(recipeUri);
 				resolver.update(recipeUri, recipeValues, null, null);
+			}
 			// Insert ingredients
 			final String ingredientSelection = RecipeContract.Ingredients.COLUMN_NAME_RECIPE_ID + "=?";
 			final String[] ingredientSelectionArgs = { Long.toString(recipeId) };

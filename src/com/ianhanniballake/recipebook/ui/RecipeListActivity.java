@@ -148,8 +148,8 @@ public class RecipeListActivity extends FragmentActivity implements LoaderManage
 		switch (item.getItemId())
 		{
 			case R.id.add:
-				// TODO: Launch Add Activity
-				Toast.makeText(this, R.string.add, Toast.LENGTH_SHORT).show();
+				final Intent addIntent = new Intent(Intent.ACTION_INSERT, RecipeContract.Recipes.CONTENT_URI);
+				startActivity(addIntent);
 				return true;
 			case R.id.edit:
 				final AbsListView listView = (AbsListView) findViewById(android.R.id.list);

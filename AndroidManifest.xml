@@ -58,6 +58,13 @@
 
                 <data android:mimeType="vnd.android.cursor.item/vnd.ianhanniballake.recipe" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.INSERT" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="vnd.android.cursor.dir/vnd.ianhanniballake.recipes" />
+            </intent-filter>
         </activity>
     </application>
 
