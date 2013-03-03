@@ -1,14 +1,18 @@
 package com.ianhanniballake.recipebook.ui;
 
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
-import android.content.AsyncQueryHandler;
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -201,19 +205,77 @@ public class RecipeEditActivity extends FragmentActivity
 		}
 	}
 
+	private static class SaveAsyncTask extends AsyncTask<Fragment, Void, Long>
+	{
+		private final WeakReference<FragmentActivity> activityRef;
+
+		SaveAsyncTask(final FragmentActivity activity)
+		{
+			activityRef = new WeakReference<FragmentActivity>(activity);
+		}
+
+		@Override
+		protected Long doInBackground(final Fragment... params)
+		{
+			final FragmentActivity activity = activityRef.get();
+			if (activity == null)
+				return -1L;
+			final ContentResolver resolver = activity.getContentResolver();
+			final RecipeDetailSummaryFragment summaryFragment = (RecipeDetailSummaryFragment) params[0];
+			final ContentValues recipeValues = summaryFragment.getContentValues();
+			final Uri recipeUri = activity.getIntent().getData();
+			long recipeId = recipeUri == null ? -1 : ContentUris.parseId(recipeUri);
+			if (Intent.ACTION_INSERT.equals(activity.getIntent().getAction()))
+			{
+				final Uri newRow = resolver.insert(RecipeContract.Recipes.CONTENT_ID_URI_BASE, recipeValues);
+				if (newRow == null)
+					return -1L;
+				recipeId = ContentUris.parseId(newRow);
+				activity.getIntent().setData(newRow);
+			}
+			else
+				resolver.update(recipeUri, recipeValues, null, null);
+			// Insert ingredients
+			final String ingredientSelection = RecipeContract.Ingredients.COLUMN_NAME_RECIPE_ID + "=?";
+			final String[] ingredientSelectionArgs = { Long.toString(recipeId) };
+			resolver.delete(RecipeContract.Ingredients.CONTENT_ID_URI_BASE, ingredientSelection,
+					ingredientSelectionArgs);
+			final RecipeDetailIngredientFragment ingredientFragment = (RecipeDetailIngredientFragment) params[1];
+			final ContentValues[] ingredientValuesArray = ingredientFragment.getContentValuesArray();
+			final int insertedIngredientCount = resolver.bulkInsert(RecipeContract.Ingredients.CONTENT_ID_URI_BASE,
+					ingredientValuesArray);
+			if (insertedIngredientCount != ingredientValuesArray.length)
+				return -1L;
+			// Insert instructions
+			final String instructionSelection = RecipeContract.Instructions.COLUMN_NAME_RECIPE_ID + "=?";
+			final String[] instructionSelectionArgs = { Long.toString(recipeId) };
+			resolver.delete(RecipeContract.Instructions.CONTENT_ID_URI_BASE, instructionSelection,
+					instructionSelectionArgs);
+			final RecipeDetailInstructionFragment instructionFragment = (RecipeDetailInstructionFragment) params[2];
+			final ContentValues[] instructionValuesArray = instructionFragment.getContentValuesArray();
+			final int insertedInstructionCount = resolver.bulkInsert(RecipeContract.Instructions.CONTENT_ID_URI_BASE,
+					instructionValuesArray);
+			if (insertedInstructionCount != instructionValuesArray.length)
+				return -1L;
+			return recipeId;
+		}
+
+		@Override
+		protected void onPostExecute(final Long result)
+		{
+			final FragmentActivity activity = activityRef.get();
+			if (result != -1 && activity != null)
+			{
+				Toast.makeText(activity, R.string.saved, Toast.LENGTH_SHORT).show();
+				activity.finish();
+			}
+		}
+	}
+
 	/**
 	 * Manages the fragments associated with this activity
 	 */
 	RecipeEditTabsAdapter fragmentAdapter;
-	/**
-	 * Handles deleting and entering ingredients
-	 */
-	AsyncQueryHandler ingredientQueryHandler;
-	/**
-	 * Handles deleting and entering instructions
-	 */
-	AsyncQueryHandler instructionQueryHandler;
-	private AsyncQueryHandler recipeQueryHandler;
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState)
@@ -225,90 +287,6 @@ public class RecipeEditActivity extends FragmentActivity
 		// Create the adapter that will return a fragment for each of the three tabs
 		fragmentAdapter = new RecipeEditTabsAdapter(this);
 		fragmentAdapter.setup();
-		recipeQueryHandler = new AsyncQueryHandler(getContentResolver())
-		{
-			@Override
-			protected void onInsertComplete(final int token, final Object cookie, final Uri uri)
-			{
-				startIngredientDelete();
-			}
-
-			@Override
-			protected void onUpdateComplete(final int token, final Object cookie, final int result)
-			{
-				startIngredientDelete();
-			}
-
-			private void startIngredientDelete()
-			{
-				final long recipeId = ContentUris.parseId(getIntent().getData());
-				final String selection = RecipeContract.Ingredients.COLUMN_NAME_RECIPE_ID + "=?";
-				final String[] selectionArgs = { Long.toString(recipeId) };
-				ingredientQueryHandler.startDelete(0, null, RecipeContract.Ingredients.CONTENT_ID_URI_BASE, selection,
-						selectionArgs);
-			}
-		};
-		ingredientQueryHandler = new AsyncQueryHandler(getContentResolver())
-		{
-			private int insertsToGo;
-
-			@Override
-			protected void onDeleteComplete(final int token, final Object cookie, final int result)
-			{
-				final ContentValues[] ingredientValuesArray = fragmentAdapter.getIngredientFragment()
-						.getContentValuesArray();
-				insertsToGo = ingredientValuesArray.length;
-				for (int position = 0; position < ingredientValuesArray.length; position++)
-					startInsert(position, null, RecipeContract.Ingredients.CONTENT_ID_URI_BASE,
-							ingredientValuesArray[position]);
-			}
-
-			@Override
-			protected void onInsertComplete(final int token, final Object cookie, final Uri uri)
-			{
-				synchronized (this)
-				{
-					insertsToGo--;
-					if (insertsToGo == 0)
-					{
-						final long recipeId = ContentUris.parseId(getIntent().getData());
-						final String selection = RecipeContract.Instructions.COLUMN_NAME_RECIPE_ID + "=?";
-						final String[] selectionArgs = { Long.toString(recipeId) };
-						instructionQueryHandler.startDelete(0, null, RecipeContract.Instructions.CONTENT_ID_URI_BASE,
-								selection, selectionArgs);
-					}
-				}
-			}
-		};
-		instructionQueryHandler = new AsyncQueryHandler(getContentResolver())
-		{
-			private int insertsToGo;
-
-			@Override
-			protected void onDeleteComplete(final int token, final Object cookie, final int result)
-			{
-				final ContentValues[] instructionValuesArray = fragmentAdapter.getInstructionFragment()
-						.getContentValuesArray();
-				insertsToGo = instructionValuesArray.length;
-				for (int position = 0; position < instructionValuesArray.length; position++)
-					startInsert(position, null, RecipeContract.Instructions.CONTENT_ID_URI_BASE,
-							instructionValuesArray[position]);
-			}
-
-			@Override
-			protected void onInsertComplete(final int token, final Object cookie, final Uri uri)
-			{
-				synchronized (this)
-				{
-					insertsToGo--;
-					if (insertsToGo == 0)
-					{
-						Toast.makeText(RecipeEditActivity.this, R.string.saved, Toast.LENGTH_SHORT).show();
-						finish();
-					}
-				}
-			}
-		};
 	}
 
 	@Override
@@ -330,11 +308,12 @@ public class RecipeEditActivity extends FragmentActivity
 				finish();
 				return true;
 			case R.id.save:
-				final ContentValues recipeValues = fragmentAdapter.getSummaryFragment().getContentValues();
-				if (Intent.ACTION_INSERT.equals(getIntent().getAction()))
-					recipeQueryHandler.startInsert(0, null, RecipeContract.Recipes.CONTENT_ID_URI_BASE, recipeValues);
-				else
-					recipeQueryHandler.startUpdate(0, null, getIntent().getData(), recipeValues, null, null);
+				final List<Fragment> fragments = new ArrayList<Fragment>();
+				fragments.add(fragmentAdapter.getSummaryFragment());
+				fragments.add(fragmentAdapter.getIngredientFragment());
+				fragments.add(fragmentAdapter.getInstructionFragment());
+				new SaveAsyncTask(this).execute(fragmentAdapter.getSummaryFragment(),
+						fragmentAdapter.getIngredientFragment(), fragmentAdapter.getInstructionFragment());
 				return true;
 			case R.id.cancel:
 				finish();
