@@ -57,6 +57,9 @@ public class RecipeDetailInstructionFragment extends ListFragment implements Loa
 		@Override
 		public View getView(final int position, final View convertView, final ViewGroup parent)
 		{
+			// Need to ensure the correct position is set before super.getView sets the text
+			if (convertView != null)
+				convertView.setTag(position);
 			final View view = super.getView(position, convertView, parent);
 			if (!Intent.ACTION_VIEW.equals(getActivity().getIntent().getAction()))
 			{
@@ -66,7 +69,7 @@ public class RecipeDetailInstructionFragment extends ListFragment implements Loa
 					@Override
 					public void afterTextChanged(final Editable s)
 					{
-						getItem(position).setInstruction(s.toString());
+						// Nothing to do
 					}
 
 					@Override
@@ -79,7 +82,8 @@ public class RecipeDetailInstructionFragment extends ListFragment implements Loa
 					@Override
 					public void onTextChanged(final CharSequence s, final int start, final int before, final int count)
 					{
-						// Nothing to do
+						final int savedPosition = view.getTag() == null ? position : (Integer) view.getTag();
+						getItem(savedPosition).setInstruction(s.toString());
 					}
 				});
 			}
