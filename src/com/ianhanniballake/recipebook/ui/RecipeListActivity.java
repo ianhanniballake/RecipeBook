@@ -1,11 +1,13 @@
 package com.ianhanniballake.recipebook.ui;
 
+import android.content.AsyncQueryHandler;
 import android.content.ContentUris;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -48,6 +50,7 @@ public class RecipeListActivity extends FragmentActivity implements LoaderManage
 	 * Whether or not the activity is in two-pane mode, i.e. running on a tablet device.
 	 */
 	boolean mTwoPane;
+	private AsyncQueryHandler recipeDeleteHandler;
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState)
@@ -102,6 +105,27 @@ public class RecipeListActivity extends FragmentActivity implements LoaderManage
 				}
 			}
 		});
+		recipeDeleteHandler = new AsyncQueryHandler(getContentResolver())
+		{
+			@Override
+			protected void onDeleteComplete(final int token, final Object cookie, final int result)
+			{
+				if (mTwoPane)
+				{
+					getIntent().setData(null);
+					mActivatedPosition = AdapterView.INVALID_POSITION;
+					final FragmentManager fragmentManager = getSupportFragmentManager();
+					final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+					ft.remove(fragmentManager.findFragmentById(R.id.recipe_detail_summary));
+					ft.remove(fragmentManager.findFragmentById(R.id.recipe_detail_ingredient));
+					ft.remove(fragmentManager.findFragmentById(R.id.recipe_detail_instruction));
+					ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+					ft.commit();
+					invalidateOptionsMenu();
+				}
+				Toast.makeText(RecipeListActivity.this, R.string.deleted, Toast.LENGTH_SHORT).show();
+			}
+		};
 		getSupportLoaderManager().initLoader(0, null, this);
 		if (savedInstanceState != null && savedInstanceState.containsKey(STATE_ACTIVATED_POSITION))
 		{
@@ -152,14 +176,12 @@ public class RecipeListActivity extends FragmentActivity implements LoaderManage
 				startActivity(addIntent);
 				return true;
 			case R.id.edit:
-				final AbsListView listView = (AbsListView) findViewById(android.R.id.list);
-				final long id = listView.getItemIdAtPosition(mActivatedPosition);
-				final Uri recipeUri = ContentUris.withAppendedId(RecipeContract.Recipes.CONTENT_ID_URI_BASE, id);
-				final Intent editIntent = new Intent(Intent.ACTION_EDIT, recipeUri);
+				findViewById(android.R.id.list);
+				final Intent editIntent = new Intent(Intent.ACTION_EDIT, getIntent().getData());
 				startActivity(editIntent);
 				return true;
 			case R.id.delete:
-				Toast.makeText(this, R.string.delete, Toast.LENGTH_SHORT).show();
+				recipeDeleteHandler.startDelete(0, null, getIntent().getData(), null, null);
 				return true;
 			default:
 				return super.onOptionsItemSelected(item);

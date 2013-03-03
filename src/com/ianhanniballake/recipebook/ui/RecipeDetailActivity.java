@@ -4,6 +4,7 @@ import java.util.Locale;
 
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
+import android.content.AsyncQueryHandler;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -145,6 +146,8 @@ public class RecipeDetailActivity extends FragmentActivity
 		}
 	}
 
+	private AsyncQueryHandler recipeDeleteHandler;
+
 	@Override
 	protected void onCreate(final Bundle savedInstanceState)
 	{
@@ -158,6 +161,15 @@ public class RecipeDetailActivity extends FragmentActivity
 		// Create the adapter that will return a fragment for each of the three tabs
 		final RecipeDetailTabsAdapter tabsAdapter = new RecipeDetailTabsAdapter(this, pager);
 		tabsAdapter.setup();
+		recipeDeleteHandler = new AsyncQueryHandler(getContentResolver())
+		{
+			@Override
+			protected void onDeleteComplete(final int token, final Object cookie, final int result)
+			{
+				Toast.makeText(RecipeDetailActivity.this, R.string.deleted, Toast.LENGTH_SHORT).show();
+				finish();
+			}
+		};
 	}
 
 	@Override
@@ -183,7 +195,7 @@ public class RecipeDetailActivity extends FragmentActivity
 				startActivity(editIntent);
 				return true;
 			case R.id.delete:
-				Toast.makeText(this, R.string.delete, Toast.LENGTH_SHORT).show();
+				recipeDeleteHandler.startDelete(0, null, getIntent().getData(), null, null);
 				return true;
 			default:
 				return super.onOptionsItemSelected(item);
