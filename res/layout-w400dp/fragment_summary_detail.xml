@@ -8,32 +8,29 @@
         android:id="@+id/picture"
         android:layout_width="144dp"
         android:layout_height="144dp"
+        android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
         android:contentDescription="@string/picture"
-        android:padding="@dimen/inner_padding"
+        android:paddingRight="24dp"
         android:src="@drawable/placeholder" />
 
-    <EditText
+    <TextView
         android:id="@+id/title"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@id/picture"
-        android:hint="@string/hint_title"
-        android:inputType="textCapWords"
-        android:padding="@dimen/inner_padding"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@id/picture"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textIsSelectable="true" />
 
-    <EditText
+    <TextView
         android:id="@+id/description"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
         android:layout_below="@id/title"
-        android:hint="@string/hint_description"
-        android:inputType="textCapSentences|textMultiLine"
-        android:padding="@dimen/inner_padding"
-        android:scrollHorizontally="false" />
+        android:layout_toRightOf="@id/picture"
+        android:gravity="top|left"
+        android:scrollHorizontally="false"
+        android:textIsSelectable="true" />
 
 </RelativeLayout>
