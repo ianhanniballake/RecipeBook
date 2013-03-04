@@ -241,23 +241,23 @@ public class RecipeEditActivity extends FragmentActivity
 				resolver.update(recipeUri, recipeValues, null, null);
 			}
 			// Insert ingredients
+			final RecipeDetailIngredientFragment ingredientFragment = (RecipeDetailIngredientFragment) params[1];
+			final ContentValues[] ingredientValuesArray = ingredientFragment.getContentValuesArray();
 			final String ingredientSelection = RecipeContract.Ingredients.COLUMN_NAME_RECIPE_ID + "=?";
 			final String[] ingredientSelectionArgs = { Long.toString(recipeId) };
 			resolver.delete(RecipeContract.Ingredients.CONTENT_ID_URI_BASE, ingredientSelection,
 					ingredientSelectionArgs);
-			final RecipeDetailIngredientFragment ingredientFragment = (RecipeDetailIngredientFragment) params[1];
-			final ContentValues[] ingredientValuesArray = ingredientFragment.getContentValuesArray();
 			final int insertedIngredientCount = resolver.bulkInsert(RecipeContract.Ingredients.CONTENT_ID_URI_BASE,
 					ingredientValuesArray);
 			if (insertedIngredientCount != ingredientValuesArray.length)
 				return -1L;
 			// Insert instructions
+			final RecipeDetailInstructionFragment instructionFragment = (RecipeDetailInstructionFragment) params[2];
+			final ContentValues[] instructionValuesArray = instructionFragment.getContentValuesArray();
 			final String instructionSelection = RecipeContract.Instructions.COLUMN_NAME_RECIPE_ID + "=?";
 			final String[] instructionSelectionArgs = { Long.toString(recipeId) };
 			resolver.delete(RecipeContract.Instructions.CONTENT_ID_URI_BASE, instructionSelection,
 					instructionSelectionArgs);
-			final RecipeDetailInstructionFragment instructionFragment = (RecipeDetailInstructionFragment) params[2];
-			final ContentValues[] instructionValuesArray = instructionFragment.getContentValuesArray();
 			final int insertedInstructionCount = resolver.bulkInsert(RecipeContract.Instructions.CONTENT_ID_URI_BASE,
 					instructionValuesArray);
 			if (insertedInstructionCount != instructionValuesArray.length)
