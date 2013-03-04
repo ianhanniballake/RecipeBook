@@ -16,6 +16,9 @@ import android.support.v4.content.Loader;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -110,18 +113,24 @@ public class RecipeDetailIngredientFragment extends ListFragment implements Load
 	{
 		final long recipeId = ContentUris.parseId(getActivity().getIntent().getData());
 		final int ingredientCount = adapter.getCount();
-		final ContentValues[] ingredientContentValuesList = new ContentValues[ingredientCount];
+		final List<ContentValues> ingredientContentValuesList = new ArrayList<ContentValues>();
 		for (int position = 0; position < ingredientCount; position++)
-			ingredientContentValuesList[position] = adapter.getItem(position).toContentValues(recipeId);
-		return ingredientContentValuesList;
+		{
+			final Ingredient ingredient = adapter.getItem(position);
+			if (!ingredient.toString().isEmpty())
+				ingredientContentValuesList.add(ingredient.toContentValues(recipeId));
+		}
+		final ContentValues[] ingredientContentValuesArray = new ContentValues[ingredientContentValuesList.size()];
+		return ingredientContentValuesList.toArray(ingredientContentValuesArray);
 	}
 
 	@Override
 	public void onActivityCreated(final Bundle savedInstanceState)
 	{
 		super.onActivityCreated(savedInstanceState);
-		final int layoutId = Intent.ACTION_VIEW.equals(getActivity().getIntent().getAction()) ? R.layout.list_item_ingredient
-				: R.layout.list_item_ingredient_edit;
+		final boolean isView = Intent.ACTION_VIEW.equals(getActivity().getIntent().getAction());
+		final int layoutId = isView ? R.layout.list_item_ingredient : R.layout.list_item_ingredient_edit;
+		setHasOptionsMenu(!isView);
 		adapter = new IngredientArrayAdapter(getActivity(), layoutId, R.id.raw);
 		setListAdapter(adapter);
 		getListView().setChoiceMode(AbsListView.CHOICE_MODE_NONE);
@@ -150,6 +159,13 @@ public class RecipeDetailIngredientFragment extends ListFragment implements Load
 	}
 
 	@Override
+	public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater)
+	{
+		super.onCreateOptionsMenu(menu, inflater);
+		inflater.inflate(R.menu.ingredient_edit, menu);
+	}
+
+	@Override
 	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState)
 	{
 		return inflater.inflate(R.layout.fragment_ingredient_detail, container, false);
@@ -170,6 +186,22 @@ public class RecipeDetailIngredientFragment extends ListFragment implements Load
 		while (data.moveToNext())
 			ingredients.add(new Ingredient(data));
 		updateViews();
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(final MenuItem item)
+	{
+		switch (item.getItemId())
+		{
+			case R.id.add_ingredient:
+				final Ingredient newIngredient = new Ingredient(getResources(), "");
+				ingredients.add(newIngredient);
+				adapter.add(newIngredient);
+				getListView().setSelection(adapter.getPosition(newIngredient));
+				return true;
+			default:
+				return super.onOptionsItemSelected(item);
+		}
 	}
 
 	@Override

@@ -16,6 +16,9 @@ import android.support.v4.content.Loader;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -32,7 +35,7 @@ import com.ianhanniballake.recipebook.provider.RecipeContract;
 public class RecipeDetailInstructionFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>
 {
 	/**
-	 * Manages the list of ingredients as an Array backed list
+	 * Manages the list of instructions as an Array backed list
 	 */
 	public class InstructionArrayAdapter extends ArrayAdapter<Instruction>
 	{
@@ -109,18 +112,24 @@ public class RecipeDetailInstructionFragment extends ListFragment implements Loa
 	{
 		final long recipeId = ContentUris.parseId(getActivity().getIntent().getData());
 		final int instructionCount = adapter.getCount();
-		final ContentValues[] instructionContentValuesList = new ContentValues[instructionCount];
+		final List<ContentValues> instructionContentValuesList = new ArrayList<ContentValues>();
 		for (int position = 0; position < instructionCount; position++)
-			instructionContentValuesList[position] = adapter.getItem(position).toContentValues(recipeId);
-		return instructionContentValuesList;
+		{
+			final Instruction instruction = adapter.getItem(position);
+			if (!instruction.toString().isEmpty())
+				instructionContentValuesList.add(instruction.toContentValues(recipeId));
+		}
+		final ContentValues[] instructionContentValuesArray = new ContentValues[instructionContentValuesList.size()];
+		return instructionContentValuesList.toArray(instructionContentValuesArray);
 	}
 
 	@Override
 	public void onActivityCreated(final Bundle savedInstanceState)
 	{
 		super.onActivityCreated(savedInstanceState);
-		final int layoutId = Intent.ACTION_VIEW.equals(getActivity().getIntent().getAction()) ? R.layout.list_item_instruction
-				: R.layout.list_item_instruction_edit;
+		final boolean isView = Intent.ACTION_VIEW.equals(getActivity().getIntent().getAction());
+		final int layoutId = isView ? R.layout.list_item_instruction : R.layout.list_item_instruction_edit;
+		setHasOptionsMenu(!isView);
 		adapter = new InstructionArrayAdapter(getActivity(), layoutId, R.id.instruction);
 		setListAdapter(adapter);
 		getListView().setChoiceMode(AbsListView.CHOICE_MODE_NONE);
@@ -150,6 +159,13 @@ public class RecipeDetailInstructionFragment extends ListFragment implements Loa
 	}
 
 	@Override
+	public void onCreateOptionsMenu(final Menu menu, final MenuInflater inflater)
+	{
+		super.onCreateOptionsMenu(menu, inflater);
+		inflater.inflate(R.menu.instruction_edit, menu);
+	}
+
+	@Override
 	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState)
 	{
 		return inflater.inflate(R.layout.fragment_instruction_detail, container, false);
@@ -174,6 +190,22 @@ public class RecipeDetailInstructionFragment extends ListFragment implements Loa
 	}
 
 	@Override
+	public boolean onOptionsItemSelected(final MenuItem item)
+	{
+		switch (item.getItemId())
+		{
+			case R.id.add_instruction:
+				final Instruction newInstruction = new Instruction("");
+				instructions.add(newInstruction);
+				adapter.add(newInstruction);
+				getListView().setSelection(adapter.getPosition(newInstruction));
+				return true;
+			default:
+				return super.onOptionsItemSelected(item);
+		}
+	}
+
+	@Override
 	public void onSaveInstanceState(final Bundle outState)
 	{
 		super.onSaveInstanceState(outState);
@@ -181,9 +213,9 @@ public class RecipeDetailInstructionFragment extends ListFragment implements Loa
 		final ArrayList<String> instructionList = new ArrayList<String>();
 		for (int position = 0; position < instructionCount; position++)
 		{
-			final String rawIngredient = adapter.getItem(position).toString();
-			if (!rawIngredient.isEmpty())
-				instructionList.add(rawIngredient);
+			final String rawInstruction = adapter.getItem(position).toString();
+			if (!rawInstruction.isEmpty())
+				instructionList.add(rawInstruction);
 		}
 		outState.putStringArrayList(RecipeContract.Instructions.COLUMN_NAME_INSTRUCTION, instructionList);
 	}
