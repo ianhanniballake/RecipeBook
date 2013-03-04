@@ -1,8 +1,6 @@
 package com.ianhanniballake.recipebook.ui;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 import android.app.ActionBar;
@@ -19,8 +17,10 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.ianhanniballake.recipebook.R;
@@ -283,15 +283,42 @@ public class RecipeEditActivity extends FragmentActivity
 	RecipeEditTabsAdapter fragmentAdapter;
 
 	@Override
+	public void onBackPressed()
+	{
+		new SaveAsyncTask(RecipeEditActivity.this).execute(fragmentAdapter.getSummaryFragment(),
+				fragmentAdapter.getIngredientFragment(), fragmentAdapter.getInstructionFragment());
+	}
+
+	@Override
 	protected void onCreate(final Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_recipe_detail);
-		// Show the Up button in the action bar.
-		getActionBar().setDisplayHomeAsUpEnabled(true);
 		// Create the adapter that will return a fragment for each of the three tabs
 		fragmentAdapter = new RecipeEditTabsAdapter(this);
 		fragmentAdapter.setup();
+		// Inflate a "Save" custom action bar view to serve as the "Up" affordance.
+		final LayoutInflater inflater = (LayoutInflater) getActionBar().getThemedContext().getSystemService(
+				LAYOUT_INFLATER_SERVICE);
+		final View customActionBarView = inflater.inflate(R.layout.actionbar_custom_view_save, null);
+		customActionBarView.findViewById(R.id.save).setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(final View v)
+			{
+				new SaveAsyncTask(RecipeEditActivity.this).execute(fragmentAdapter.getSummaryFragment(),
+						fragmentAdapter.getIngredientFragment(), fragmentAdapter.getInstructionFragment());
+			}
+		});
+		// Show the custom action bar view and hide the normal Home icon and title.
+		final ActionBar actionBar = getActionBar();
+		actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM, ActionBar.DISPLAY_SHOW_CUSTOM
+				| ActionBar.DISPLAY_SHOW_TITLE);
+		actionBar.setCustomView(customActionBarView);
+		// Work around for https://code.google.com/p/android/issues/detail?id=36191
+		// Can't hide the home button, so just disappear it
+		final View homeButton = findViewById(android.R.id.home);
+		((View) homeButton.getParent()).setVisibility(View.GONE);
 	}
 
 	@Override
@@ -307,20 +334,9 @@ public class RecipeEditActivity extends FragmentActivity
 	{
 		switch (item.getItemId())
 		{
-			case android.R.id.home:
-				// This ID represents the Home or Up button. In the case of this activity, the Up button is shown.
-				// In our case, we always get launched from the parent, so it is okay to just finish();
-				finish();
-				return true;
-			case R.id.save:
-				final List<Fragment> fragments = new ArrayList<Fragment>();
-				fragments.add(fragmentAdapter.getSummaryFragment());
-				fragments.add(fragmentAdapter.getIngredientFragment());
-				fragments.add(fragmentAdapter.getInstructionFragment());
-				new SaveAsyncTask(this).execute(fragmentAdapter.getSummaryFragment(),
-						fragmentAdapter.getIngredientFragment(), fragmentAdapter.getInstructionFragment());
-				return true;
-			case R.id.cancel:
+			case R.id.discard:
+				// We are always launched from the appropriate parent, so we can just finish() to return to it without
+				// saving
 				finish();
 				return true;
 			default:
