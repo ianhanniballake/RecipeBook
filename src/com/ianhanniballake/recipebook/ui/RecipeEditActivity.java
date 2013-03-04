@@ -197,6 +197,7 @@ public class RecipeEditActivity extends FragmentActivity
 			{
 				pager.setAdapter(this);
 				pager.setOnPageChangeListener(this);
+				pager.setOffscreenPageLimit(2);
 				actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 				// For each of the sections in the app, add a tab to the action bar.
 				for (int i = 0; i < getCount(); i++)
