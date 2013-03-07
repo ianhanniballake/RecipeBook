@@ -13,4 +13,13 @@
         android:inputType="textCapSentences|textMultiLine"
         android:padding="@dimen/inner_padding" />
 
+    <ImageButton
+        android:id="@+id/delete_instruction"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:contentDescription="@string/delete_instruction"
+        android:padding="@dimen/inner_padding"
+        android:src="@android:drawable/ic_delete" />
+
 </LinearLayout>

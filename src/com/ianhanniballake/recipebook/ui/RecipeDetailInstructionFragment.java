@@ -20,10 +20,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageButton;
 
 import com.ianhanniballake.recipebook.R;
 import com.ianhanniballake.recipebook.model.Instruction;
@@ -87,6 +89,16 @@ public class RecipeDetailInstructionFragment extends ListFragment implements Loa
 					{
 						final int savedPosition = view.getTag() == null ? position : (Integer) view.getTag();
 						getItem(savedPosition).setInstruction(s.toString());
+					}
+				});
+				final ImageButton deleteInstruction = (ImageButton) view.findViewById(R.id.delete_instruction);
+				deleteInstruction.setOnClickListener(new OnClickListener()
+				{
+					@Override
+					public void onClick(final View v)
+					{
+						final int savedPosition = view.getTag() == null ? position : (Integer) view.getTag();
+						remove(getItem(savedPosition));
 					}
 				});
 			}

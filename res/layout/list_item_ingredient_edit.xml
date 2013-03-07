@@ -17,6 +17,15 @@
         android:id="@+id/details"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:padding="@dimen/inner_padding"
         android:text="@string/ingredient_details" />
+
+    <ImageButton
+        android:id="@+id/delete_ingredient"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:contentDescription="@string/delete_ingredient"
+        android:src="@android:drawable/ic_delete" />
 
 </LinearLayout>
