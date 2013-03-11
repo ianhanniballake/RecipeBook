@@ -13,13 +13,6 @@
         android:inputType="text"
         android:padding="@dimen/inner_padding" />
 
-    <Button
-        android:id="@+id/details"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/inner_padding"
-        android:text="@string/ingredient_details" />
-
     <ImageButton
         android:id="@+id/delete_ingredient"
         style="?android:attr/borderlessButtonStyle"
