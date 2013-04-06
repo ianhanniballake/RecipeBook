@@ -18,13 +18,14 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.ianhanniballake.recipebook.R;
+import com.ianhanniballake.recipebook.auth.AuthorizedActivity;
 import com.ianhanniballake.recipebook.provider.RecipeContract;
 
 /**
  * An activity representing a single Recipe detail screen. This activity is only used on handset devices. On tablet-size
  * devices, item details are presented side-by-side with a list of items in a {@link RecipeListActivity}.
  */
-public class RecipeDetailActivity extends FragmentActivity
+public class RecipeDetailActivity extends AuthorizedActivity
 {
 	/**
 	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to one of the sections/tabs/pages. We use a

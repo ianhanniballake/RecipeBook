@@ -32,6 +32,7 @@
     <string name="delete_ingredient">Delete Ingredient</string>
     <string name="hint_instruction">Instruction</string>
     <string name="delete_instruction">Delete Instruction</string>
+    <string name="menu_sign_out">Sign Out</string>
     <string name="menu_settings">Settings</string>
 
 </resources>

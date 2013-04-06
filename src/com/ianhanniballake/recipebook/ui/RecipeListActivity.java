@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager;
@@ -23,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ianhanniballake.recipebook.R;
+import com.ianhanniballake.recipebook.auth.AuthorizedActivity;
 import com.ianhanniballake.recipebook.provider.RecipeContract;
 
 /**
@@ -31,7 +31,7 @@ import com.ianhanniballake.recipebook.provider.RecipeContract;
  * {@link RecipeDetailActivity} representing item details. On tablets, the activity presents the list of items and item
  * details side-by-side using two vertical panes.
  */
-public class RecipeListActivity extends FragmentActivity implements LoaderManager.LoaderCallbacks<Cursor>
+public class RecipeListActivity extends AuthorizedActivity implements LoaderManager.LoaderCallbacks<Cursor>
 {
 	/**
 	 * The serialization (saved instance state) Bundle key representing the activated item position. Only used on

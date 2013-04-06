@@ -24,12 +24,13 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.ianhanniballake.recipebook.R;
+import com.ianhanniballake.recipebook.auth.AuthorizedActivity;
 import com.ianhanniballake.recipebook.provider.RecipeContract;
 
 /**
  * An activity for editing recipes
  */
-public class RecipeEditActivity extends FragmentActivity
+public class RecipeEditActivity extends AuthorizedActivity
 {
 	/**
 	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to one of the sections/tabs/pages. Supports
