@@ -1,9 +1,14 @@
 package com.ianhanniballake.recipebook.auth;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.IntentSender.SendIntentException;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.LocalBroadcastManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,9 +17,9 @@ import android.view.View.OnClickListener;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
-import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.plus.PlusClient;
+import com.ianhanniballake.recipebook.BuildConfig;
 import com.ianhanniballake.recipebook.R;
 
 /**
@@ -25,8 +30,25 @@ public class AuthorizedActivity extends FragmentActivity implements GooglePlaySe
 {
 	private static final int REQUEST_ACCOUNT_RESOLUTION = 401;
 	private ConnectionResult latestResult = null;
+	private boolean pendingSync = false;
 	private PlusClient plusClient = null;
 	private boolean resolveOnFail = false;
+	/**
+	 * BroadcastReceiver listening for SYNC actions
+	 */
+	private final BroadcastReceiver syncBroadcastReceiver = new BroadcastReceiver()
+	{
+		@Override
+		public void onReceive(final Context context, final Intent intent)
+		{
+			final String action = intent.getAction();
+			if (BuildConfig.DEBUG)
+				Log.d(AuthorizedActivity.this.getClass().getSimpleName(),
+						"SyncBR Received " + action + ": " + intent.getData());
+			if (TextUtils.equals(Auth.ACTION_SYNC, action))
+				sync();
+		}
+	};
 
 	@Override
 	protected void onActivityResult(final int requestCode, final int resultCode, final Intent data)
@@ -50,6 +72,7 @@ public class AuthorizedActivity extends FragmentActivity implements GooglePlaySe
 	{
 		resolveOnFail = false;
 		invalidateOptionsMenu();
+		new InitializeDriveAsyncTask(this).execute(plusClient);
 	}
 
 	@Override
@@ -67,9 +90,7 @@ public class AuthorizedActivity extends FragmentActivity implements GooglePlaySe
 	protected void onCreate(final Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		plusClient = new PlusClient.Builder(this, this, this)
-				.setVisibleActivities("http://schemas.google.com/CreateActivity")
-				.setScopes(Scopes.PLUS_LOGIN, "https://www.googleapis.com/auth/drive.appdata").build();
+		plusClient = Auth.getPlusClient(this, this, this);
 	}
 
 	@Override
@@ -143,6 +164,16 @@ public class AuthorizedActivity extends FragmentActivity implements GooglePlaySe
 	{
 		plusClient.connect();
 		super.onStart();
+		final LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(this);
+		localBroadcastManager.registerReceiver(syncBroadcastReceiver, new IntentFilter(Auth.ACTION_SYNC));
+	}
+
+	@Override
+	protected void onStop()
+	{
+		super.onStop();
+		final LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(this);
+		localBroadcastManager.unregisterReceiver(syncBroadcastReceiver);
 	}
 
 	private void startResolution()
@@ -152,10 +183,33 @@ public class AuthorizedActivity extends FragmentActivity implements GooglePlaySe
 			latestResult.startResolutionForResult(this, REQUEST_ACCOUNT_RESOLUTION);
 		} catch (final SendIntentException e)
 		{
-			Log.e(AuthorizedActivity.class.getSimpleName(), "Error resolving result " + latestResult.getErrorCode(), e);
+			Log.e(getClass().getSimpleName(), "Error resolving result " + latestResult.getErrorCode(), e);
 			// Try, try again
 			latestResult = null;
 			plusClient.connect();
 		}
+	}
+
+	/**
+	 * Starts a sync operation if there is a pending sync operation
+	 */
+	public void startSyncIfPending()
+	{
+		if (pendingSync)
+			sync();
+	}
+
+	/**
+	 * Starts sync with Google Drive
+	 */
+	void sync()
+	{
+		if (!plusClient.isConnected())
+		{
+			pendingSync = true;
+			return;
+		}
+		pendingSync = false;
+		new SyncDriveAsyncTask(this).execute(plusClient);
 	}
 }

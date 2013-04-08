@@ -6,6 +6,7 @@ import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -14,11 +15,13 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.provider.BaseColumns;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.ianhanniballake.recipebook.BuildConfig;
 import com.ianhanniballake.recipebook.R;
+import com.ianhanniballake.recipebook.auth.Auth;
 
 /**
  * Provides access to a database of recipes. Each recipe has a title and a description.
@@ -677,6 +680,8 @@ public class RecipeProvider extends ContentProvider
 				throw new IllegalArgumentException("Unknown URI " + uri);
 		}
 		getContext().getContentResolver().notifyChange(uri, null);
+		final LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(getContext());
+		localBroadcastManager.sendBroadcast(new Intent(Auth.ACTION_SYNC, uri));
 		return count;
 	}
 
@@ -771,6 +776,8 @@ public class RecipeProvider extends ContentProvider
 			// Creates a URI with the ingredient ID pattern and the new row ID appended to it.
 			final Uri ingredientUri = ContentUris.withAppendedId(RecipeContract.Ingredients.CONTENT_ID_URI_BASE, rowId);
 			getContext().getContentResolver().notifyChange(ingredientUri, null);
+			final LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(getContext());
+			localBroadcastManager.sendBroadcast(new Intent(Auth.ACTION_SYNC, ingredientUri));
 			return ingredientUri;
 		}
 		// If the insert didn't succeed, then the rowID is <= 0
@@ -809,6 +816,8 @@ public class RecipeProvider extends ContentProvider
 			final Uri instructionUri = ContentUris.withAppendedId(RecipeContract.Instructions.CONTENT_ID_URI_BASE,
 					rowId);
 			getContext().getContentResolver().notifyChange(instructionUri, null);
+			final LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(getContext());
+			localBroadcastManager.sendBroadcast(new Intent(Auth.ACTION_SYNC, instructionUri));
 			return instructionUri;
 		}
 		// If the insert didn't succeed, then the rowID is <= 0
@@ -846,6 +855,8 @@ public class RecipeProvider extends ContentProvider
 			// Creates a URI with the recipe ID pattern and the new row ID appended to it.
 			final Uri recipeUri = ContentUris.withAppendedId(RecipeContract.Recipes.CONTENT_ID_URI_BASE, rowId);
 			getContext().getContentResolver().notifyChange(recipeUri, null);
+			final LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(getContext());
+			localBroadcastManager.sendBroadcast(new Intent(Auth.ACTION_SYNC, recipeUri));
 			return recipeUri;
 		}
 		// If the insert didn't succeed, then the rowID is <= 0
@@ -944,6 +955,8 @@ public class RecipeProvider extends ContentProvider
 		final SQLiteDatabase db = databaseHelper.getReadableDatabase();
 		final Cursor c = qb.query(db, projection, selection, selectionArgs, null, null, orderBy);
 		c.setNotificationUri(getContext().getContentResolver(), uri);
+		final LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(getContext());
+		localBroadcastManager.sendBroadcast(new Intent(Auth.ACTION_SYNC, uri));
 		return c;
 	}
 
@@ -1000,6 +1013,8 @@ public class RecipeProvider extends ContentProvider
 		final SQLiteDatabase db = databaseHelper.getReadableDatabase();
 		final Cursor c = qb.query(db, projection, selection, selectionArgs, null, null, orderBy);
 		c.setNotificationUri(getContext().getContentResolver(), uri);
+		final LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(getContext());
+		localBroadcastManager.sendBroadcast(new Intent(Auth.ACTION_SYNC, uri));
 		return c;
 	}
 
@@ -1055,6 +1070,8 @@ public class RecipeProvider extends ContentProvider
 		final SQLiteDatabase db = databaseHelper.getReadableDatabase();
 		final Cursor c = qb.query(db, projection, selection, selectionArgs, null, null, orderBy);
 		c.setNotificationUri(getContext().getContentResolver(), uri);
+		final LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(getContext());
+		localBroadcastManager.sendBroadcast(new Intent(Auth.ACTION_SYNC, uri));
 		return c;
 	}
 
@@ -1115,6 +1132,8 @@ public class RecipeProvider extends ContentProvider
 				throw new IllegalArgumentException("Unknown URI " + uri);
 		}
 		getContext().getContentResolver().notifyChange(uri, null);
+		final LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(getContext());
+		localBroadcastManager.sendBroadcast(new Intent(Auth.ACTION_SYNC, uri));
 		return count;
 	}
 
@@ -1161,6 +1180,8 @@ public class RecipeProvider extends ContentProvider
 				throw new IllegalArgumentException("Unknown URI " + uri);
 		}
 		getContext().getContentResolver().notifyChange(uri, null);
+		final LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(getContext());
+		localBroadcastManager.sendBroadcast(new Intent(Auth.ACTION_SYNC, uri));
 		return count;
 	}
 
@@ -1204,6 +1225,8 @@ public class RecipeProvider extends ContentProvider
 				throw new IllegalArgumentException("Unknown URI " + uri);
 		}
 		getContext().getContentResolver().notifyChange(uri, null);
+		final LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(getContext());
+		localBroadcastManager.sendBroadcast(new Intent(Auth.ACTION_SYNC, uri));
 		return count;
 	}
 }
