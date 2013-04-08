@@ -5,6 +5,15 @@
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry kind="lib" path="libs/android-support-v4.jar" sourcepath="C:/Program Files (x86)/Android/android-sdk/extras/android/support/v4/src/java"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
-	<classpathentry kind="con" path="com.google.gdt.eclipse.managedapis.MANAGED_API_CONTAINER/drive-v2r65lv1.13.2-beta"/>
+	<classpathentry kind="lib" path="libs/google-api-client-1.14.1-beta.jar"/>
+	<classpathentry kind="lib" path="libs/google-api-client-android-1.14.1-beta.jar"/>
+	<classpathentry kind="lib" path="libs/google-http-client-1.14.1-beta.jar"/>
+	<classpathentry kind="lib" path="libs/google-http-client-android-1.14.1-beta.jar"/>
+	<classpathentry kind="lib" path="libs/google-http-client-gson-1.14.1-beta.jar"/>
+	<classpathentry kind="lib" path="libs/google-http-client-jackson-1.14.1-beta.jar"/>
+	<classpathentry kind="lib" path="libs/google-http-client-jackson2-1.14.1-beta.jar"/>
+	<classpathentry kind="lib" path="libs/google-oauth-client-1.14.1-beta.jar"/>
+	<classpathentry kind="lib" path="libs/jackson-core-2.1.3.jar"/>
+	<classpathentry kind="lib" path="libs/jackson-core-asl-1.9.11.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
