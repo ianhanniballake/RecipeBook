@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.IntentFilter.MalformedMimeTypeException;
 import android.content.IntentSender.SendIntentException;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -21,6 +22,7 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.plus.PlusClient;
 import com.ianhanniballake.recipebook.BuildConfig;
 import com.ianhanniballake.recipebook.R;
+import com.ianhanniballake.recipebook.provider.RecipeContract;
 
 /**
  * Activity class that manages user authorization
@@ -53,6 +55,8 @@ public class AuthorizedActivity extends FragmentActivity implements GooglePlaySe
 	@Override
 	protected void onActivityResult(final int requestCode, final int resultCode, final Intent data)
 	{
+		if (BuildConfig.DEBUG)
+			Log.d(getClass().getSimpleName(), "onActivityResult: " + resultCode);
 		switch (requestCode)
 		{
 			case REQUEST_ACCOUNT_RESOLUTION:
@@ -70,6 +74,8 @@ public class AuthorizedActivity extends FragmentActivity implements GooglePlaySe
 	@Override
 	public void onConnected()
 	{
+		if (BuildConfig.DEBUG)
+			Log.d(getClass().getSimpleName(), "onConnected");
 		resolveOnFail = false;
 		invalidateOptionsMenu();
 		new InitializeDriveAsyncTask(this).execute(plusClient);
@@ -78,6 +84,8 @@ public class AuthorizedActivity extends FragmentActivity implements GooglePlaySe
 	@Override
 	public void onConnectionFailed(final ConnectionResult result)
 	{
+		if (BuildConfig.DEBUG)
+			Log.d(getClass().getSimpleName(), "onConnectionFailed: " + result.getErrorCode() + " " + result.toString());
 		if (result.hasResolution())
 		{
 			latestResult = result;
@@ -162,10 +170,26 @@ public class AuthorizedActivity extends FragmentActivity implements GooglePlaySe
 	@Override
 	protected void onStart()
 	{
+		if (BuildConfig.DEBUG)
+			Log.d(getClass().getSimpleName(), "onStart");
 		plusClient.connect();
 		super.onStart();
 		final LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(this);
-		localBroadcastManager.registerReceiver(syncBroadcastReceiver, new IntentFilter(Auth.ACTION_SYNC));
+		final IntentFilter intentFilter = new IntentFilter();
+		intentFilter.addAction(Auth.ACTION_SYNC);
+		try
+		{
+			intentFilter.addDataType(RecipeContract.Recipes.CONTENT_TYPE);
+			intentFilter.addDataType(RecipeContract.Recipes.CONTENT_ITEM_TYPE);
+			intentFilter.addDataType(RecipeContract.Ingredients.CONTENT_TYPE);
+			intentFilter.addDataType(RecipeContract.Ingredients.CONTENT_ITEM_TYPE);
+			intentFilter.addDataType(RecipeContract.Instructions.CONTENT_TYPE);
+			intentFilter.addDataType(RecipeContract.Instructions.CONTENT_ITEM_TYPE);
+		} catch (final MalformedMimeTypeException e)
+		{
+			Log.e(getClass().getSimpleName(), "Error adding data types", e);
+		}
+		localBroadcastManager.registerReceiver(syncBroadcastReceiver, intentFilter);
 	}
 
 	@Override
@@ -178,6 +202,8 @@ public class AuthorizedActivity extends FragmentActivity implements GooglePlaySe
 
 	private void startResolution()
 	{
+		if (BuildConfig.DEBUG)
+			Log.d(getClass().getSimpleName(), "startResolution");
 		try
 		{
 			latestResult.startResolutionForResult(this, REQUEST_ACCOUNT_RESOLUTION);
@@ -195,6 +221,8 @@ public class AuthorizedActivity extends FragmentActivity implements GooglePlaySe
 	 */
 	public void startSyncIfPending()
 	{
+		if (BuildConfig.DEBUG)
+			Log.d(getClass().getSimpleName(), "Starting Sync, pending: " + pendingSync);
 		if (pendingSync)
 			sync();
 	}
@@ -204,6 +232,8 @@ public class AuthorizedActivity extends FragmentActivity implements GooglePlaySe
 	 */
 	void sync()
 	{
+		if (BuildConfig.DEBUG)
+			Log.d(getClass().getSimpleName(), "Sync Starting, connected: " + plusClient.isConnected());
 		if (!plusClient.isConnected())
 		{
 			pendingSync = true;

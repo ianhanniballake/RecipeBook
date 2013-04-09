@@ -12,12 +12,11 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.google.android.gms.plus.PlusClient;
-import com.google.api.client.extensions.android.http.AndroidHttp;
-import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.Drive.Files;
 import com.google.api.services.drive.model.File;
 import com.google.api.services.drive.model.FileList;
+import com.ianhanniballake.recipebook.BuildConfig;
 
 class SyncDriveAsyncTask extends AsyncTask<PlusClient, Void, List<File>>
 {
@@ -36,8 +35,7 @@ class SyncDriveAsyncTask extends AsyncTask<PlusClient, Void, List<File>>
 			return null;
 		final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 		final String appDataId = sharedPreferences.getString(Auth.PREF_DRIVE_APPDATA_ID, Auth.APPDATA_DEFAULT_ID);
-		final Drive driveService = new Drive(AndroidHttp.newCompatibleTransport(), new GsonFactory(),
-				Auth.getCredentialFromPlusClient(context, params[0]));
+		final Drive driveService = Auth.getDriveFromPlusClient(context, params[0]);
 		return listFilesInApplicationDataFolder(driveService, appDataId);
 	}
 
@@ -81,8 +79,18 @@ class SyncDriveAsyncTask extends AsyncTask<PlusClient, Void, List<File>>
 	@Override
 	protected void onPostExecute(final List<File> fileList)
 	{
-		Log.d(SyncDriveAsyncTask.class.getSimpleName(), "Found " + fileList.size() + " files on Drive");
-		for (final File file : fileList)
-			Log.d(SyncDriveAsyncTask.class.getSimpleName(), file.getTitle());
+		if (BuildConfig.DEBUG)
+		{
+			Log.d(SyncDriveAsyncTask.class.getSimpleName(), "Found " + fileList.size() + " files on Drive");
+			for (final File file : fileList)
+				Log.d(SyncDriveAsyncTask.class.getSimpleName(), file.getTitle());
+		}
+	}
+
+	@Override
+	protected void onPreExecute()
+	{
+		if (BuildConfig.DEBUG)
+			Log.d(SyncDriveAsyncTask.class.getSimpleName(), "Starting Sync");
 	}
 }

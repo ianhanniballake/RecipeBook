@@ -10,10 +10,9 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.google.android.gms.plus.PlusClient;
-import com.google.api.client.extensions.android.http.AndroidHttp;
-import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.model.File;
+import com.ianhanniballake.recipebook.BuildConfig;
 
 class InitializeDriveAsyncTask extends AsyncTask<PlusClient, Void, String>
 {
@@ -30,8 +29,7 @@ class InitializeDriveAsyncTask extends AsyncTask<PlusClient, Void, String>
 		final Context context = contextWeakRef.get();
 		if (context == null)
 			return null;
-		final Drive driveService = new Drive(AndroidHttp.newCompatibleTransport(), new GsonFactory(),
-				Auth.getCredentialFromPlusClient(context, params[0]));
+		final Drive driveService = Auth.getDriveFromPlusClient(context, params[0]);
 		try
 		{
 			final File file = driveService.files().get(Auth.APPDATA_DEFAULT_ID).execute();
@@ -49,8 +47,17 @@ class InitializeDriveAsyncTask extends AsyncTask<PlusClient, Void, String>
 		final AuthorizedActivity authorizedActivity = contextWeakRef.get();
 		if (appDataId == null || authorizedActivity == null)
 			return;
+		if (BuildConfig.DEBUG)
+			Log.d(InitializeDriveAsyncTask.class.getSimpleName(), "Received appDataId: " + appDataId);
 		final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(authorizedActivity);
 		sharedPreferences.edit().putString(Auth.PREF_DRIVE_APPDATA_ID, appDataId).commit();
 		authorizedActivity.startSyncIfPending();
+	}
+
+	@Override
+	protected void onPreExecute()
+	{
+		if (BuildConfig.DEBUG)
+			Log.d(InitializeDriveAsyncTask.class.getSimpleName(), "Starting initialization");
 	}
 }
