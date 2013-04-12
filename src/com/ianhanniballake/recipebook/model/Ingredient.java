@@ -40,6 +40,13 @@ public class Ingredient
 	private String unit;
 
 	/**
+	 * Creates a new, empty Ingredient
+	 */
+	public Ingredient()
+	{
+	}
+
+	/**
 	 * Creates a new Ingredient from a cursor representation
 	 * 
 	 * @param cursor

@@ -12,6 +12,13 @@ public class Instruction
 	private String instruction;
 
 	/**
+	 * Creates a new, empty instruction
+	 */
+	public Instruction()
+	{
+	}
+
+	/**
 	 * Creates a new instruction with the given text
 	 * 
 	 * @param instruction
