@@ -32,7 +32,6 @@ public class AuthorizedActivity extends FragmentActivity implements GooglePlaySe
 {
 	private static final int REQUEST_ACCOUNT_RESOLUTION = 401;
 	private ConnectionResult latestResult = null;
-	private boolean pendingSync = false;
 	private PlusClient plusClient = null;
 	private boolean resolveOnFail = false;
 	/**
@@ -127,6 +126,16 @@ public class AuthorizedActivity extends FragmentActivity implements GooglePlaySe
 		plusClient.connect();
 	}
 
+	/**
+	 * Starts a sync operation if there is a pending sync operation
+	 */
+	public void onInitializeDriveComplete()
+	{
+		if (BuildConfig.DEBUG)
+			Log.d(getClass().getSimpleName(), "Drive Initialization complete, starting sync");
+		sync();
+	}
+
 	@Override
 	public boolean onOptionsItemSelected(final MenuItem item)
 	{
@@ -217,17 +226,6 @@ public class AuthorizedActivity extends FragmentActivity implements GooglePlaySe
 	}
 
 	/**
-	 * Starts a sync operation if there is a pending sync operation
-	 */
-	public void startSyncIfPending()
-	{
-		if (BuildConfig.DEBUG)
-			Log.d(getClass().getSimpleName(), "Starting Sync, pending: " + pendingSync);
-		if (pendingSync)
-			sync();
-	}
-
-	/**
 	 * Starts sync with Google Drive
 	 */
 	void sync()
@@ -235,11 +233,7 @@ public class AuthorizedActivity extends FragmentActivity implements GooglePlaySe
 		if (BuildConfig.DEBUG)
 			Log.d(getClass().getSimpleName(), "Sync Starting, connected: " + plusClient.isConnected());
 		if (!plusClient.isConnected())
-		{
-			pendingSync = true;
 			return;
-		}
-		pendingSync = false;
 		new SyncDriveAsyncTask(this).execute(plusClient);
 	}
 }

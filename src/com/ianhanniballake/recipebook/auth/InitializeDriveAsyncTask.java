@@ -51,7 +51,7 @@ class InitializeDriveAsyncTask extends AsyncTask<PlusClient, Void, String>
 			Log.d(InitializeDriveAsyncTask.class.getSimpleName(), "Received appDataId: " + appDataId);
 		final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(authorizedActivity);
 		sharedPreferences.edit().putString(Auth.PREF_DRIVE_APPDATA_ID, appDataId).commit();
-		authorizedActivity.startSyncIfPending();
+		authorizedActivity.onInitializeDriveComplete();
 	}
 
 	@Override

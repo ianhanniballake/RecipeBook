@@ -955,8 +955,6 @@ public class RecipeProvider extends ContentProvider
 		final SQLiteDatabase db = databaseHelper.getReadableDatabase();
 		final Cursor c = qb.query(db, projection, selection, selectionArgs, null, null, orderBy);
 		c.setNotificationUri(getContext().getContentResolver(), uri);
-		final LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(getContext());
-		localBroadcastManager.sendBroadcast(new Intent(Auth.ACTION_SYNC, uri));
 		return c;
 	}
 
@@ -1013,8 +1011,6 @@ public class RecipeProvider extends ContentProvider
 		final SQLiteDatabase db = databaseHelper.getReadableDatabase();
 		final Cursor c = qb.query(db, projection, selection, selectionArgs, null, null, orderBy);
 		c.setNotificationUri(getContext().getContentResolver(), uri);
-		final LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(getContext());
-		localBroadcastManager.sendBroadcast(new Intent(Auth.ACTION_SYNC, uri));
 		return c;
 	}
 
@@ -1070,8 +1066,6 @@ public class RecipeProvider extends ContentProvider
 		final SQLiteDatabase db = databaseHelper.getReadableDatabase();
 		final Cursor c = qb.query(db, projection, selection, selectionArgs, null, null, orderBy);
 		c.setNotificationUri(getContext().getContentResolver(), uri);
-		final LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(getContext());
-		localBroadcastManager.sendBroadcast(new Intent(Auth.ACTION_SYNC, uri));
 		return c;
 	}
 
