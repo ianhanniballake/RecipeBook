@@ -198,6 +198,13 @@ public final class RecipeContract
 		 */
 		public static final String COLUMN_NAME_DESCRIPTION = "description";
 		/**
+		 * Column name of the recipe's id on Drive
+		 * <P>
+		 * Type: TEXT
+		 * </P>
+		 */
+		public static final String COLUMN_NAME_DRIVE_ID = "drive_id";
+		/**
 		 * Column name for the title of the recipe
 		 * <P>
 		 * Type: TEXT

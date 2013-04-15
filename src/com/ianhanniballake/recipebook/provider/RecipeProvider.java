@@ -54,7 +54,8 @@ public class RecipeProvider extends ContentProvider
 				Log.d(RecipeProvider.TAG, "Creating the " + RecipeContract.Recipes.TABLE_NAME + " table");
 			db.execSQL("CREATE TABLE " + RecipeContract.Recipes.TABLE_NAME + " (" + BaseColumns._ID
 					+ " INTEGER PRIMARY KEY AUTOINCREMENT," + RecipeContract.Recipes.COLUMN_NAME_TITLE + " TEXT,"
-					+ RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION + " TEXT" + ");");
+					+ RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION + " TEXT"
+					+ RecipeContract.Recipes.COLUMN_NAME_DRIVE_ID + " TEXT" + ");");
 			if (BuildConfig.DEBUG)
 				Log.d(RecipeProvider.TAG, "Creating the " + RecipeContract.Ingredients.TABLE_NAME + " table");
 			db.execSQL("CREATE TABLE " + RecipeContract.Ingredients.TABLE_NAME + " (" + BaseColumns._ID
@@ -1044,6 +1045,8 @@ public class RecipeProvider extends ContentProvider
 		allColumnProjectionMap.put(RecipeContract.Recipes.COLUMN_NAME_TITLE, RecipeContract.Recipes.COLUMN_NAME_TITLE);
 		allColumnProjectionMap.put(RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION,
 				RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION);
+		allColumnProjectionMap.put(RecipeContract.Recipes.COLUMN_NAME_DRIVE_ID,
+				RecipeContract.Recipes.COLUMN_NAME_DRIVE_ID);
 		qb.setProjectionMap(allColumnProjectionMap);
 		switch (RecipeProvider.uriMatcher.match(uri))
 		{

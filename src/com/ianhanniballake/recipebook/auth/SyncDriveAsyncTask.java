@@ -16,16 +16,18 @@ import android.util.Log;
 
 import com.google.android.gms.plus.PlusClient;
 import com.google.api.services.drive.Drive;
-import com.google.api.services.drive.Drive.Files;
+import com.google.api.services.drive.Drive.Changes;
+import com.google.api.services.drive.model.Change;
+import com.google.api.services.drive.model.ChangeList;
 import com.google.api.services.drive.model.File;
-import com.google.api.services.drive.model.FileList;
+import com.google.gson.Gson;
 import com.ianhanniballake.recipebook.BuildConfig;
 import com.ianhanniballake.recipebook.model.Ingredient;
 import com.ianhanniballake.recipebook.model.Instruction;
 import com.ianhanniballake.recipebook.model.Recipe;
 import com.ianhanniballake.recipebook.provider.RecipeContract;
 
-class SyncDriveAsyncTask extends AsyncTask<PlusClient, Void, Boolean>
+class SyncDriveAsyncTask extends AsyncTask<PlusClient, Void, Long>
 {
 	private final WeakReference<Context> contextWeakRef;
 
@@ -35,18 +37,44 @@ class SyncDriveAsyncTask extends AsyncTask<PlusClient, Void, Boolean>
 	}
 
 	@Override
-	protected Boolean doInBackground(final PlusClient... params)
+	protected Long doInBackground(final PlusClient... params)
 	{
 		final Context context = contextWeakRef.get();
 		if (context == null)
-			return false;
+			return null;
 		final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 		final String appDataId = sharedPreferences.getString(Auth.PREF_DRIVE_APPDATA_ID, Auth.APPDATA_DEFAULT_ID);
+		final Long startChangeId = sharedPreferences.getLong(Auth.PREF_DRIVE_START_CHANGE_ID, (Long) null);
 		final Drive driveService = Auth.getDriveFromPlusClient(context, params[0]);
-		final List<File> driveFiles = listFilesInApplicationDataFolder(driveService, appDataId);
+		final List<Change> changeList = null;
+		final Long newChangeId = -1L;
+		try
+		{
+			final Changes.List request = driveService.changes().list();
+			if (startChangeId != null)
+				request.setStartChangeId(startChangeId);
+			do
+			{
+				final ChangeList changes = request.execute();
+				newChangeId = Math.max(newChangeId, changes.getLargestChangeId());
+				changeList.addAll(changes.getItems());
+				request.setPageToken(changes.getNextPageToken());
+			} while (request.getPageToken() != null && request.getPageToken().length() > 0);
+			if (BuildConfig.DEBUG)
+			{
+				Log.d(SyncDriveAsyncTask.class.getSimpleName(), "Found " + changeList.size() + " changes on Drive");
+				for (final Change change : changeList)
+					Log.d(SyncDriveAsyncTask.class.getSimpleName(), change.getFile().getTitle());
+			}
+		} catch (final IOException e)
+		{
+			Log.e(SyncDriveAsyncTask.class.getSimpleName(), "Error getting changes", e);
+			return newChangeId;
+		}
 		final HashMap<String, File> fileMap = new HashMap<String, File>();
 		for (final File file : driveFiles)
 			fileMap.put(file.getTitle(), file);
+		final Gson gson = new Gson();
 		final Cursor cursor = context.getContentResolver().query(RecipeContract.Recipes.CONTENT_URI, null, null, null,
 				null);
 		while (cursor.moveToNext())
@@ -76,62 +104,37 @@ class SyncDriveAsyncTask extends AsyncTask<PlusClient, Void, Boolean>
 				if (BuildConfig.DEBUG)
 					Log.d(SyncDriveAsyncTask.class.getSimpleName(), "Found " + recipe.getTitle() + " on drive");
 			}
-			else if (BuildConfig.DEBUG)
-				Log.d(SyncDriveAsyncTask.class.getSimpleName(), "Did not find " + recipe.getTitle() + " on drive");
+			else
+			{
+				if (BuildConfig.DEBUG)
+					Log.d(SyncDriveAsyncTask.class.getSimpleName(), "Did not find " + recipe.getTitle() + " on drive");
+				final String recipeJson = gson.toJson(recipe);
+				Log.d(SyncDriveAsyncTask.class.getSimpleName(), "To JSON: " + recipeJson);
+				Log.d(SyncDriveAsyncTask.class.getSimpleName(), "From JSON: " + gson.fromJson(recipeJson, Recipe.class));
+			}
 		}
 		cursor.close();
-		return true;
-	}
-
-	/**
-	 * List all files contained in the Application Data folder.
-	 * 
-	 * @param service
-	 *            Drive API service instance.
-	 * @param appDataId
-	 *            AppData folder id to use
-	 * @return List of File resources.
-	 */
-	private List<File> listFilesInApplicationDataFolder(final Drive service, final String appDataId)
-	{
-		final List<File> result = new ArrayList<File>();
-		Files.List request;
-		try
-		{
-			request = service.files().list();
-		} catch (final IOException e)
-		{
-			Log.e(getClass().getSimpleName(), "Error getting request list", e);
-			return result;
-		}
-		request.setQ("'" + appDataId + "' in parents");
-		do
-			try
-			{
-				final FileList files = request.execute();
-				result.addAll(files.getItems());
-				request.setPageToken(files.getNextPageToken());
-			} catch (final IOException e)
-			{
-				Log.e(getClass().getSimpleName(), "Error getting files", e);
-				request.setPageToken(null);
-			}
-		while (request.getPageToken() != null && request.getPageToken().length() > 0);
-		if (BuildConfig.DEBUG)
-		{
-			Log.d(SyncDriveAsyncTask.class.getSimpleName(), "Found " + result.size() + " files on Drive");
-			for (final File file : result)
-				Log.d(SyncDriveAsyncTask.class.getSimpleName(), file.getTitle());
-		}
-		return result;
+		return newChangeId;
 	}
 
 	@Override
-	protected void onPostExecute(final Boolean result)
+	protected void onPostExecute(final Long newChangeId)
 	{
+		final Context context = contextWeakRef.get();
+		if (context == null)
+		{
+			if (BuildConfig.DEBUG)
+				Log.d(SyncDriveAsyncTask.class.getSimpleName(), "Sync completed, but context was null");
+			return;
+		}
+		final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+		final Long startChangeId = sharedPreferences.getLong(Auth.PREF_DRIVE_START_CHANGE_ID, (Long) null);
+		final boolean changeSuccessful = newChangeId != null && (startChangeId == null || newChangeId > startChangeId);
 		if (BuildConfig.DEBUG)
 			Log.d(SyncDriveAsyncTask.class.getSimpleName(), "Sync completed "
-					+ (result ? "successfully" : "unsuccessfully"));
+					+ (changeSuccessful ? "successfully" : "unsuccessfully"));
+		if (newChangeId != null && (startChangeId == null || newChangeId > startChangeId))
+			sharedPreferences.edit().putLong(Auth.PREF_DRIVE_START_CHANGE_ID, newChangeId).apply();
 	}
 
 	@Override

@@ -27,6 +27,7 @@ public class Auth
 	static final String APPDATA_DEFAULT_ID = "appdata";
 	private final static String DRIVE_APPDATA = "https://www.googleapis.com/auth/drive.appdata";
 	static final String PREF_DRIVE_APPDATA_ID = "DRIVE_APPDATA_ID";
+	public static String PREF_DRIVE_START_CHANGE_ID = "DRIVE_START_CHANGE_ID";
 
 	public static Drive getDriveFromPlusClient(final Context context, final PlusClient plusClient)
 	{

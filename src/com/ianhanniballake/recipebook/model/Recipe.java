@@ -12,6 +12,7 @@ import com.ianhanniballake.recipebook.provider.RecipeContract;
 public class Recipe
 {
 	private String description;
+	private transient String driveId;
 	private List<Ingredient> ingredients;
 	private List<Instruction> instructions;
 	private String title;
@@ -37,8 +38,19 @@ public class Recipe
 	{
 		title = cursor.getString(cursor.getColumnIndex(RecipeContract.Recipes.COLUMN_NAME_TITLE));
 		description = cursor.getString(cursor.getColumnIndex(RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION));
+		driveId = cursor.getString(cursor.getColumnIndex(RecipeContract.Recipes.COLUMN_NAME_DRIVE_ID));
 		this.ingredients = ingredients;
 		this.instructions = instructions;
+	}
+
+	/**
+	 * Getter for the Drive Id
+	 * 
+	 * @return drive Id of this recipe
+	 */
+	public String getDriveId()
+	{
+		return driveId;
 	}
 
 	/**
@@ -54,6 +66,7 @@ public class Recipe
 	@Override
 	public String toString()
 	{
-		return title + ": " + description + "; Ingredients: " + ingredients + ", Instructions: " + instructions;
+		return title + ": " + description + "; Drive ID: " + driveId + "; Ingredients: " + ingredients
+				+ ", Instructions: " + instructions;
 	}
 }
