@@ -1,28 +1,27 @@
 package com.ianhanniballake.recipebook.auth;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
+import android.accounts.Account;
+import android.content.ContentResolver;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.IntentFilter.MalformedMimeTypeException;
 import android.content.IntentSender.SendIntentException;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.content.LocalBroadcastManager;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 
+import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
+import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.plus.PlusClient;
 import com.ianhanniballake.recipebook.BuildConfig;
 import com.ianhanniballake.recipebook.R;
 import com.ianhanniballake.recipebook.provider.RecipeContract;
+import com.ianhanniballake.recipebook.sync.SyncAdapter;
 
 /**
  * Activity class that manages user authorization
@@ -34,22 +33,6 @@ public class AuthorizedActivity extends FragmentActivity implements GooglePlaySe
 	private ConnectionResult latestResult = null;
 	private PlusClient plusClient = null;
 	private boolean resolveOnFail = false;
-	/**
-	 * BroadcastReceiver listening for SYNC actions
-	 */
-	private final BroadcastReceiver syncBroadcastReceiver = new BroadcastReceiver()
-	{
-		@Override
-		public void onReceive(final Context context, final Intent intent)
-		{
-			final String action = intent.getAction();
-			if (BuildConfig.DEBUG)
-				Log.d(AuthorizedActivity.this.getClass().getSimpleName(),
-						"SyncBR Received " + action + ": " + intent.getData());
-			if (TextUtils.equals(Auth.ACTION_SYNC, action))
-				sync();
-		}
-	};
 
 	@Override
 	protected void onActivityResult(final int requestCode, final int resultCode, final Intent data)
@@ -77,7 +60,10 @@ public class AuthorizedActivity extends FragmentActivity implements GooglePlaySe
 			Log.d(getClass().getSimpleName(), "onConnected");
 		resolveOnFail = false;
 		invalidateOptionsMenu();
-		new InitializeDriveAsyncTask(this).execute(plusClient);
+		final Account connectedAccount = new Account(plusClient.getAccountName(), GoogleAuthUtil.GOOGLE_ACCOUNT_TYPE);
+		if (ContentResolver.getIsSyncable(connectedAccount, RecipeContract.AUTHORITY) <= 0)
+			ContentResolver.setIsSyncable(connectedAccount, RecipeContract.AUTHORITY, 1);
+		ContentResolver.requestSync(connectedAccount, RecipeContract.AUTHORITY, new Bundle());
 	}
 
 	@Override
@@ -97,7 +83,9 @@ public class AuthorizedActivity extends FragmentActivity implements GooglePlaySe
 	protected void onCreate(final Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		plusClient = Auth.getPlusClient(this, this, this);
+		plusClient = new PlusClient.Builder(this, this, this)
+				.setVisibleActivities("http://schemas.google.com/CreateActivity")
+				.setScopes(Scopes.PLUS_LOGIN, SyncAdapter.DRIVE_APPDATA).build();
 	}
 
 	@Override
@@ -124,16 +112,6 @@ public class AuthorizedActivity extends FragmentActivity implements GooglePlaySe
 	{
 		invalidateOptionsMenu();
 		plusClient.connect();
-	}
-
-	/**
-	 * Starts a sync operation if there is a pending sync operation
-	 */
-	public void onInitializeDriveComplete()
-	{
-		if (BuildConfig.DEBUG)
-			Log.d(getClass().getSimpleName(), "Drive Initialization complete, starting sync");
-		sync();
 	}
 
 	@Override
@@ -183,30 +161,6 @@ public class AuthorizedActivity extends FragmentActivity implements GooglePlaySe
 			Log.d(getClass().getSimpleName(), "onStart");
 		plusClient.connect();
 		super.onStart();
-		final LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(this);
-		final IntentFilter intentFilter = new IntentFilter();
-		intentFilter.addAction(Auth.ACTION_SYNC);
-		try
-		{
-			intentFilter.addDataType(RecipeContract.Recipes.CONTENT_TYPE);
-			intentFilter.addDataType(RecipeContract.Recipes.CONTENT_ITEM_TYPE);
-			intentFilter.addDataType(RecipeContract.Ingredients.CONTENT_TYPE);
-			intentFilter.addDataType(RecipeContract.Ingredients.CONTENT_ITEM_TYPE);
-			intentFilter.addDataType(RecipeContract.Instructions.CONTENT_TYPE);
-			intentFilter.addDataType(RecipeContract.Instructions.CONTENT_ITEM_TYPE);
-		} catch (final MalformedMimeTypeException e)
-		{
-			Log.e(getClass().getSimpleName(), "Error adding data types", e);
-		}
-		localBroadcastManager.registerReceiver(syncBroadcastReceiver, intentFilter);
-	}
-
-	@Override
-	protected void onStop()
-	{
-		super.onStop();
-		final LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(this);
-		localBroadcastManager.unregisterReceiver(syncBroadcastReceiver);
 	}
 
 	private void startResolution()
@@ -223,17 +177,5 @@ public class AuthorizedActivity extends FragmentActivity implements GooglePlaySe
 			latestResult = null;
 			plusClient.connect();
 		}
-	}
-
-	/**
-	 * Starts sync with Google Drive
-	 */
-	void sync()
-	{
-		if (BuildConfig.DEBUG)
-			Log.d(getClass().getSimpleName(), "Sync Starting, connected: " + plusClient.isConnected());
-		if (!plusClient.isConnected())
-			return;
-		new SyncDriveAsyncTask(this).execute(plusClient);
 	}
 }
