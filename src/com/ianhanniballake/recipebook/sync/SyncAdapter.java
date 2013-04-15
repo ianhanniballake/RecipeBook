@@ -3,6 +3,7 @@ package com.ianhanniballake.recipebook.sync;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeSet;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -101,12 +102,29 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter
 				changeList.addAll(changes.getItems());
 				request.setPageToken(changes.getNextPageToken());
 			} while (request.getPageToken() != null && request.getPageToken().length() > 0);
+			final TreeSet<String> deletedFileIds = new TreeSet<String>();
+			final List<File> remoteChanges = new ArrayList<File>();
 			if (BuildConfig.DEBUG)
-			{
-				Log.d(SyncAdapter.class.getSimpleName(), "Found " + changeList.size() + " changes on Drive");
-				for (final Change change : changeList)
-					Log.d(SyncAdapter.class.getSimpleName(), change.toPrettyString());
-			}
+				Log.d(SyncAdapter.class.getSimpleName(), "Found " + changeList.size() + " change"
+						+ (changeList.size() != 1 ? "s" : "") + " on Drive");
+			for (final Change change : changeList)
+				if (change.getDeleted())
+					deletedFileIds.add(change.getFileId());
+				else
+				{
+					final File changedFile = change.getFile();
+					if (BuildConfig.DEBUG)
+						Log.d(SyncAdapter.class.getSimpleName(), "Change of file named " + changedFile.getTitle());
+					if (changedFile.getAppDataContents())
+					{
+						remoteChanges.add(changedFile);
+						if (BuildConfig.DEBUG)
+							Log.d(SyncAdapter.class.getSimpleName(), "File " + changedFile.getTitle()
+									+ " changed in AppData folder");
+					}
+				}
+			Log.d(SyncAdapter.class.getSimpleName(), "Found " + deletedFileIds.size() + " deleted change"
+					+ (deletedFileIds.size() != 1 ? "s" : ""));
 		} catch (final IOException e)
 		{
 			Log.e(SyncAdapter.class.getSimpleName(), "Error getting changes", e);
