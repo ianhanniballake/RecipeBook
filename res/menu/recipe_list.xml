@@ -2,9 +2,20 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
+        android:id="@+id/search"
+        android:actionViewClass="android.widget.SearchView"
+        android:icon="@android:drawable/ic_menu_search"
+        android:showAsAction="always|collapseActionView"
+        android:title="@string/search"/>
+    <item
         android:id="@+id/add"
         android:icon="@android:drawable/ic_menu_add"
         android:showAsAction="always|withText"
         android:title="@string/add"/>
+    <item
+        android:id="@+id/clear_search_history"
+        android:orderInCategory="25"
+        android:showAsAction="never"
+        android:title="@string/menu_clear_search_history"/>
 
 </menu>

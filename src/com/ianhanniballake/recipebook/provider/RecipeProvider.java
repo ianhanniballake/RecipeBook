@@ -2,10 +2,10 @@ package com.ianhanniballake.recipebook.provider;
 
 import java.util.HashMap;
 
-import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SearchRecentSuggestionsProvider;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -23,7 +23,7 @@ import com.ianhanniballake.recipebook.R;
 /**
  * Provides access to a database of recipes. Each recipe has a title and a description.
  */
-public class RecipeProvider extends ContentProvider
+public class RecipeProvider extends SearchRecentSuggestionsProvider
 {
 	/**
 	 * This class helps open, create, and upgrade the database file.
@@ -619,6 +619,12 @@ public class RecipeProvider extends ContentProvider
 	 */
 	private DatabaseHelper databaseHelper;
 
+	public RecipeProvider()
+	{
+		super();
+		setupSuggestions(RecipeContract.AUTHORITY, RecipeContract.Recipes.SEARCH_MODE);
+	}
+
 	@Override
 	public int delete(final Uri uri, final String where, final String[] whereArgs)
 	{
@@ -675,7 +681,7 @@ public class RecipeProvider extends ContentProvider
 				count = db.delete(RecipeContract.Instructions.TABLE_NAME, finalWhere, whereArgs);
 				break;
 			default:
-				throw new IllegalArgumentException("Unknown URI " + uri);
+				return super.delete(uri, where, whereArgs);
 		}
 		getContext().getContentResolver().notifyChange(uri, null);
 		return count;
@@ -708,7 +714,7 @@ public class RecipeProvider extends ContentProvider
 				// If the pattern is for instruction IDs, returns the instruction ID content type.
 				return RecipeContract.Instructions.CONTENT_ITEM_TYPE;
 			default:
-				throw new IllegalArgumentException("Unknown URI " + uri);
+				return super.getType(uri);
 		}
 	}
 
@@ -723,7 +729,7 @@ public class RecipeProvider extends ContentProvider
 		else if (RecipeProvider.uriMatcher.match(uri) == RecipeProvider.INSTRUCTIONS)
 			return insertInstruction(uri, initialValues);
 		else
-			throw new IllegalArgumentException("Unknown URI " + uri);
+			return super.insert(uri, initialValues);
 	}
 
 	/**
@@ -861,6 +867,7 @@ public class RecipeProvider extends ContentProvider
 	@Override
 	public boolean onCreate()
 	{
+		super.onCreate();
 		databaseHelper = new DatabaseHelper(getContext());
 		return true;
 	}
@@ -879,7 +886,7 @@ public class RecipeProvider extends ContentProvider
 				|| RecipeProvider.uriMatcher.match(uri) == RecipeProvider.INSTRUCTION_ID)
 			return queryInstruction(uri, projection, selection, selectionArgs, sortOrder);
 		else
-			throw new IllegalArgumentException("Unknown URI " + uri);
+			return super.query(uri, projection, selection, selectionArgs, sortOrder);
 	}
 
 	/**
@@ -1074,7 +1081,7 @@ public class RecipeProvider extends ContentProvider
 				|| RecipeProvider.uriMatcher.match(uri) == RecipeProvider.INSTRUCTION_ID)
 			return updateInstruction(uri, values, selection, selectionArgs);
 		else
-			throw new IllegalArgumentException("Unknown URI " + uri);
+			return super.update(uri, values, selection, selectionArgs);
 	}
 
 	/**

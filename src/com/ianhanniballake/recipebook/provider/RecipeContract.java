@@ -1,5 +1,6 @@
 package com.ianhanniballake.recipebook.provider;
 
+import android.content.SearchRecentSuggestionsProvider;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
@@ -249,6 +250,11 @@ public final class RecipeContract
 		 * 0-relative position of a recipe ID segment in the path part of a recipe ID URI
 		 */
 		public static final int RECIPE_ID_PATH_POSITION = 1;
+		/**
+		 * Search Mode used for Recent Suggestions
+		 */
+		public static final int SEARCH_MODE = SearchRecentSuggestionsProvider.DATABASE_MODE_QUERIES
+				| SearchRecentSuggestionsProvider.DATABASE_MODE_2LINES;
 		/**
 		 * The table name offered by this provider
 		 */
