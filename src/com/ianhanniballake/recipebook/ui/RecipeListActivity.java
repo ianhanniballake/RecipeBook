@@ -61,7 +61,8 @@ public class RecipeListActivity extends AuthorizedActivity implements LoaderMana
 	protected void onCreate(final Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		getIntent().setAction(Intent.ACTION_VIEW);
+		if (!Intent.ACTION_SEARCH.equals(getIntent().getAction()))
+			getIntent().setAction(Intent.ACTION_VIEW);
 		setContentView(R.layout.activity_recipe_list);
 		final AbsListView listView = (AbsListView) findViewById(android.R.id.list);
 		if (findViewById(R.id.recipe_detail_summary) != null)
@@ -207,7 +208,6 @@ public class RecipeListActivity extends AuthorizedActivity implements LoaderMana
 	public void onNewIntent(final Intent intent)
 	{
 		setIntent(intent);
-		getIntent().setAction(Intent.ACTION_VIEW);
 		getSupportLoaderManager().restartLoader(0, intent.getExtras(), this);
 		invalidateOptionsMenu();
 	}
@@ -249,8 +249,14 @@ public class RecipeListActivity extends AuthorizedActivity implements LoaderMana
 		editMenuItem.setVisible(isItemSelected);
 		final MenuItem deleteMenuItem = menu.findItem(R.id.delete);
 		deleteMenuItem.setVisible(isItemSelected);
-		final SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
-		searchView.setQuery(getIntent().getCharSequenceExtra(SearchManager.QUERY), false);
+		final MenuItem searchItem = menu.findItem(R.id.search);
+		final SearchView searchView = (SearchView) searchItem.getActionView();
+		final CharSequence query = getIntent().getCharSequenceExtra(SearchManager.QUERY);
+		if (query != null)
+		{
+			searchItem.expandActionView();
+			searchView.setQuery(query, false);
+		}
 		searchView.clearFocus();
 		return true;
 	}

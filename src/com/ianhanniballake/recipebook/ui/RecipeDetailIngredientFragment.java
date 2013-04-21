@@ -66,7 +66,9 @@ public class RecipeDetailIngredientFragment extends ListFragment implements Load
 			if (convertView != null)
 				convertView.setTag(position);
 			final View view = super.getView(position, convertView, parent);
-			if (!Intent.ACTION_VIEW.equals(getActivity().getIntent().getAction()))
+			final String action = getActivity().getIntent().getAction();
+			final boolean isView = Intent.ACTION_VIEW.equals(action) || Intent.ACTION_SEARCH.equals(action);
+			if (!isView)
 			{
 				final EditText editText = (EditText) view.findViewById(textViewResourceId);
 				editText.addTextChangedListener(new TextWatcher()
@@ -139,7 +141,8 @@ public class RecipeDetailIngredientFragment extends ListFragment implements Load
 	public void onActivityCreated(final Bundle savedInstanceState)
 	{
 		super.onActivityCreated(savedInstanceState);
-		final boolean isView = Intent.ACTION_VIEW.equals(getActivity().getIntent().getAction());
+		final String action = getActivity().getIntent().getAction();
+		final boolean isView = Intent.ACTION_VIEW.equals(action) || Intent.ACTION_SEARCH.equals(action);
 		final int layoutId = isView ? R.layout.list_item_ingredient : R.layout.list_item_ingredient_edit;
 		setHasOptionsMenu(!isView);
 		adapter = new IngredientArrayAdapter(getActivity(), layoutId, R.id.raw);
