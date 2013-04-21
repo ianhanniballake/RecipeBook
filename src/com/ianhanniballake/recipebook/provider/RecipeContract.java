@@ -116,6 +116,7 @@ public final class RecipeContract
 		{
 		}
 	}
+
 	/**
 	 * Instructions table contract
 	 */
@@ -149,8 +150,8 @@ public final class RecipeContract
 		 */
 		public static final Uri CONTENT_ID_URI_BASE = Uri.parse(SCHEME + AUTHORITY + PATH_INSTRUCTION_ID);
 		/**
-		 * The content URI match pattern for a single instruction, specified by its ID. Use this to match incoming URIs or to
-		 * construct an Intent.
+		 * The content URI match pattern for a single instruction, specified by its ID. Use this to match incoming URIs
+		 * or to construct an Intent.
 		 */
 		public static final Uri CONTENT_ID_URI_PATTERN = Uri.parse(SCHEME + AUTHORITY + PATH_INSTRUCTION_ID + "/#");
 		/**

@@ -619,6 +619,9 @@ public class RecipeProvider extends SearchRecentSuggestionsProvider
 	 */
 	private DatabaseHelper databaseHelper;
 
+	/**
+	 * Create a new RecipeProvider
+	 */
 	public RecipeProvider()
 	{
 		super();
