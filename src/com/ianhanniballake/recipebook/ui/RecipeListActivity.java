@@ -209,6 +209,7 @@ public class RecipeListActivity extends AuthorizedActivity implements LoaderMana
 		setIntent(intent);
 		getIntent().setAction(Intent.ACTION_VIEW);
 		getSupportLoaderManager().restartLoader(0, intent.getExtras(), this);
+		invalidateOptionsMenu();
 	}
 
 	@Override
@@ -248,6 +249,9 @@ public class RecipeListActivity extends AuthorizedActivity implements LoaderMana
 		editMenuItem.setVisible(isItemSelected);
 		final MenuItem deleteMenuItem = menu.findItem(R.id.delete);
 		deleteMenuItem.setVisible(isItemSelected);
+		final SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+		searchView.setQuery(getIntent().getCharSequenceExtra(SearchManager.QUERY), false);
+		searchView.clearFocus();
 		return true;
 	}
 
