@@ -63,6 +63,11 @@ public class RecipeListActivity extends AuthorizedActivity implements LoaderMana
 	protected void onCreate(final Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
+		// Ensure ACTION_SEARCH suggestions from Quick Search Box are interpreted as ACTION_VIEW
+		if (Intent.ACTION_SEARCH.equals(getIntent().getAction())
+				&& getIntent().getStringExtra(SearchManager.QUERY).startsWith(
+						RecipeContract.Recipes.CONTENT_ID_URI_BASE.toString()))
+			setIntent(new Intent(Intent.ACTION_VIEW, Uri.parse(getIntent().getStringExtra(SearchManager.QUERY))));
 		if (BuildConfig.DEBUG)
 		{
 			Log.d(RecipeListActivity.class.getSimpleName(), "onCreate Intent: " + getIntent().getAction());

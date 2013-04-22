@@ -906,7 +906,8 @@ public class RecipeProvider extends SearchRecentSuggestionsProvider
 					"'" + R.drawable.placeholder + "' AS " + SearchManager.SUGGEST_COLUMN_ICON_1,
 					RecipeContract.Recipes.COLUMN_NAME_TITLE + " AS " + SearchManager.SUGGEST_COLUMN_TEXT_1,
 					RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION + " AS " + SearchManager.SUGGEST_COLUMN_TEXT_2,
-					RecipeContract.Recipes.COLUMN_NAME_TITLE + " AS " + SearchManager.SUGGEST_COLUMN_QUERY,
+					"'" + RecipeContract.Recipes.CONTENT_ID_URI_BASE + "'||" + BaseColumns._ID + " AS "
+							+ SearchManager.SUGGEST_COLUMN_QUERY,
 					BaseColumns._ID,
 					"'android.intent.action.VIEW' AS " + SearchManager.SUGGEST_COLUMN_INTENT_ACTION,
 					"'" + RecipeContract.Recipes.CONTENT_ID_URI_BASE + "'||" + BaseColumns._ID + " AS "
