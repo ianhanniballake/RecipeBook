@@ -908,6 +908,7 @@ public class RecipeProvider extends SearchRecentSuggestionsProvider
 					RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION + " AS " + SearchManager.SUGGEST_COLUMN_TEXT_2,
 					RecipeContract.Recipes.COLUMN_NAME_TITLE + " AS " + SearchManager.SUGGEST_COLUMN_QUERY,
 					BaseColumns._ID,
+					"'android.intent.action.VIEW' AS " + SearchManager.SUGGEST_COLUMN_INTENT_ACTION,
 					"'" + RecipeContract.Recipes.CONTENT_ID_URI_BASE + "'||" + BaseColumns._ID + " AS "
 							+ SearchManager.SUGGEST_COLUMN_INTENT_DATA };
 			final String searchSelection = RecipeContract.Recipes.COLUMN_NAME_TITLE + " LIKE ? OR "

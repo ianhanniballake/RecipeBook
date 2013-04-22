@@ -81,7 +81,7 @@ public class RecipeListActivity extends AuthorizedActivity implements LoaderMana
 			public void onItemClick(final AdapterView<?> parent, final View view, final int position, final long id)
 			{
 				mActivatedPosition = position;
-				showDetails(ContentUris.withAppendedId(RecipeContract.Recipes.CONTENT_ID_URI_BASE, id));
+				showDetails(ContentUris.withAppendedId(RecipeContract.Recipes.CONTENT_ID_URI_BASE, id), false);
 			}
 		});
 		recipeDeleteHandler = new AsyncQueryHandler(getContentResolver())
@@ -116,7 +116,7 @@ public class RecipeListActivity extends AuthorizedActivity implements LoaderMana
 			mActivatedPosition = position;
 		}
 		else if (Intent.ACTION_VIEW.equals(getIntent().getAction()))
-			showDetails(getIntent().getData());
+			showDetails(getIntent().getData(), true);
 		// TODO: If exposing deep links into your app, handle intents here.
 	}
 
@@ -151,7 +151,7 @@ public class RecipeListActivity extends AuthorizedActivity implements LoaderMana
 			@Override
 			public boolean onMenuItemActionCollapse(final MenuItem item)
 			{
-				getIntent().removeExtra(SearchManager.QUERY);
+				getIntent().setAction(null).removeExtra(SearchManager.QUERY);
 				getSupportLoaderManager().restartLoader(0, getIntent().getExtras(), RecipeListActivity.this);
 				return true;
 			}
@@ -177,6 +177,8 @@ public class RecipeListActivity extends AuthorizedActivity implements LoaderMana
 	public void onLoadFinished(final Loader<Cursor> loader, final Cursor data)
 	{
 		adapter.swapCursor(data);
+		if (mTwoPane && getIntent().getData() != null)
+			selectPositionFromUri(getIntent().getData());
 	}
 
 	@Override
@@ -185,7 +187,7 @@ public class RecipeListActivity extends AuthorizedActivity implements LoaderMana
 		setIntent(intent);
 		getSupportLoaderManager().restartLoader(0, intent.getExtras(), this);
 		if (Intent.ACTION_VIEW.equals(intent.getAction()))
-			showDetails(intent.getData());
+			showDetails(intent.getData(), true);
 		else
 			invalidateOptionsMenu();
 	}
@@ -248,19 +250,37 @@ public class RecipeListActivity extends AuthorizedActivity implements LoaderMana
 			outState.putInt(STATE_ACTIVATED_POSITION, mActivatedPosition);
 	}
 
+	private void selectPositionFromUri(final Uri recipeUri)
+	{
+		final AbsListView listView = (AbsListView) findViewById(android.R.id.list);
+		final long recipeId = ContentUris.parseId(recipeUri);
+		final int count = adapter.getCount();
+		for (int position = 0; position < count; position++)
+		{
+			final boolean foundMatch = adapter.getItemId(position) == recipeId;
+			listView.setItemChecked(position, foundMatch);
+			if (foundMatch)
+				mActivatedPosition = position;
+		}
+	}
+
 	/**
 	 * Show the details of the given Recipe. If in two pane mode, show it inline. Otherwise, launch a detail activity
 	 * 
 	 * @param recipeUri
 	 *            Recipe to show
+	 * @param findAndSelectPosition
+	 *            Whether we should search the adapter and select the position associated with this recipe
 	 */
-	void showDetails(final Uri recipeUri)
+	void showDetails(final Uri recipeUri, final boolean findAndSelectPosition)
 	{
 		if (mTwoPane)
 		{
 			// In two-pane mode, show the detail view in this activity by adding or replacing the detail
 			// fragment using a fragment transaction.
 			getIntent().setData(recipeUri);
+			if (findAndSelectPosition)
+				selectPositionFromUri(recipeUri);
 			final RecipeDetailSummaryFragment summaryFragment = new RecipeDetailSummaryFragment();
 			final RecipeDetailIngredientFragment ingredientFragment = new RecipeDetailIngredientFragment();
 			final RecipeDetailInstructionFragment instructionFragment = new RecipeDetailInstructionFragment();
