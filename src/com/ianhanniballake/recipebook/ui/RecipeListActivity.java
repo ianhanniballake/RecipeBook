@@ -15,6 +15,8 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MenuItem.OnActionExpandListener;
@@ -25,6 +27,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.SearchView;
 import android.widget.Toast;
 
+import com.ianhanniballake.recipebook.BuildConfig;
 import com.ianhanniballake.recipebook.R;
 import com.ianhanniballake.recipebook.auth.AuthorizedActivity;
 import com.ianhanniballake.recipebook.provider.RecipeContract;
@@ -60,6 +63,14 @@ public class RecipeListActivity extends AuthorizedActivity implements LoaderMana
 	protected void onCreate(final Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
+		if (BuildConfig.DEBUG)
+		{
+			Log.d(RecipeListActivity.class.getSimpleName(), "onCreate Intent: " + getIntent().getAction());
+			if (getIntent().getExtras() != null)
+				for (final String key : getIntent().getExtras().keySet())
+					Log.d(RecipeListActivity.class.getSimpleName(), "onCreate Intent Extra " + key + ": "
+							+ getIntent().getExtras().get(key));
+		}
 		setContentView(R.layout.activity_recipe_list);
 		final AbsListView listView = (AbsListView) findViewById(android.R.id.list);
 		if (findViewById(R.id.recipe_detail_summary) != null)
@@ -105,7 +116,7 @@ public class RecipeListActivity extends AuthorizedActivity implements LoaderMana
 				Toast.makeText(RecipeListActivity.this, R.string.deleted, Toast.LENGTH_SHORT).show();
 			}
 		};
-		getSupportLoaderManager().initLoader(0, getIntent().getExtras(), this);
+		getSupportLoaderManager().initLoader(0, null, this);
 		if (savedInstanceState != null && savedInstanceState.containsKey(STATE_ACTIVATED_POSITION))
 		{
 			final int position = savedInstanceState.getInt(STATE_ACTIVATED_POSITION);
@@ -123,12 +134,24 @@ public class RecipeListActivity extends AuthorizedActivity implements LoaderMana
 	@Override
 	public Loader<Cursor> onCreateLoader(final int id, final Bundle args)
 	{
+		if (BuildConfig.DEBUG)
+		{
+			Log.d(RecipeListActivity.class.getSimpleName(), "onCreateLoader Intent: " + getIntent().getAction());
+			if (getIntent().getExtras() != null)
+				for (final String key : getIntent().getExtras().keySet())
+					Log.d(RecipeListActivity.class.getSimpleName(), "onCreateLoader Intent Extra " + key + ": "
+							+ getIntent().getExtras().get(key));
+		}
 		if (Intent.ACTION_SEARCH.equals(getIntent().getAction()))
 		{
+			final CharSequence userQuery = getIntent().getCharSequenceExtra(SearchManager.USER_QUERY);
+			if (!TextUtils.isEmpty(userQuery))
+			{
+				final SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this, RecipeContract.AUTHORITY,
+						RecipeContract.Recipes.SEARCH_MODE);
+				suggestions.saveRecentQuery(userQuery.toString(), null);
+			}
 			final String query = getIntent().getStringExtra(SearchManager.QUERY);
-			final SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this, RecipeContract.AUTHORITY,
-					RecipeContract.Recipes.SEARCH_MODE);
-			suggestions.saveRecentQuery(query, null);
 			final String selection = RecipeContract.Recipes.COLUMN_NAME_TITLE + " LIKE ? OR "
 					+ RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION + " LIKE ?";
 			final String[] selectionArgs = { "%" + query + "%", "%" + query + "%" };
@@ -151,8 +174,10 @@ public class RecipeListActivity extends AuthorizedActivity implements LoaderMana
 			@Override
 			public boolean onMenuItemActionCollapse(final MenuItem item)
 			{
-				getIntent().setAction(null).removeExtra(SearchManager.QUERY);
-				getSupportLoaderManager().restartLoader(0, getIntent().getExtras(), RecipeListActivity.this);
+				getIntent().setAction(null);
+				getIntent().removeExtra(SearchManager.QUERY);
+				getIntent().removeExtra(SearchManager.USER_QUERY);
+				getSupportLoaderManager().restartLoader(0, null, RecipeListActivity.this);
 				return true;
 			}
 
@@ -184,8 +209,16 @@ public class RecipeListActivity extends AuthorizedActivity implements LoaderMana
 	@Override
 	public void onNewIntent(final Intent intent)
 	{
+		if (BuildConfig.DEBUG)
+		{
+			Log.d(RecipeListActivity.class.getSimpleName(), "onNewIntent Intent: " + getIntent().getAction());
+			if (getIntent().getExtras() != null)
+				for (final String key : getIntent().getExtras().keySet())
+					Log.d(RecipeListActivity.class.getSimpleName(), "onNewIntent Intent Extra " + key + ": "
+							+ getIntent().getExtras().get(key));
+		}
 		setIntent(intent);
-		getSupportLoaderManager().restartLoader(0, intent.getExtras(), this);
+		getSupportLoaderManager().restartLoader(0, null, this);
 		if (Intent.ACTION_VIEW.equals(intent.getAction()))
 			showDetails(intent.getData(), true);
 		else
@@ -231,7 +264,8 @@ public class RecipeListActivity extends AuthorizedActivity implements LoaderMana
 		deleteMenuItem.setVisible(isItemSelected);
 		final MenuItem searchItem = menu.findItem(R.id.search);
 		final SearchView searchView = (SearchView) searchItem.getActionView();
-		final CharSequence query = getIntent().getCharSequenceExtra(SearchManager.QUERY);
+		final CharSequence userQuery = getIntent().getCharSequenceExtra(SearchManager.USER_QUERY);
+		final String query = userQuery == null ? getIntent().getStringExtra(SearchManager.QUERY) : userQuery.toString();
 		if (query != null)
 		{
 			searchItem.expandActionView();
