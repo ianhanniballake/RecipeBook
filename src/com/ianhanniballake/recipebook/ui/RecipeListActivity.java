@@ -265,8 +265,9 @@ public class RecipeListActivity extends AuthorizedActivity implements LoaderMana
 		final MenuItem searchItem = menu.findItem(R.id.search);
 		final SearchView searchView = (SearchView) searchItem.getActionView();
 		final CharSequence userQuery = getIntent().getCharSequenceExtra(SearchManager.USER_QUERY);
-		final String query = userQuery == null ? getIntent().getStringExtra(SearchManager.QUERY) : userQuery.toString();
-		if (query != null)
+		final String query = TextUtils.isEmpty(userQuery) ? getIntent().getStringExtra(SearchManager.QUERY) : userQuery
+				.toString();
+		if (!TextUtils.isEmpty(query))
 		{
 			searchItem.expandActionView();
 			searchView.setQuery(query, false);
