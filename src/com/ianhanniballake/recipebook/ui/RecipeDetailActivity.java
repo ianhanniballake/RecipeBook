@@ -161,8 +161,11 @@ public class RecipeDetailActivity extends AuthorizedActivity
 			@Override
 			protected void onQueryComplete(final int token, final Object cookie, final Cursor cursor)
 			{
-				final int titleColumnIndex = cursor.getColumnIndex(RecipeContract.Recipes.COLUMN_NAME_TITLE);
-				setTitle(cursor.getString(titleColumnIndex));
+				if (cursor.moveToFirst())
+				{
+					final int titleColumnIndex = cursor.getColumnIndex(RecipeContract.Recipes.COLUMN_NAME_TITLE);
+					setTitle(cursor.getString(titleColumnIndex));
+				}
 			}
 		}.startQuery(0, 0, getIntent().getData(), new String[] { RecipeContract.Recipes.COLUMN_NAME_TITLE }, null,
 				null, null);
