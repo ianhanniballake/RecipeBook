@@ -2,12 +2,14 @@ package com.ianhanniballake.recipebook.provider;
 
 import java.util.HashMap;
 
+import android.app.SearchManager;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SearchRecentSuggestionsProvider;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.MergeCursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -583,6 +585,10 @@ public class RecipeProvider extends SearchRecentSuggestionsProvider
 	 */
 	private static final int RECIPES = 1;
 	/**
+	 * The incoming URI matches search queries
+	 */
+	private static final int SEARCH = 7;
+	/**
 	 * Used for debugging and logging
 	 */
 	private static final String TAG = "RecipeProvider";
@@ -611,6 +617,8 @@ public class RecipeProvider extends SearchRecentSuggestionsProvider
 		matcher.addURI(RecipeContract.AUTHORITY, "instructions", RecipeProvider.INSTRUCTIONS);
 		// Add a pattern that routes URIs terminated with "instructions" plus an integer to a Instruction ID operation
 		matcher.addURI(RecipeContract.AUTHORITY, "instructions/#", RecipeProvider.INSTRUCTION_ID);
+		// Add a pattern for search queries
+		matcher.addURI(RecipeContract.AUTHORITY, SearchManager.SUGGEST_URI_PATH_QUERY, RecipeProvider.SEARCH);
 		return matcher;
 	}
 
@@ -888,6 +896,27 @@ public class RecipeProvider extends SearchRecentSuggestionsProvider
 		else if (RecipeProvider.uriMatcher.match(uri) == RecipeProvider.INSTRUCTIONS
 				|| RecipeProvider.uriMatcher.match(uri) == RecipeProvider.INSTRUCTION_ID)
 			return queryInstruction(uri, projection, selection, selectionArgs, sortOrder);
+		else if (RecipeProvider.uriMatcher.match(uri) == RecipeProvider.SEARCH)
+		{
+			final Cursor recentCursor = super.query(uri, projection, selection, selectionArgs, sortOrder);
+			if (selectionArgs[0].length() < 2)
+				return recentCursor;
+			final String[] searchProjection = new String[] {
+					"0 AS " + SearchManager.SUGGEST_COLUMN_FORMAT,
+					"'" + R.drawable.placeholder + "' AS " + SearchManager.SUGGEST_COLUMN_ICON_1,
+					RecipeContract.Recipes.COLUMN_NAME_TITLE + " AS " + SearchManager.SUGGEST_COLUMN_TEXT_1,
+					RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION + " AS " + SearchManager.SUGGEST_COLUMN_TEXT_2,
+					RecipeContract.Recipes.COLUMN_NAME_TITLE + " AS " + SearchManager.SUGGEST_COLUMN_QUERY,
+					BaseColumns._ID,
+					"'" + RecipeContract.Recipes.CONTENT_ID_URI_BASE + "'||" + BaseColumns._ID + " AS "
+							+ SearchManager.SUGGEST_COLUMN_INTENT_DATA };
+			final String searchSelection = RecipeContract.Recipes.COLUMN_NAME_TITLE + " LIKE ? OR "
+					+ RecipeContract.Recipes.COLUMN_NAME_DESCRIPTION + " LIKE ?";
+			final String[] searchSelectionArgs = { "%" + selectionArgs[0] + "%", "%" + selectionArgs[0] + "%" };
+			final Cursor searchCursor = query(RecipeContract.Recipes.CONTENT_URI, searchProjection, searchSelection,
+					searchSelectionArgs, null);
+			return new MergeCursor(new Cursor[] { recentCursor, searchCursor });
+		}
 		else
 			return super.query(uri, projection, selection, selectionArgs, sortOrder);
 	}

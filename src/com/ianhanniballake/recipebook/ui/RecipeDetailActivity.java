@@ -7,6 +7,7 @@ import android.app.FragmentTransaction;
 import android.content.AsyncQueryHandler;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -154,8 +155,17 @@ public class RecipeDetailActivity extends AuthorizedActivity
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_recipe_detail);
-		// Show the recipe's title
-		setTitle(getIntent().getCharSequenceExtra(RecipeContract.Recipes.COLUMN_NAME_TITLE));
+		// Query for the recipe's title
+		new AsyncQueryHandler(getContentResolver())
+		{
+			@Override
+			protected void onQueryComplete(final int token, final Object cookie, final Cursor cursor)
+			{
+				final int titleColumnIndex = cursor.getColumnIndex(RecipeContract.Recipes.COLUMN_NAME_TITLE);
+				setTitle(cursor.getString(titleColumnIndex));
+			}
+		}.startQuery(0, 0, getIntent().getData(), new String[] { RecipeContract.Recipes.COLUMN_NAME_TITLE }, null,
+				null, null);
 		// Show the Up button in the action bar.
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		final ViewPager pager = (ViewPager) findViewById(R.id.pager);

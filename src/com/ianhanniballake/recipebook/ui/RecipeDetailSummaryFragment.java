@@ -116,10 +116,9 @@ public class RecipeDetailSummaryFragment extends Fragment implements LoaderManag
 	public View onCreateView(final LayoutInflater inflater, final ViewGroup container, final Bundle savedInstanceState)
 	{
 		final String action = getActivity().getIntent().getAction();
-		final boolean isView = Intent.ACTION_VIEW.equals(action) || Intent.ACTION_SEARCH.equals(action);
-		if (isView)
-			return inflater.inflate(R.layout.fragment_summary_detail, container, false);
-		return inflater.inflate(R.layout.fragment_summary_edit, container, false);
+		final boolean isEdit = Intent.ACTION_INSERT.equals(action) || Intent.ACTION_EDIT.equals(action);
+		final int layoutId = isEdit ? R.layout.fragment_summary_edit : R.layout.fragment_summary_detail;
+		return inflater.inflate(layoutId, container, false);
 	}
 
 	@Override

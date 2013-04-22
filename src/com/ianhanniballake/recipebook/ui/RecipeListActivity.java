@@ -23,7 +23,6 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.SearchView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ianhanniballake.recipebook.R;
@@ -61,8 +60,6 @@ public class RecipeListActivity extends AuthorizedActivity implements LoaderMana
 	protected void onCreate(final Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		if (!Intent.ACTION_SEARCH.equals(getIntent().getAction()))
-			getIntent().setAction(Intent.ACTION_VIEW);
 		setContentView(R.layout.activity_recipe_list);
 		final AbsListView listView = (AbsListView) findViewById(android.R.id.list);
 		if (findViewById(R.id.recipe_detail_summary) != null)
@@ -83,32 +80,8 @@ public class RecipeListActivity extends AuthorizedActivity implements LoaderMana
 			@Override
 			public void onItemClick(final AdapterView<?> parent, final View view, final int position, final long id)
 			{
-				if (mTwoPane)
-				{
-					mActivatedPosition = position;
-					// In two-pane mode, show the detail view in this activity by adding or replacing the detail
-					// fragment using a fragment transaction.
-					getIntent().setData(ContentUris.withAppendedId(RecipeContract.Recipes.CONTENT_ID_URI_BASE, id));
-					final RecipeDetailSummaryFragment summaryFragment = new RecipeDetailSummaryFragment();
-					final RecipeDetailIngredientFragment ingredientFragment = new RecipeDetailIngredientFragment();
-					final RecipeDetailInstructionFragment instructionFragment = new RecipeDetailInstructionFragment();
-					final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-					ft.replace(R.id.recipe_detail_summary, summaryFragment);
-					ft.replace(R.id.recipe_detail_ingredient, ingredientFragment);
-					ft.replace(R.id.recipe_detail_instruction, instructionFragment);
-					ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-					ft.commit();
-					invalidateOptionsMenu();
-				}
-				else
-				{
-					final TextView titleView = (TextView) view.findViewById(R.id.title);
-					// In single-pane mode, simply start the detail activity for the selected item ID.
-					final Uri recipeUri = ContentUris.withAppendedId(RecipeContract.Recipes.CONTENT_ID_URI_BASE, id);
-					final Intent intent = new Intent(Intent.ACTION_VIEW, recipeUri);
-					intent.putExtra(RecipeContract.Recipes.COLUMN_NAME_TITLE, titleView.getText());
-					startActivity(intent);
-				}
+				mActivatedPosition = position;
+				showDetails(ContentUris.withAppendedId(RecipeContract.Recipes.CONTENT_ID_URI_BASE, id));
 			}
 		});
 		recipeDeleteHandler = new AsyncQueryHandler(getContentResolver())
@@ -142,15 +115,17 @@ public class RecipeListActivity extends AuthorizedActivity implements LoaderMana
 				listView.setItemChecked(position, true);
 			mActivatedPosition = position;
 		}
+		else if (Intent.ACTION_VIEW.equals(getIntent().getAction()))
+			showDetails(getIntent().getData());
 		// TODO: If exposing deep links into your app, handle intents here.
 	}
 
 	@Override
 	public Loader<Cursor> onCreateLoader(final int id, final Bundle args)
 	{
-		if (args != null && args.containsKey(SearchManager.QUERY))
+		if (Intent.ACTION_SEARCH.equals(getIntent().getAction()))
 		{
-			final String query = args.getString(SearchManager.QUERY);
+			final String query = getIntent().getStringExtra(SearchManager.QUERY);
 			final SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this, RecipeContract.AUTHORITY,
 					RecipeContract.Recipes.SEARCH_MODE);
 			suggestions.saveRecentQuery(query, null);
@@ -209,7 +184,10 @@ public class RecipeListActivity extends AuthorizedActivity implements LoaderMana
 	{
 		setIntent(intent);
 		getSupportLoaderManager().restartLoader(0, intent.getExtras(), this);
-		invalidateOptionsMenu();
+		if (Intent.ACTION_VIEW.equals(intent.getAction()))
+			showDetails(intent.getData());
+		else
+			invalidateOptionsMenu();
 	}
 
 	@Override
@@ -268,5 +246,34 @@ public class RecipeListActivity extends AuthorizedActivity implements LoaderMana
 		if (mActivatedPosition != AdapterView.INVALID_POSITION)
 			// Serialize and persist the activated item position.
 			outState.putInt(STATE_ACTIVATED_POSITION, mActivatedPosition);
+	}
+
+	/**
+	 * Show the details of the given Recipe. If in two pane mode, show it inline. Otherwise, launch a detail activity
+	 * 
+	 * @param recipeUri
+	 *            Recipe to show
+	 */
+	void showDetails(final Uri recipeUri)
+	{
+		if (mTwoPane)
+		{
+			// In two-pane mode, show the detail view in this activity by adding or replacing the detail
+			// fragment using a fragment transaction.
+			getIntent().setData(recipeUri);
+			final RecipeDetailSummaryFragment summaryFragment = new RecipeDetailSummaryFragment();
+			final RecipeDetailIngredientFragment ingredientFragment = new RecipeDetailIngredientFragment();
+			final RecipeDetailInstructionFragment instructionFragment = new RecipeDetailInstructionFragment();
+			final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+			ft.replace(R.id.recipe_detail_summary, summaryFragment);
+			ft.replace(R.id.recipe_detail_ingredient, ingredientFragment);
+			ft.replace(R.id.recipe_detail_instruction, instructionFragment);
+			ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+			ft.commit();
+			invalidateOptionsMenu();
+		}
+		else
+			// In single-pane mode, simply start the detail activity for the selected item ID.
+			startActivity(new Intent(Intent.ACTION_VIEW, recipeUri));
 	}
 }

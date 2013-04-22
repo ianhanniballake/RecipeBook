@@ -67,8 +67,8 @@ public class RecipeDetailInstructionFragment extends ListFragment implements Loa
 				convertView.setTag(position);
 			final View view = super.getView(position, convertView, parent);
 			final String action = getActivity().getIntent().getAction();
-			final boolean isView = Intent.ACTION_VIEW.equals(action) || Intent.ACTION_SEARCH.equals(action);
-			if (!isView)
+			final boolean isEdit = Intent.ACTION_INSERT.equals(action) || Intent.ACTION_EDIT.equals(action);
+			if (isEdit)
 			{
 				final EditText editText = (EditText) view.findViewById(textViewResourceId);
 				editText.addTextChangedListener(new TextWatcher()
@@ -142,9 +142,9 @@ public class RecipeDetailInstructionFragment extends ListFragment implements Loa
 	{
 		super.onActivityCreated(savedInstanceState);
 		final String action = getActivity().getIntent().getAction();
-		final boolean isView = Intent.ACTION_VIEW.equals(action) || Intent.ACTION_SEARCH.equals(action);
-		final int layoutId = isView ? R.layout.list_item_instruction : R.layout.list_item_instruction_edit;
-		setHasOptionsMenu(!isView);
+		final boolean isEdit = Intent.ACTION_INSERT.equals(action) || Intent.ACTION_EDIT.equals(action);
+		final int layoutId = isEdit ? R.layout.list_item_instruction_edit : R.layout.list_item_instruction;
+		setHasOptionsMenu(isEdit);
 		adapter = new InstructionArrayAdapter(getActivity(), layoutId, R.id.instruction);
 		setListAdapter(adapter);
 		getListView().setChoiceMode(AbsListView.CHOICE_MODE_NONE);
