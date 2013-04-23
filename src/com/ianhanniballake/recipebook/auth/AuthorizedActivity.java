@@ -164,6 +164,13 @@ public abstract class AuthorizedActivity extends Activity implements GooglePlayS
 		super.onStart();
 	}
 
+	@Override
+	protected void onStop()
+	{
+		plusClient.disconnect();
+		super.onStop();
+	}
+
 	private void startResolution()
 	{
 		if (BuildConfig.DEBUG)
