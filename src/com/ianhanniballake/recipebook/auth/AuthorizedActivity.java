@@ -26,7 +26,7 @@ import com.ianhanniballake.recipebook.sync.SyncAdapter;
 /**
  * Activity class that manages user authorization
  */
-public class AuthorizedActivity extends Activity implements GooglePlayServicesClient.ConnectionCallbacks,
+public abstract class AuthorizedActivity extends Activity implements GooglePlayServicesClient.ConnectionCallbacks,
 		GooglePlayServicesClient.OnConnectionFailedListener
 {
 	private static final int REQUEST_ACCOUNT_RESOLUTION = 401;
@@ -63,6 +63,7 @@ public class AuthorizedActivity extends Activity implements GooglePlayServicesCl
 		final Account connectedAccount = new Account(plusClient.getAccountName(), GoogleAuthUtil.GOOGLE_ACCOUNT_TYPE);
 		if (ContentResolver.getIsSyncable(connectedAccount, RecipeContract.AUTHORITY) <= 0)
 			ContentResolver.setIsSyncable(connectedAccount, RecipeContract.AUTHORITY, 1);
+		ContentResolver.setSyncAutomatically(connectedAccount, RecipeContract.AUTHORITY, true);
 		ContentResolver.requestSync(connectedAccount, RecipeContract.AUTHORITY, new Bundle());
 	}
 
