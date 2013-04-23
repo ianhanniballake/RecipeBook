@@ -4,6 +4,9 @@ import java.lang.ref.WeakReference;
 import java.util.Locale;
 
 import android.app.ActionBar;
+import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -12,10 +15,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -40,7 +40,7 @@ public class RecipeEditActivity extends AuthorizedActivity
 			ViewPager.OnPageChangeListener
 	{
 		private final ActionBar actionBar;
-		private final FragmentActivity activity;
+		private final Activity activity;
 		private final ViewPager pager;
 
 		/**
@@ -49,9 +49,9 @@ public class RecipeEditActivity extends AuthorizedActivity
 		 * @param activity
 		 *            Activity to show the summary/ingredient/instruction fragments
 		 */
-		public RecipeEditTabsAdapter(final FragmentActivity activity)
+		public RecipeEditTabsAdapter(final Activity activity)
 		{
-			super(activity.getSupportFragmentManager());
+			super(activity.getFragmentManager());
 			this.activity = activity;
 			actionBar = activity.getActionBar();
 			pager = (ViewPager) activity.findViewById(R.id.pager);
@@ -72,9 +72,9 @@ public class RecipeEditActivity extends AuthorizedActivity
 		public RecipeDetailIngredientFragment getIngredientFragment()
 		{
 			if (pager == null)
-				return (RecipeDetailIngredientFragment) activity.getSupportFragmentManager().findFragmentById(
+				return (RecipeDetailIngredientFragment) activity.getFragmentManager().findFragmentById(
 						R.id.recipe_detail_ingredient);
-			return (RecipeDetailIngredientFragment) activity.getSupportFragmentManager().findFragmentByTag(
+			return (RecipeDetailIngredientFragment) activity.getFragmentManager().findFragmentByTag(
 					"android:switcher:" + pager.getId() + ":1");
 		}
 
@@ -86,9 +86,9 @@ public class RecipeEditActivity extends AuthorizedActivity
 		public RecipeDetailInstructionFragment getInstructionFragment()
 		{
 			if (pager == null)
-				return (RecipeDetailInstructionFragment) activity.getSupportFragmentManager().findFragmentById(
+				return (RecipeDetailInstructionFragment) activity.getFragmentManager().findFragmentById(
 						R.id.recipe_detail_instruction);
-			return (RecipeDetailInstructionFragment) activity.getSupportFragmentManager().findFragmentByTag(
+			return (RecipeDetailInstructionFragment) activity.getFragmentManager().findFragmentByTag(
 					"android:switcher:" + pager.getId() + ":2");
 		}
 
@@ -133,9 +133,9 @@ public class RecipeEditActivity extends AuthorizedActivity
 		public RecipeDetailSummaryFragment getSummaryFragment()
 		{
 			if (pager == null)
-				return (RecipeDetailSummaryFragment) activity.getSupportFragmentManager().findFragmentById(
+				return (RecipeDetailSummaryFragment) activity.getFragmentManager().findFragmentById(
 						R.id.recipe_detail_summary);
-			return (RecipeDetailSummaryFragment) activity.getSupportFragmentManager().findFragmentByTag(
+			return (RecipeDetailSummaryFragment) activity.getFragmentManager().findFragmentByTag(
 					"android:switcher:" + pager.getId() + ":0");
 		}
 
@@ -183,10 +183,10 @@ public class RecipeEditActivity extends AuthorizedActivity
 		{
 			if (pager == null)
 			{
-				final FragmentManager fragmentManager = activity.getSupportFragmentManager();
+				final FragmentManager fragmentManager = activity.getFragmentManager();
 				if (fragmentManager.findFragmentByTag("summary") == null)
 				{
-					final android.support.v4.app.FragmentTransaction ft = fragmentManager.beginTransaction();
+					final FragmentTransaction ft = fragmentManager.beginTransaction();
 					ft.replace(R.id.recipe_detail_summary, getItem(0), "summary");
 					ft.replace(R.id.recipe_detail_ingredient, getItem(1), "ingredient");
 					ft.replace(R.id.recipe_detail_instruction, getItem(2), "instruction");
@@ -209,17 +209,17 @@ public class RecipeEditActivity extends AuthorizedActivity
 
 	private static class SaveAsyncTask extends AsyncTask<Fragment, Void, Long>
 	{
-		private final WeakReference<FragmentActivity> activityRef;
+		private final WeakReference<Activity> activityRef;
 
-		SaveAsyncTask(final FragmentActivity activity)
+		SaveAsyncTask(final Activity activity)
 		{
-			activityRef = new WeakReference<FragmentActivity>(activity);
+			activityRef = new WeakReference<Activity>(activity);
 		}
 
 		@Override
 		protected Long doInBackground(final Fragment... params)
 		{
-			final FragmentActivity activity = activityRef.get();
+			final Activity activity = activityRef.get();
 			if (activity == null)
 				return -1L;
 			final ContentResolver resolver = activity.getContentResolver();
@@ -269,7 +269,7 @@ public class RecipeEditActivity extends AuthorizedActivity
 		@Override
 		protected void onPostExecute(final Long result)
 		{
-			final FragmentActivity activity = activityRef.get();
+			final Activity activity = activityRef.get();
 			if (result != -1 && activity != null)
 			{
 				Toast.makeText(activity, R.string.saved, Toast.LENGTH_SHORT).show();

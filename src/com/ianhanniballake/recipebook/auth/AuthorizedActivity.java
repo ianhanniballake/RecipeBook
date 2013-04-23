@@ -1,11 +1,11 @@
 package com.ianhanniballake.recipebook.auth;
 
 import android.accounts.Account;
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.IntentSender.SendIntentException;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,7 +26,7 @@ import com.ianhanniballake.recipebook.sync.SyncAdapter;
 /**
  * Activity class that manages user authorization
  */
-public class AuthorizedActivity extends FragmentActivity implements GooglePlayServicesClient.ConnectionCallbacks,
+public class AuthorizedActivity extends Activity implements GooglePlayServicesClient.ConnectionCallbacks,
 		GooglePlayServicesClient.OnConnectionFailedListener
 {
 	private static final int REQUEST_ACCOUNT_RESOLUTION = 401;

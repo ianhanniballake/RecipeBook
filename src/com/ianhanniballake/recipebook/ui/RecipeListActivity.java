@@ -1,20 +1,19 @@
 package com.ianhanniballake.recipebook.ui;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
+import android.app.LoaderManager;
 import android.app.SearchManager;
 import android.content.AsyncQueryHandler;
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.SearchRecentSuggestions;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
-import android.support.v4.content.Loader;
-import android.support.v4.widget.SimpleCursorAdapter;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -25,6 +24,7 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.SearchView;
+import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 
 import com.ianhanniballake.recipebook.BuildConfig;
@@ -109,8 +109,8 @@ public class RecipeListActivity extends AuthorizedActivity implements LoaderMana
 				{
 					getIntent().setData(null);
 					mActivatedPosition = AdapterView.INVALID_POSITION;
-					final FragmentManager fragmentManager = getSupportFragmentManager();
-					final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+					final FragmentManager fragmentManager = getFragmentManager();
+					final FragmentTransaction ft = getFragmentManager().beginTransaction();
 					ft.remove(fragmentManager.findFragmentById(R.id.recipe_detail_summary));
 					ft.remove(fragmentManager.findFragmentById(R.id.recipe_detail_ingredient));
 					ft.remove(fragmentManager.findFragmentById(R.id.recipe_detail_instruction));
@@ -121,7 +121,7 @@ public class RecipeListActivity extends AuthorizedActivity implements LoaderMana
 				Toast.makeText(RecipeListActivity.this, R.string.deleted, Toast.LENGTH_SHORT).show();
 			}
 		};
-		getSupportLoaderManager().initLoader(0, null, this);
+		getLoaderManager().initLoader(0, null, this);
 		if (savedInstanceState != null && savedInstanceState.containsKey(STATE_ACTIVATED_POSITION))
 		{
 			final int position = savedInstanceState.getInt(STATE_ACTIVATED_POSITION);
@@ -182,7 +182,7 @@ public class RecipeListActivity extends AuthorizedActivity implements LoaderMana
 				getIntent().setAction(null);
 				getIntent().removeExtra(SearchManager.QUERY);
 				getIntent().removeExtra(SearchManager.USER_QUERY);
-				getSupportLoaderManager().restartLoader(0, null, RecipeListActivity.this);
+				getLoaderManager().restartLoader(0, null, RecipeListActivity.this);
 				return true;
 			}
 
@@ -223,7 +223,7 @@ public class RecipeListActivity extends AuthorizedActivity implements LoaderMana
 							+ getIntent().getExtras().get(key));
 		}
 		setIntent(intent);
-		getSupportLoaderManager().restartLoader(0, null, this);
+		getLoaderManager().restartLoader(0, null, this);
 		if (Intent.ACTION_VIEW.equals(intent.getAction()))
 			showDetails(intent.getData(), true);
 		else
@@ -324,7 +324,7 @@ public class RecipeListActivity extends AuthorizedActivity implements LoaderMana
 			final RecipeDetailSummaryFragment summaryFragment = new RecipeDetailSummaryFragment();
 			final RecipeDetailIngredientFragment ingredientFragment = new RecipeDetailIngredientFragment();
 			final RecipeDetailInstructionFragment instructionFragment = new RecipeDetailInstructionFragment();
-			final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+			final FragmentTransaction ft = getFragmentManager().beginTransaction();
 			ft.replace(R.id.recipe_detail_summary, summaryFragment);
 			ft.replace(R.id.recipe_detail_ingredient, ingredientFragment);
 			ft.replace(R.id.recipe_detail_instruction, instructionFragment);

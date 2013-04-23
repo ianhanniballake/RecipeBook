@@ -3,15 +3,15 @@ package com.ianhanniballake.recipebook.ui;
 import java.util.Locale;
 
 import android.app.ActionBar;
+import android.app.Activity;
+import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.AsyncQueryHandler;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
@@ -49,9 +49,9 @@ public class RecipeDetailActivity extends AuthorizedActivity
 		 * @param pager
 		 *            Pager displaying the tabs
 		 */
-		public RecipeDetailTabsAdapter(final FragmentActivity activity, final ViewPager pager)
+		public RecipeDetailTabsAdapter(final Activity activity, final ViewPager pager)
 		{
-			super(activity.getSupportFragmentManager());
+			super(activity.getFragmentManager());
 			context = activity;
 			actionBar = activity.getActionBar();
 			this.pager = pager;
