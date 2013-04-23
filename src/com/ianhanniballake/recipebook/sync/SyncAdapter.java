@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.TreeSet;
 
 import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
 import android.content.Context;
@@ -28,15 +27,22 @@ import com.google.api.services.drive.model.ChangeList;
 import com.google.api.services.drive.model.File;
 import com.ianhanniballake.recipebook.BuildConfig;
 
+/**
+ * Google Drive Sync Adapter
+ */
 public class SyncAdapter extends AbstractThreadedSyncAdapter
 {
 	private final static String APP_NAME = "RecipeBook";
 	private final static String APPDATA_DEFAULT_ID = "appdata";
+	/**
+	 * Scope for Drive AppData access
+	 */
 	public final static String DRIVE_APPDATA = "https://www.googleapis.com/auth/drive.appdata";
+	private final static String FOLDER_MIME_TYPE = "application/vnd.google-apps.folder";
 	private final static String PREF_DRIVE_APPDATA_ID = "com.ianhanniballake.recipebook.DRIVE_APPDATA_ID";
 	private final static String PREF_DRIVE_START_CHANGE_ID = "com.ianhanniballake.recipebook.DRIVE_START_CHANGE_ID";
 
-	public static Drive getDriveFromAccount(final Context context, final Account account)
+	private static Drive getDriveFromAccount(final Context context, final Account account)
 	{
 		String accessToken = "";
 		try
@@ -57,12 +63,17 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter
 				.setApplicationName(APP_NAME).build();
 	}
 
-	private final AccountManager mAccountManager;
-
+	/**
+	 * Create a new SyncAdapter
+	 * 
+	 * @param context
+	 *            Context to use
+	 * @param autoInitialize
+	 *            Whether this service should be auto initialized
+	 */
 	public SyncAdapter(final Context context, final boolean autoInitialize)
 	{
 		super(context, autoInitialize);
-		mAccountManager = AccountManager.get(context);
 	}
 
 	@Override
@@ -115,7 +126,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter
 					final File changedFile = change.getFile();
 					if (BuildConfig.DEBUG)
 						Log.d(SyncAdapter.class.getSimpleName(), "Change of file named " + changedFile.getTitle());
-					if (changedFile.getAppDataContents())
+					final boolean isFolder = FOLDER_MIME_TYPE.equals(changedFile.getMimeType());
+					if (changedFile.getAppDataContents() && !isFolder)
 					{
 						remoteChanges.add(changedFile);
 						if (BuildConfig.DEBUG)
