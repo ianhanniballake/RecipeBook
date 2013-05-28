@@ -54,7 +54,7 @@ public abstract class AuthorizedActivity extends Activity implements GooglePlayS
 	}
 
 	@Override
-	public void onConnected()
+	public void onConnected(final Bundle connectionHint)
 	{
 		if (BuildConfig.DEBUG)
 			Log.d(getClass().getSimpleName(), "onConnected");
