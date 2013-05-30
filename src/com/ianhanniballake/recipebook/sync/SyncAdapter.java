@@ -8,6 +8,7 @@ import java.util.TreeSet;
 import android.accounts.Account;
 import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SyncResult;
@@ -26,6 +27,7 @@ import com.google.api.services.drive.model.Change;
 import com.google.api.services.drive.model.ChangeList;
 import com.google.api.services.drive.model.File;
 import com.ianhanniballake.recipebook.BuildConfig;
+import com.ianhanniballake.recipebook.provider.RecipeContract;
 
 /**
  * Google Drive Sync Adapter
@@ -54,6 +56,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter
 		} catch (final GoogleAuthException e)
 		{
 			Log.e(SyncAdapter.class.getSimpleName(), "Error getting token", e);
+			// Disable syncing until the user relogs in
+			ContentResolver.setIsSyncable(account, RecipeContract.AUTHORITY, 0);
 		}
 		if (BuildConfig.DEBUG)
 			Log.d(SyncAdapter.class.getSimpleName(), "Token: " + accessToken);
