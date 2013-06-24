@@ -18,6 +18,7 @@ import android.util.Log;
 
 import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
+import com.google.android.gms.auth.UserRecoverableNotifiedException;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.json.gson.GsonFactory;
@@ -49,15 +50,22 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter
 		String accessToken = "";
 		try
 		{
-			accessToken = GoogleAuthUtil.getToken(context, account.name, "oauth2:" + DRIVE_APPDATA);
+			accessToken = GoogleAuthUtil.getTokenWithNotification(context, account.name, "oauth2:" + DRIVE_APPDATA,
+					null, RecipeContract.AUTHORITY, null);
+		} catch (final UserRecoverableNotifiedException e)
+		{
+			Log.w(SyncAdapter.class.getSimpleName(), "User recoverable error getting token", e);
+			return null;
 		} catch (final IOException e)
 		{
 			Log.e(SyncAdapter.class.getSimpleName(), "Error getting token", e);
+			return null;
 		} catch (final GoogleAuthException e)
 		{
 			Log.e(SyncAdapter.class.getSimpleName(), "Error getting token", e);
 			// Disable syncing until the user relogs in
 			ContentResolver.setIsSyncable(account, RecipeContract.AUTHORITY, 0);
+			return null;
 		}
 		if (BuildConfig.DEBUG)
 			Log.d(SyncAdapter.class.getSimpleName(), "Token: " + accessToken);
@@ -88,6 +96,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter
 			Log.d(SyncAdapter.class.getSimpleName(), "onPerformSync");
 		final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
 		final Drive driveService = getDriveFromAccount(getContext(), account);
+		if (driveService == null)
+			return;
 		String appDataFolderId = sharedPreferences.getString(PREF_DRIVE_APPDATA_ID + "_" + account.name,
 				APPDATA_DEFAULT_ID);
 		if (APPDATA_DEFAULT_ID.equals(appDataFolderId))
