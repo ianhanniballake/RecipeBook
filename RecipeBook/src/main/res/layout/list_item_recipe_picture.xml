@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/outer_margin"
+    android:background="?android:attr/activatedBackgroundIndicator"
+    android:paddingRight="@dimen/inner_padding" >
+
+    <ImageView
+        android:id="@+id/picture"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:contentDescription="@string/picture"
+        android:src="@drawable/placeholder" />
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="96dp"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textIsSelectable="false" />
+
+</FrameLayout>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/save"
+    style="?android:actionButtonStyle"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:divider="?android:attr/dividerVertical"
+    android:dividerPadding="12dp"
+    android:orientation="horizontal"
+    android:showDividers="end" >
+
+    <TextView
+        style="?android:actionBarTabTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:drawableLeft="@android:drawable/ic_menu_save"
+        android:drawablePadding="8dp"
+        android:gravity="center_vertical"
+        android:paddingRight="20dp"
+        android:text="@string/save" />
+
+</LinearLayout>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Small display dedicate all their screen space to the list, so we can show full details -->
+    <item name="list_item_recipe" type="layout">@layout/list_item_recipe_full</item>
+
+</resources>

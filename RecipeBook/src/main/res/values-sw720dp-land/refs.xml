@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Use the extra space to show full details -->
+    <item name="list_item_recipe" type="layout">@layout/list_item_recipe_full</item>
+
+</resources>

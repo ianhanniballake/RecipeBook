@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<searchable xmlns:android="http://schemas.android.com/apk/res/android"
+    android:hint="@string/search_hint"
+    android:includeInGlobalSearch="true"
+    android:label="@string/app_name"
+    android:searchSettingsDescription="@string/search_description"
+    android:searchSuggestAuthority="com.ianhanniballake.recipebook"
+    android:searchSuggestSelection=" ?"
+    android:voiceLanguageModel="web_search"
+    android:voiceSearchMode="showVoiceSearchButton|launchRecognizer" />
