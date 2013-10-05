@@ -6,11 +6,11 @@ repositories {
 
 dependencies {
     compile 'com.android.support:support-v13:18.0.+'
-    compile 'com.google.android.gms:play-services:3.2.25+'
-    compile 'com.google.api-client:google-api-client:1.16.0-rc'
-    compile 'com.google.api-client:google-api-client-android:1.16.0-rc'
-    compile 'com.google.http-client:google-http-client-gson:1.16.0-rc'
-    compile 'com.google.apis:google-api-services-drive:v2-rev91-1.16.0-rc'
+    compile 'com.google.android.gms:play-services:3.2.65+'
+    compile 'com.google.api-client:google-api-client:1.17.0-rc'
+    compile 'com.google.api-client:google-api-client-android:1.17.0-rc'
+    compile 'com.google.http-client:google-http-client-gson:1.17.0-rc'
+    compile 'com.google.apis:google-api-services-drive:v2-rev102-1.17.0-rc'
 }
 
 android {
@@ -19,7 +19,7 @@ android {
 
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 17
+        targetSdkVersion 18
     }
 
     buildTypes {
