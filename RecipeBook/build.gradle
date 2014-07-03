@@ -1,8 +1,4 @@
-apply plugin: 'android'
-
-repositories {
-    mavenCentral()
-}
+apply plugin: 'com.android.application'
 
 dependencies {
     compile 'com.android.support:support-v13:18.0.+'
@@ -15,7 +11,7 @@ dependencies {
 
 android {
     compileSdkVersion 19
-    buildToolsVersion "19.1.0"
+    buildToolsVersion "20.0.0"
 
     defaultConfig {
         minSdkVersion 14
